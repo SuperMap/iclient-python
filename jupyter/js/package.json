@@ -6,7 +6,7 @@
   "main": "src/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/supermap/iclientpy.git"
+    "url": "https://gitee.com/isupermap/iClientPython.git"
   },
   "keywords": [
     "jupyter",
