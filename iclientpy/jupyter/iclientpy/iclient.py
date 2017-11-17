@@ -1,11 +1,7 @@
-import ipywidgets as widgets
-# from ipywidgets import register
 from ipywidgets import Layout
 from ipywidgets import DOMWidget
 from ipywidgets import Widget
 from ipywidgets import widget_serialization
-# from ipywidgets import interactive
-# from ipywidgets import Box
 from traitlets import Unicode
 from traitlets import default
 from traitlets import Bool
@@ -15,25 +11,7 @@ from traitlets import Tuple
 from traitlets import Instance
 from traitlets import validate
 from traitlets import Float
-from traitlets import Type
-from traitlets import link
-
-
-# from traitlets import Integer
-
-
-# class InteractMixin(object):
-#     def interact(self, **kwargs):
-#         c = []
-#         for name, abbrev in kwargs.items():
-#             default = getattr(self, name)
-#             widget = interactive.widget_from_abbrev(abbrev, default)
-#             if not widget.description:
-#                 widget.description = name
-#             widget.link = link((widget, 'value'), (self, name))
-#             c.append(widget)
-#         cont = Box(children=c)
-#         return cont
+from ._version import EXTENSION_VERSION
 
 
 class Layer(Widget):
@@ -44,8 +22,8 @@ class Layer(Widget):
     _model_name = Unicode("SuperMapLayerModel").tag(sync=True)
     _view_module = Unicode("iclientpy").tag(sync=True)
     _model_module = Unicode("iclientpy").tag(sync=True)
-    _view_module_version = Unicode('^0.1.0').tag(sync=True)
-    _model_module_version = Unicode('^0.1.0').tag(sync=True)
+    _view_module_version = Unicode(EXTENSION_VERSION).tag(sync=True)
+    _model_module_version = Unicode(EXTENSION_VERSION).tag(sync=True)
 
     _map = None
     options = List(trait=Unicode).tag(sync=True)
@@ -76,8 +54,8 @@ class Icon(Widget):
     _model_name = Unicode("SuperMapIconModel").tag(sync=True)
     _view_module = Unicode("iclientpy").tag(sync=True)
     _model_module = Unicode("iclientpy").tag(sync=True)
-    _view_module_version = Unicode('^0.1.0').tag(sync=True)
-    _model_module_version = Unicode('^0.1.0').tag(sync=True)
+    _view_module_version = Unicode(EXTENSION_VERSION).tag(sync=True)
+    _model_module_version = Unicode(EXTENSION_VERSION).tag(sync=True)
     url = Unicode("").tag(sync=True)
     size = Tuple(trait=Float).tag(sync=True)
     offset = Tuple(trait=Float).tag(sync=True)
@@ -88,8 +66,8 @@ class Marker(Widget):
     _model_name = Unicode("SuperMapMarkerModel").tag(sync=True)
     _view_module = Unicode("iclientpy").tag(sync=True)
     _model_module = Unicode("iclientpy").tag(sync=True)
-    _view_module_version = Unicode('^0.1.0').tag(sync=True)
-    _model_module_version = Unicode('^0.1.0').tag(sync=True)
+    _view_module_version = Unicode(EXTENSION_VERSION).tag(sync=True)
+    _model_module_version = Unicode(EXTENSION_VERSION).tag(sync=True)
 
     lonlat = Tuple(trait=Float).tag(sync=True)
     icon = Instance(klass=Icon).tag(sync=True, **widget_serialization)
@@ -154,8 +132,8 @@ class Map(DOMWidget):
     _model_name = Unicode('SuperMapMapModel').tag(sync=True)
     _view_module = Unicode('iclientpy').tag(sync=True)
     _model_module = Unicode('iclientpy').tag(sync=True)
-    _view_module_version = Unicode('^0.1.0').tag(sync=True)
-    _model_module_version = Unicode('^0.1.0').tag(sync=True)
+    _view_module_version = Unicode(EXTENSION_VERSION).tag(sync=True)
+    _model_module_version = Unicode(EXTENSION_VERSION).tag(sync=True)
 
     # center = List(trait=Float).tag(sync=True)
 
