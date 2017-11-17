@@ -100,9 +100,9 @@ class Markers(Layer):
 
     def add_marker(self, marker):
         """
+        :type marker:Marker
         :param marker:
         :return:
-        :type marker:Marker
         """
         if (marker.model_id in self.marker_ids):
             raise Exception('marker exist')
@@ -110,9 +110,9 @@ class Markers(Layer):
 
     def remove_marker(self, marker):
         """
+        :type marker:Marker
         :param marker:
         :return:
-        :type marker:Marker
         """
         if (marker.model_id not in self.marker_ids):
             raise Exception('marker not exist')
@@ -149,9 +149,9 @@ class Map(DOMWidget):
 
     def add_layer(self, layer):
         """
+        :type layer:Layer
         :param layer:
         :return:
-        :type layer:Layer
         """
         if layer.model_id in self.layer_ids:
             raise Exception("layer exist")
@@ -161,9 +161,9 @@ class Map(DOMWidget):
 
     def remove_layer(self, layer):
         """
+        :type layer:Layer
         :param layer:
         :return:
-        :type layer:Layer
         """
         if layer.model_id not in self.layer_ids:
             raise Exception("layer not exist")
