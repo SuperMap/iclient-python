@@ -6,7 +6,7 @@ build/
 node_modules/
 
 # Compiled javascript
-ipyiclient/static/
+iclientpy/static/
 
 # OS X
 .DS_Store
