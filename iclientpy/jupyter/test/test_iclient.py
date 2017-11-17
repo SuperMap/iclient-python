@@ -1,11 +1,11 @@
 from unittest import TestCase
 from unittest.mock import Mock
 from unittest.mock import patch
-from ipyiclient.iclient import Layer
-from ipyiclient.iclient import Map
-from ipyiclient.iclient import Markers
-from ipyiclient.iclient import Marker
-from ipyiclient.iclient import Icon
+from iclientpy.iclient import Layer
+from iclientpy.iclient import Map
+from iclientpy.iclient import Markers
+from iclientpy.iclient import Marker
+from iclientpy.iclient import Icon
 from ipykernel.comm import Comm
 from ipykernel.kernelbase import Kernel
 
