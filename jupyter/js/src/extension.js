@@ -8,6 +8,7 @@ if (window.require) {
         map: {
             "*" : {
                 "iclientpy": "nbextensions/iclientpy/index",
+                "jupyter-leaflet": "nbextensions/iclientpy/index",
             }
         }
     });

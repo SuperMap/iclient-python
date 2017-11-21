@@ -1,22 +1,34 @@
 var path = require('path');
 var version = require('./package.json').version;
+var CopyWebpackPlugin = require('copy-webpack-plugin')
 
+var leaflet_marker_selector = /leaflet\/dist\/images\/marker-.*\.png/;
 // Custom webpack rules are generally the same for all webpack bundles, hence
 // stored in a separate local variable.
 var rules = [
     {
         test: /\.css$/,
         use: ['style-loader', 'css-loader']
+    },
+    {
+        test: /\.(jpg|png|gif|svg)$/,
+        exclude: leaflet_marker_selector,
+        use: ['file-loader']
+    },
+    {
+        test: leaflet_marker_selector,
+        use: [{
+            loader: 'file-loader',
+            options: {
+                name: '[name].[ext]'
+            }
+        }]
     }
-    // ,{     test: [/\.js$/],     exclude: /node_modules/,     enforce: 'pre',
-    // loader: 'eslint-loader',     options: {         failOnError: true     } }, {
-    //    test: /\.js/,     loader: 'babel-loader',     query: {         presets:
-    // ['es2015'],         plugins: [             'transform-class-properties',
-    //    ]     } }
 ]
 
 module.exports = [
-    { // Notebook extension
+    {
+        // Notebook extension
         //
         // This bundle only contains the part of the JavaScript that is run on load of
         // the notebook. This section generally only performs some configuration for
@@ -29,7 +41,8 @@ module.exports = [
             path: path.resolve(__dirname, '..', 'iclientpy', 'static'),
             libraryTarget: 'amd'
         }
-    }, { // Bundle for the notebook containing the custom widget views and models
+    }, {
+        // Bundle for the notebook containing the custom widget views and models
         //
         // This bundle contains the implementation for the custom widget views and
         // custom widget. It must be an amd module
@@ -45,7 +58,8 @@ module.exports = [
             rules: rules
         },
         externals: ['@jupyter-widgets/base']
-    }, { // Embeddable iclientpy bundle
+    }, {
+        // Embeddable iclientpy bundle
         //
         // This bundle is generally almost identical to the notebook bundle containing
         // the custom widget views and models.

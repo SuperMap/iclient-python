@@ -1,5 +1,7 @@
+ipyleaflet==0.5.1
 ipywidgets==7.0.0
 traitlets==4.3.2
 ipykernel==4.6.1
 setuptools==36.5.0
 pytest==3.2.1
+
