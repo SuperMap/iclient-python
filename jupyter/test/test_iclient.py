@@ -3,20 +3,20 @@ from unittest.mock import Mock
 from unittest.mock import patch
 from ipykernel.comm import Comm
 from ipykernel.kernelbase import Kernel
-from iclientpy.jupyter.iclient import SuperMapMap
-from iclientpy.jupyter.iclient import CloudTileLayer
+from iclientpy.jupyter.widget import MapView
+from iclientpy.jupyter.widget import CloudTileLayer
 
 
 class TestIClient(TestCase):
     @patch.object(Comm, 'send')
-    def test_cloudTileLayer(self, mock_send):
+    def test_CloudTileLayer(self, mock_send):
         """
         :type mock_send:Mock
         :param mock_send:
         :return:
         """
         layer = CloudTileLayer();
-        layer._map = SuperMapMap()
+        layer._map = MapView()
         comm = Comm()
         comm.kernel = Kernel()
         layer.comm = comm
@@ -29,14 +29,14 @@ class TestIClient(TestCase):
         self.assertEqual(mock_send.call_count, 2)
 
     @patch.object(Comm, 'send')
-    def test_SuperMapMap(self, mock_send):
+    def test_MapView(self, mock_send):
         """
         :type mock_send:Mock
         :tpye map:SuperMapMap
         :param mock_send:
         :return:
         """
-        map = SuperMapMap()
+        map = MapView()
         comm = Comm()
         comm.kernel = Kernel()
         map.comm = comm

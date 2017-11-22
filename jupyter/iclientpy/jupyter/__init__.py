@@ -1,1 +1,1 @@
-from .iclient import *
+from .widget import *

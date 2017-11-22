@@ -15,7 +15,7 @@ class CloudTileLayer(TileLayer):
     type = Unicode('').tag(sync=True, o=True)
 
 
-class SuperMapMap(Map):
+class MapView(Map):
     _view_name = Unicode("SuperMapMapView").tag(sync=True)
     _model_name = Unicode("SuperMapMapModel").tag(sync=True)
     _view_module = Unicode("iclientpy").tag(sync=True)
