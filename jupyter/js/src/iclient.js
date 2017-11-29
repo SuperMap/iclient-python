@@ -29,45 +29,33 @@ var SuperMapRankSymbolThemeLayerView = leaflet.LeafletLayerView.extend({
     create_obj: function () {
         var name = this.model.get('name');
         var data = this.model.get('data');
-        var address_field_index = this.model.get('address_field_index');
-        var value_field_index = this.model.get('value_field_index');
-        var lng_filed_index = this.model.get('lng_filed_index');
-        var lat_filed_index = this.model.get('lat_filed_index');
+        var symbolType = this.model.get('symbolType')
+        var symbolSetting = this.model.get('symbolSetting');
+        var themeField = this.model.get('themeField');
+        // var address_key = this.model.get('address_key');
+        // var value_key = this.model.get('value_key');
+        // var lng_key = this.model.get('lng_key');
+        // var lat_key = this.model.get('lat_key');
+
+        var address_key = 0;
+        var value_key = 1;
+        var lng_key = 2;
+        var lat_key = 3;
         var options = this.get_options();
         if (!options.attribution) {
             delete options.attribution;
         }
 
-        this.obj = L.supermap.rankSymbolThemeLayer(name, SuperMap.ChartType.CIRCLE, options);
-
-        // 指定用于专题图制作的属性字段  详看下面 addThemeLayer（）中的feature.attrs.CON2009
-        this.obj.themeField = "CON2009";
-
-        // 配置图表参数
-        this.obj.symbolSetting = {
-            //允许图形展示的值域范围，此范围外的数据将不制作图图形,必设参数
-            codomain: [0, 40000],
-            //圆最大半径 默认100
-            maxR: 100,
-            //圆最小半径 默认0
-            minR: 0,
-            // 圆形样式
-            circleStyle: { fillOpacity: 0.8 },
-            // 符号专题图填充颜色
-            fillColor: "#FFA500",
-            // 专题图hover 样式
-            circleHoverStyle: { fillOpacity: 1 }
-        };
+        this.obj = L.supermap.rankSymbolThemeLayer(name, SuperMap.ChartType[symbolType], options);
+        this.obj.themeField = themeField;
+        this.obj.symbolSetting = symbolSetting;
         this.obj.addTo(this.map_view.obj);
-        // 注册专题图 mousemove, mouseout事件(注意：专题图图层对象自带 on 函数，没有 events 对象)
-        // themeLayer.on("mousemove", showInfoWin);
-        // themeLayer.on("mouseout", closeInfoWin);
         this.obj.clear();
         var features = [];
         for (var i = 0, len = data.length; i < len; i++) {
-            var geo = this.map_view.obj.options.crs.project(L.latLng(data[i][lat_filed_index], data[i][lng_filed_index]));
-            // var geo = L.point(data[i][lng_filed_index], data[i][lat_filed_index])
-            var attrs = { NAME: data[i][address_field_index], CON2009: data[i][value_field_index] };
+            var geo = this.map_view.obj.options.crs.project(L.latLng(data[i][lat_key], data[i][lng_key]));
+            var attrs = { NAME: data[i][address_key] };
+            attrs[themeField] = data[i][value_key]
             var feature = L.supermap.themeFeature(geo, attrs);
             features.push(feature);
         }
@@ -117,12 +105,13 @@ var SuperMapRankSymbolThemeLayerModel = leaflet.LeafletLayerModel.extend({
 
         name: '',
         data: [],
-        address_field_index: 0,
-        value_field_index: 1,
-        lng_filed_index: 2,
-        lat_filed_index: 3,
-
-
+        // address_key: '0',
+        // value_key: '1',
+        // lng_key: '2',
+        // lat_key: '3',
+        themeField: '',
+        symbolType: '',
+        symbolSetting: {}
     })
 })
 
