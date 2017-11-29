@@ -5,6 +5,8 @@ from ipykernel.comm import Comm
 from ipykernel.kernelbase import Kernel
 from iclientpy.jupyter.widget import MapView
 from iclientpy.jupyter.widget import CloudTileLayer
+from iclientpy.jupyter.widget import RankSymbolThemeLayer
+import iclientpy.jupyter.widget as widget
 
 
 class TestIClient(TestCase):
@@ -42,3 +44,26 @@ class TestIClient(TestCase):
         map.comm = comm
         map.mapName = 'quanguo'
         self.assertIsInstance(map.default_tiles, CloudTileLayer)
+
+    def test_GetPrivinceGeoJSON(self):
+        privName = '天津'
+        feature = widget.get_privince_geojson_data(privName)
+        self.assertEqual('天津市', feature["properties"]["name"])
+        self.assertEqual([117.30463831663721, 39.288494853279495], feature["properties"]["cp"])
+
+    @patch.object(Comm, 'send')
+    def test_RankSymbolThemeLayer(self, mock_send):
+        """
+        :type mock_send:Mock
+        :type layer:RankSymbolThemeLayer
+        :param mock_send:
+        :return:
+        """
+        layer = RankSymbolThemeLayer(name='test1', data=[]);
+        layer._map = MapView()
+        comm = Comm()
+        comm.kernel = Kernel()
+        layer.comm = comm
+        layer.name = "test"
+        expected = {'method': 'update', 'state': {'name': 'test'}, 'buffer_paths': []}
+        mock_send.assert_called_with(data=expected, buffers=[])
