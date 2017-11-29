@@ -1,5 +1,6 @@
 from ipyleaflet import Map, TileLayer, Layer
-from traitlets import Unicode, List,  Int,  default, validate
+from traitlets import Unicode, List, Int, default, validate, Dict, Any
+from ipywidgets import Widget
 import geojson
 import os
 from .._version import EXTENSION_VERSION
@@ -34,15 +35,18 @@ class RankSymbolThemeLayer(Layer):
     _view_module_version = Unicode(EXTENSION_VERSION).tag(sync=True)
     _model_module_version = Unicode(EXTENSION_VERSION).tag(sync=True)
 
-    # symbolType = Unicode('Circle').tag(sync=True)
-    # symbolSetting = Dict({}).tag(sync=True)
+    themeField = Unicode('value').tag(sync=True)
+    symbolType = Unicode('CIRCLE').tag(sync=True)
+    symbolSetting = Dict({}).tag(sync=True)
     name = Unicode('').tag(sync=True)
     sdata = List([])
     data = List([]).tag(sync=True)
-    address_field_index = Int(0).tag(sync=True)
-    value_field_index = Int(1).tag(sync=True)
-    lng_filed_index = Int(2).tag(sync=True)
-    lat_filed_index = Int(3).tag(sync=True)
+    address_key = Any(0)
+    value_key = Any(1)
+    # address_key = Any(0).tag(sync=True)
+    # value_key = Any(1).tag(sync=True)
+    # lng_key = Any(2).tag(sync=True)
+    # lat_key = Any(3).tag(sync=True)
 
     @validate('sdata')
     def _validate_sdata(self, proposal):
@@ -50,18 +54,16 @@ class RankSymbolThemeLayer(Layer):
             raise Exception("error data")
         tempdata = []
         for d in proposal['value']:
-            feature = get_privince_geojson_data(d[self.address_field_index])
-            row = (d[self.address_field_index], d[self.value_field_index], feature["properties"]["cp"][0],
+            feature = get_privince_geojson_data(d[self.address_key])
+            row = (d[self.address_key], d[self.value_key], feature["properties"]["cp"][0],
                    feature["properties"]["cp"][1])
             tempdata.append(row)
         self.data = tempdata
         return proposal['value']
 
-    def __init__(self, name, data, address_field_index=0, value_field_index=1):
-        super(RankSymbolThemeLayer, self).__init__()
+    def __init__(self, name, data, **kwargs):
+        super(RankSymbolThemeLayer, self).__init__(**kwargs)
         self.name = name
-        self.address_field_index = address_field_index
-        self.value_field_index = value_field_index
         self.sdata = data
 
 
