@@ -1,6 +1,5 @@
-from ipyleaflet import Map, TileLayer, Layer, FeatureGroup
-from traitlets import Unicode, List, Float, Int, Bool, Instance, Tuple, Dict, default, validate
-from ipywidgets import Widget
+from ipyleaflet import Map, TileLayer, Layer
+from traitlets import Unicode, List,  Int,  default, validate
 import geojson
 import os
 from .._version import EXTENSION_VERSION
@@ -76,12 +75,10 @@ class MapView(Map):
 
     center = List([30.656483307485072, 104.06917333602907]).tag(sync=True, o=True)
     zoom = Int(15).tag(sync=True, o=True)
+    crs = Unicode('EPSG3857').tag(sync=True, o=True)
 
     @default('default_tiles')
     def _default_tiles(self):
-        # return TileMapLayer(
-        #     url="http://support.supermap.com.cn:8090/iserver/services/map-china400/rest/maps/China_4326"
-        # )
         return CloudTileLayer()
 
 
