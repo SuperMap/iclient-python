@@ -4,6 +4,7 @@ var _ = require('underscore')
 var L = require('./SuperMap')
 var version = require('../package.json').version
 
+
 var SuperMapCloudTileLayerView = leaflet.LeafletTileLayerView.extend({
 
     create_obj: function () {
@@ -71,15 +72,15 @@ var SuperMapRankSymbolThemeLayerView = leaflet.LeafletLayerView.extend({
             features.push(feature);
         }
         this.obj.addFeatures(features);
-        // this.obj.redrawThematicFeatures();
     },
 })
 
 var SuperMapMapView = leaflet.LeafletMapView.extend({
     create_obj: function () {
-        options = this.get_options()
-        // options.crs = L.CRS.EPSG4326;
-        this.obj = L.map(this.el, options);
+        var that = this;
+        options = this.get_options();
+        options.crs = L.CRS[options.crs]
+        that.obj = L.map(this.el, options);
     }
 })
 
@@ -133,6 +134,7 @@ var SuperMapMapModel = leaflet.LeafletMapModel.extend({
         _model_module: 'iclientpy',
         _view_module_version: version,
         _model_module_version: version,
+        crs: ''
     })
 })
 
