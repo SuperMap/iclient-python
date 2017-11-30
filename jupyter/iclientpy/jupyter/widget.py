@@ -1,5 +1,6 @@
 from ipyleaflet import Map, TileLayer, Layer
 from traitlets import Unicode, List, Int, default, validate, Dict, Any
+from ipywidgets import Layout
 import pandas as pd
 import geojson
 import os
@@ -79,6 +80,10 @@ class RankSymbolThemeLayer(Layer):
 
 
 class MapView(Map):
+    @default('layout')
+    def _default_layout(self):
+        return Layout(height='500px', align_self='stretch')
+
     _view_name = Unicode("SuperMapMapView").tag(sync=True)
     _model_name = Unicode("SuperMapMapModel").tag(sync=True)
     _view_module = Unicode("iclientpy").tag(sync=True)
@@ -86,7 +91,7 @@ class MapView(Map):
     _view_module_version = Unicode(EXTENSION_VERSION).tag(sync=True)
     _model_module_version = Unicode(EXTENSION_VERSION).tag(sync=True)
 
-    center = List([30.656483307485072, 104.06917333602907]).tag(sync=True, o=True)
+    center = List([34.5393842300, 108.9282514100]).tag(sync=True, o=True)
     zoom = Int(15).tag(sync=True, o=True)
     crs = Unicode('EPSG3857').tag(sync=True, o=True)
 
