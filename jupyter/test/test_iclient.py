@@ -49,7 +49,7 @@ class TestIClient(TestCase):
         privName = '天津'
         feature = widget.get_privince_geojson_data(privName)
         self.assertEqual('天津市', feature["properties"]["name"])
-        self.assertEqual([117.30463831663721, 39.288494853279495], feature["properties"]["cp"])
+        self.assertEqual([117.215268, 39.120963], feature["properties"]["cp"])
 
     @patch.object(Comm, 'send')
     def test_RankSymbolThemeLayer(self, mock_send):
