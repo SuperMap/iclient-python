@@ -62,14 +62,12 @@ class RankSymbolThemeLayer(Layer):
                 tempdata.append(row)
 
         elif isinstance(proposal['value'], pd.DataFrame):
-            dfdict = proposal['value'].to_dict()
-            dfdata = [{self.address_key: x, self.value_key: y} for (x, y) in
-                      zip(dfdict[self.address_key].values(), dfdict[self.value_key].values())]
-            for d in dfdata:
-                feature = get_privince_geojson_data(d[self.address_key])
-                row = (d[self.address_key], d[self.value_key], feature["properties"]["cp"][0],
-                       feature["properties"]["cp"][1])
-                tempdata.append(row)
+            for index, row in proposal['value'].iterrows():
+                feature = get_privince_geojson_data(proposal['value'][self.address_key][index])
+                trow = (proposal['value'][self.address_key][index], proposal['value'][self.value_key][index],
+                        feature["properties"]["cp"][0],
+                        feature["properties"]["cp"][1])
+                tempdata.append(trow)
 
         self.data = tempdata
         return proposal['value']
