@@ -1,6 +1,6 @@
 from ipyleaflet import Map, TileLayer, Layer
 from traitlets import Unicode, List, Int, default, validate, Dict, Any
-from ipywidgets import Widget
+import pandas as pd
 import geojson
 import os
 from .._version import EXTENSION_VERSION
@@ -39,10 +39,11 @@ class RankSymbolThemeLayer(Layer):
     symbolType = Unicode('CIRCLE').tag(sync=True)
     symbolSetting = Dict({}).tag(sync=True)
     name = Unicode('').tag(sync=True)
-    sdata = List([])
+    sdata = Any([])
     data = List([]).tag(sync=True)
     address_key = Any(0)
     value_key = Any(1)
+
     # address_key = Any(0).tag(sync=True)
     # value_key = Any(1).tag(sync=True)
     # lng_key = Any(2).tag(sync=True)
@@ -53,11 +54,23 @@ class RankSymbolThemeLayer(Layer):
         if (proposal['value'] is None):
             raise Exception("error data")
         tempdata = []
-        for d in proposal['value']:
-            feature = get_privince_geojson_data(d[self.address_key])
-            row = (d[self.address_key], d[self.value_key], feature["properties"]["cp"][0],
-                   feature["properties"]["cp"][1])
-            tempdata.append(row)
+        if isinstance(proposal['value'], list):
+            for d in proposal['value']:
+                feature = get_privince_geojson_data(d[self.address_key])
+                row = (d[self.address_key], d[self.value_key], feature["properties"]["cp"][0],
+                       feature["properties"]["cp"][1])
+                tempdata.append(row)
+
+        elif isinstance(proposal['value'], pd.DataFrame):
+            dfdict = proposal['value'].to_dict()
+            dfdata = [{self.address_key: x, self.value_key: y} for (x, y) in
+                      zip(dfdict[self.address_key].values(), dfdict[self.value_key].values())]
+            for d in dfdata:
+                feature = get_privince_geojson_data(d[self.address_key])
+                row = (d[self.address_key], d[self.value_key], feature["properties"]["cp"][0],
+                       feature["properties"]["cp"][1])
+                tempdata.append(row)
+
         self.data = tempdata
         return proposal['value']
 
