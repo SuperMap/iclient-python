@@ -28,29 +28,33 @@ var SuperMapTileMapLayerView = leaflet.LeafletTileLayerView.extend({
 var SuperMapRankSymbolThemeLayerView = leaflet.LeafletLayerView.extend({
     create_obj: function () {
         var name = this.model.get('name');
-        var data = this.model.get('data');
         var symbolType = this.model.get('symbolType')
-        var symbolSetting = this.model.get('symbolSetting');
-        var themeField = this.model.get('themeField');
-        // var address_key = this.model.get('address_key');
-        // var value_key = this.model.get('value_key');
-        // var lng_key = this.model.get('lng_key');
-        // var lat_key = this.model.get('lat_key');
 
-        var address_key = 0;
-        var value_key = 1;
-        var lng_key = 2;
-        var lat_key = 3;
         var options = this.get_options();
         if (!options.attribution) {
             delete options.attribution;
         }
 
         this.obj = L.supermap.rankSymbolThemeLayer(name, SuperMap.ChartType[symbolType], options);
+        this.add_fetures()
+    },
+
+    add_fetures: function () {
+        var symbolSetting = this.model.get('symbolSetting');
+        var themeField = this.model.get('themeField');
         this.obj.themeField = themeField;
         this.obj.symbolSetting = symbolSetting;
-        this.obj.addTo(this.map_view.obj);
+        this.obj.symbolSetting.codomain = this.model.get('codomain');
+        rrange = this.model.get('rrange');
+        this.obj.symbolSetting.minR = rrange[0]
+        this.obj.symbolSetting.maxR = rrange[1]
+        this.obj.symbolSetting.fillColor = this.model.get('color')
         this.obj.clear();
+        var data = this.model.get('data');
+        var address_key = 0;
+        var value_key = 1;
+        var lng_key = 2;
+        var lat_key = 3;
         var features = [];
         for (var i = 0, len = data.length; i < len; i++) {
             var geo = this.map_view.obj.options.crs.project(L.latLng(data[i][lat_key], data[i][lng_key]));
@@ -61,6 +65,18 @@ var SuperMapRankSymbolThemeLayerView = leaflet.LeafletLayerView.extend({
         }
         this.obj.addFeatures(features);
     },
+
+    model_events: function () {
+        this.listenTo(this.model, 'change:codomain', function () {
+            this.add_fetures();
+        }, this);
+        this.listenTo(this.model, 'change:rrange', function () {
+            this.add_fetures();
+        }, this);
+        this.listenTo(this.model, 'change:color', function () {
+            this.add_fetures();
+        }, this);
+    }
 })
 
 var SuperMapMapView = leaflet.LeafletMapView.extend({

@@ -1,6 +1,7 @@
 from ipyleaflet import Map, TileLayer, Layer
-from traitlets import Unicode, List, Int, default, validate, Dict, Any
-from ipywidgets import Layout
+from traitlets import Unicode, List, Int, default, validate, Dict, Any, Tuple, link
+from ipywidgets import Layout, IntRangeSlider, ColorPicker
+import ipywidgets as widgets
 import pandas as pd
 import geojson
 import os
@@ -44,11 +45,49 @@ class RankSymbolThemeLayer(Layer):
     data = List([]).tag(sync=True)
     address_key = Any(0)
     value_key = Any(1)
+    codomain = Tuple((0, 40000)).tag(sync=True)
+    rrange = Tuple((0, 100)).tag(sync=True)
+    color = Unicode('#FFA500').tag(sync=True)
 
     # address_key = Any(0).tag(sync=True)
     # value_key = Any(1).tag(sync=True)
     # lng_key = Any(2).tag(sync=True)
     # lat_key = Any(3).tag(sync=True)
+
+    def interact(self, **kwargs):
+        codomainslider = IntRangeSlider(value=[self.codomain[0], self.codomain[1]],
+                                        min=0,
+                                        max=100000,
+                                        step=1,
+                                        description='值域范围:',
+                                        disabled=False,
+                                        continuous_update=False,
+                                        orientation='horizontal',
+                                        readout=True,
+                                        readout_format='d')
+        link((codomainslider, 'value'), (self, 'codomain'))
+        rslider = IntRangeSlider(value=[0, 100],
+                                 min=0,
+                                 max=100,
+                                 step=1,
+                                 description='半径范围:',
+                                 disabled=False,
+                                 continuous_update=False,
+                                 orientation='horizontal',
+                                 readout=True,
+                                 readout_format='d')
+        link((rslider, 'value'), (self, 'rrange'))
+        color = ColorPicker(concise=False,
+                            description='填充颜色：',
+                            value='#FFA500',
+                            disabled=False)
+        link((color, 'value'), (self, 'color'))
+        # accordion = widgets.Accordion(children=[codomainslider, rslider, color])
+        # accordion.set_title(0, '值域范围')
+        # accordion.set_title(1, '半径范围')
+        # accordion.set_title(2, '颜色')
+        # return accordion
+        return widgets.VBox([codomainslider, rslider, color])
 
     @validate('sdata')
     def _validate_sdata(self, proposal):
