@@ -1,8 +1,8 @@
 var leaflet = require('jupyter-leaflet')
-var widgets = require('@jupyter-widgets/base')
 var _ = require('underscore')
-var L = require('./SuperMap')
 var version = require('../package.json').version
+import { CRS, map, latLng } from 'leaflet'
+import { cloudTileLayer, rankSymbolThemeLayer, tiledMapLayer, SuperMap, themeFeature } from '@supermap/iclient-leaflet'
 
 
 var SuperMapCloudTileLayerView = leaflet.LeafletTileLayerView.extend({
@@ -13,7 +13,7 @@ var SuperMapCloudTileLayerView = leaflet.LeafletTileLayerView.extend({
         if (!options.attribution) {
             delete options.attribution;
         }
-        this.obj = L.supermap.cloudTileLayer(url, options);
+        this.obj = cloudTileLayer(url, options);
     },
 
 })
@@ -21,7 +21,7 @@ var SuperMapCloudTileLayerView = leaflet.LeafletTileLayerView.extend({
 var SuperMapTileMapLayerView = leaflet.LeafletTileLayerView.extend({
     create_obj: function () {
         var url = this.model.get('url')
-        this.obj = L.supermap.tiledMapLayer(url)
+        this.obj = tiledMapLayer(url)
     },
 })
 
@@ -35,7 +35,8 @@ var SuperMapRankSymbolThemeLayerView = leaflet.LeafletLayerView.extend({
             delete options.attribution;
         }
 
-        this.obj = L.supermap.rankSymbolThemeLayer(name, SuperMap.ChartType[symbolType], options);
+        this.obj = rankSymbolThemeLayer(name, SuperMap.ChartType[symbolType], options);
+        this.obj.addTo(this.map_view.obj);
         this.add_fetures()
     },
 
@@ -45,7 +46,7 @@ var SuperMapRankSymbolThemeLayerView = leaflet.LeafletLayerView.extend({
         this.obj.themeField = themeField;
         this.obj.symbolSetting = symbolSetting;
         this.obj.symbolSetting.codomain = this.model.get('codomain');
-        rrange = this.model.get('rrange');
+        var rrange = this.model.get('rrange');
         this.obj.symbolSetting.minR = rrange[0]
         this.obj.symbolSetting.maxR = rrange[1]
         this.obj.symbolSetting.fillColor = this.model.get('color')
@@ -57,10 +58,10 @@ var SuperMapRankSymbolThemeLayerView = leaflet.LeafletLayerView.extend({
         var lat_key = 3;
         var features = [];
         for (var i = 0, len = data.length; i < len; i++) {
-            var geo = this.map_view.obj.options.crs.project(L.latLng(data[i][lat_key], data[i][lng_key]));
+            var geo = this.map_view.obj.options.crs.project(latLng(data[i][lat_key], data[i][lng_key]));
             var attrs = { NAME: data[i][address_key] };
             attrs[themeField] = data[i][value_key]
-            var feature = L.supermap.themeFeature(geo, attrs);
+            var feature = themeFeature(geo, attrs);
             features.push(feature);
         }
         this.obj.addFeatures(features);
@@ -82,9 +83,9 @@ var SuperMapRankSymbolThemeLayerView = leaflet.LeafletLayerView.extend({
 var SuperMapMapView = leaflet.LeafletMapView.extend({
     create_obj: function () {
         var that = this;
-        options = this.get_options();
-        options.crs = L.CRS[options.crs]
-        that.obj = L.map(this.el, options);
+        var options = this.get_options();
+        options.crs = CRS[options.crs]
+        that.obj = map(this.el, options);
     }
 })
 
@@ -121,10 +122,6 @@ var SuperMapRankSymbolThemeLayerModel = leaflet.LeafletLayerModel.extend({
 
         name: '',
         data: [],
-        // address_key: '0',
-        // value_key: '1',
-        // lng_key: '2',
-        // lat_key: '3',
         themeField: '',
         symbolType: '',
         symbolSetting: {}

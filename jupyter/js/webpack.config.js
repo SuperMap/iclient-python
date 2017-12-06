@@ -1,6 +1,13 @@
 var path = require('path');
 var version = require('./package.json').version;
-var CopyWebpackPlugin = require('copy-webpack-plugin')
+const { writeFileSync } = require('fs');
+const babel = require('babel-core');
+
+
+writeFileSync(
+    path.resolve(__dirname, 'src/external-helpers.js'),
+    babel.buildExternalHelpers(),
+);
 
 var leaflet_marker_selector = /leaflet\/dist\/images\/marker-.*\.png/;
 // Custom webpack rules are generally the same for all webpack bundles, hence
@@ -11,9 +18,14 @@ var rules = [
         use: ['style-loader', 'css-loader']
     },
     {
-        test: /\.(jpg|png|gif|svg)$/,
-        exclude: leaflet_marker_selector,
-        use: ['file-loader']
+        //图片小于80k采用base64编码
+        test: /\.(png|jpg|jpeg|gif|woff|woff2|svg|eot|ttf)$/,
+        use: [{
+            loader: 'url-loader',
+            options: {
+                limit: 80000
+            }
+        }]
     },
     {
         test: leaflet_marker_selector,
@@ -23,6 +35,17 @@ var rules = [
                 name: '[name].[ext]'
             }
         }]
+    },
+    {
+        test: [/\.js$/],
+        exclude: /node_modules[\/\\]proj4|classic|underscore/,
+        loader: 'babel-loader',
+        query: {
+            presets: ['es2015'],
+            plugins: [
+                'transform-class-properties'
+            ]
+        }
     }
 ]
 
@@ -40,14 +63,14 @@ module.exports = [
             filename: 'extension.js',
             path: path.resolve(__dirname, '..', 'iclientpy', 'static'),
             libraryTarget: 'amd'
-        }
+        },
     }, {
         // Bundle for the notebook containing the custom widget views and models
         //
         // This bundle contains the implementation for the custom widget views and
         // custom widget. It must be an amd module
         //
-        entry: './src/index.js',
+        entry: [path.resolve(__dirname, 'src/external-helpers.js'), './src/index.js'],
         output: {
             filename: 'index.js',
             path: path.resolve(__dirname, '..', 'iclientpy', 'static'),
