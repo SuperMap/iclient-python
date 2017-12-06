@@ -1,13 +1,5 @@
 var path = require('path');
 var version = require('./package.json').version;
-const { writeFileSync } = require('fs');
-const babel = require('babel-core');
-
-
-writeFileSync(
-    path.resolve(__dirname, 'src/external-helpers.js'),
-    babel.buildExternalHelpers(),
-);
 
 var leaflet_marker_selector = /leaflet\/dist\/images\/marker-.*\.png/;
 // Custom webpack rules are generally the same for all webpack bundles, hence
@@ -38,7 +30,7 @@ var rules = [
     },
     {
         test: [/\.js$/],
-        exclude: /node_modules[\/\\]proj4|classic|underscore/,
+        exclude: /node_modules[\/\\]proj4|classic|underscore|mapv/,
         loader: 'babel-loader',
         query: {
             presets: ['es2015'],
@@ -70,7 +62,7 @@ module.exports = [
         // This bundle contains the implementation for the custom widget views and
         // custom widget. It must be an amd module
         //
-        entry: [path.resolve(__dirname, 'src/external-helpers.js'), './src/index.js'],
+        entry: ['./src/index.js'],
         output: {
             filename: 'index.js',
             path: path.resolve(__dirname, '..', 'iclientpy', 'static'),
