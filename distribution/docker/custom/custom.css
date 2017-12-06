@@ -1,0 +1,9 @@
+#ipython_notebook img{
+display:block;
+background: url(/custom/supermap_logo.png) no-repeat;
+width: 124px;
+height: 35px;
+padding-left: 124px;
+-moz-box-sizing: border-box;
+box-sizing: border-box;
+}
