@@ -5,6 +5,7 @@ import ipywidgets as widgets
 import pandas as pd
 import geojson
 import os
+import math
 from .._version import EXTENSION_VERSION
 
 
@@ -48,6 +49,8 @@ class RankSymbolThemeLayer(Layer):
     codomain = Tuple((0, 40000)).tag(sync=True)
     rrange = Tuple((0, 100)).tag(sync=True)
     color = Unicode('#FFA500').tag(sync=True)
+    codomainmin = Int(0)
+    codomainmax = Int(1)
 
     # address_key = Any(0).tag(sync=True)
     # value_key = Any(1).tag(sync=True)
@@ -56,15 +59,16 @@ class RankSymbolThemeLayer(Layer):
 
     def interact(self, **kwargs):
         codomainslider = IntRangeSlider(value=[self.codomain[0], self.codomain[1]],
-                                        min=0,
-                                        max=100000,
+                                        min=self.codomainmin,
+                                        max=self.codomainmax,
                                         step=1,
                                         description='值域范围:',
                                         disabled=False,
                                         continuous_update=False,
                                         orientation='horizontal',
                                         readout=True,
-                                        readout_format='d')
+                                        readout_format='d',
+                                        layout=Layout(width="350px"))
         link((codomainslider, 'value'), (self, 'codomain'))
         rslider = IntRangeSlider(value=[0, 100],
                                  min=0,
@@ -75,12 +79,14 @@ class RankSymbolThemeLayer(Layer):
                                  continuous_update=False,
                                  orientation='horizontal',
                                  readout=True,
-                                 readout_format='d')
+                                 readout_format='d',
+                                 layout=Layout(width="350px"))
         link((rslider, 'value'), (self, 'rrange'))
         color = ColorPicker(concise=False,
                             description='填充颜色：',
                             value='#FFA500',
-                            disabled=False)
+                            disabled=False,
+                            layout=Layout(width="350px"))
         link((color, 'value'), (self, 'color'))
         # accordion = widgets.Accordion(children=[codomainslider, rslider, color])
         # accordion.set_title(0, '值域范围')
@@ -110,6 +116,15 @@ class RankSymbolThemeLayer(Layer):
                 tempdata.append(trow)
 
         self.data = tempdata
+        cmin = min(dt[1] for dt in self.data)
+        cminlog10 = math.floor(math.log10(cmin))
+        cminmod = cmin // math.pow(10, cminlog10)
+        self.codomainmin = int(cminmod * math.pow(10, cminlog10))
+
+        cmax = max(dt[1] for dt in self.data)
+        cmaxlog10 = math.floor(math.log10(cmax))
+        cmaxmod = cmax // math.pow(10, cmaxlog10)
+        self.codomainmax = int((cmaxmod + 1) * math.pow(10, cmaxlog10))
         return proposal['value']
 
     def __init__(self, name, data, **kwargs):
