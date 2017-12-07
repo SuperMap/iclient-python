@@ -117,12 +117,12 @@ class RankSymbolThemeLayer(Layer):
 
         self.data = tempdata
         cmin = min(dt[1] for dt in self.data)
-        cminlog10 = math.floor(math.log10(cmin))
+        cminlog10 = math.floor(math.log10(abs(cmin)))
         cminmod = cmin // math.pow(10, cminlog10)
         self.codomainmin = int(cminmod * math.pow(10, cminlog10))
 
         cmax = max(dt[1] for dt in self.data)
-        cmaxlog10 = math.floor(math.log10(cmax))
+        cmaxlog10 = math.floor(math.log10(abs(cmax)))
         cmaxmod = cmax // math.pow(10, cmaxlog10)
         self.codomainmax = int((cmaxmod + 1) * math.pow(10, cmaxlog10))
         return proposal['value']
