@@ -1,12 +1,125 @@
 from ipyleaflet import Map, TileLayer, Layer
-from traitlets import Unicode, List, Int, default, validate, Dict, Any, Tuple, link
-from ipywidgets import Layout, IntRangeSlider, ColorPicker
+from traitlets import Unicode, List, Int, default, validate, Dict, Any, Tuple, link, Bool, Float
+from ipywidgets import Layout, IntRangeSlider, ColorPicker, IntSlider, FloatSlider
 import ipywidgets as widgets
 import pandas as pd
 import geojson
 import os
 import math
 from .._version import EXTENSION_VERSION
+
+
+class HeatLayer(Layer):
+    _view_name = Unicode("SuperMapHeatLayerView").tag(sync=True)
+    _model_name = Unicode("SuperMapHeatLayerModel").tag(sync=True)
+    _view_module = Unicode("iclientpy").tag(sync=True)
+    _model_module = Unicode("iclientpy").tag(sync=True)
+    _view_module_version = Unicode(EXTENSION_VERSION).tag(sync=True)
+    _model_module_version = Unicode(EXTENSION_VERSION).tag(sync=True)
+
+    heat_points = List([]).tag(sync=True)
+
+    @validate('heat_points')
+    def _validate_heat_points(self, proposal):
+        if (proposal['value'] is None):
+            raise Exception("error data")
+        # cmax = max(dt[2] for dt in self.heatPoints)
+        # cmaxlog10 = math.floor(math.log10(abs(cmax)))
+        # cmaxmod = cmax // math.pow(10, cmaxlog10)
+        # self.max = int((cmaxmod + 1) * math.pow(10, cmaxlog10))
+        self.max = max(dt[2] for dt in self.heat_points)
+        return proposal['value']
+
+    radius = Int(25).tag(sync=True, o=True)
+    min_opacity = Float(0.05).tag(sync=True, o=True)
+    max_zoom = Int().tag(sync=True, o=True)
+    max = Float(1.0).tag(sync=True, o=True)
+    blur = Int(15).tag(sync=True, o=True)
+    gradient = Dict().tag(sync=True, o=True)
+
+    def interact(self):
+        radiusintslider = IntSlider(value=self.radius,
+                                    min=1,
+                                    max=100,
+                                    step=1,
+                                    description='半径:',
+                                    disabled=False,
+                                    continuous_update=False,
+                                    orientation='horizontal',
+                                    readout=True,
+                                    readout_format='d',
+                                    layout=Layout(width="350px"))
+        link((radiusintslider, 'value'), (self, 'radius'))
+        minopacityslider = FloatSlider(value=self.min_opacity,
+                                       min=0,
+                                       max=1.0,
+                                       step=0.05,
+                                       description='透明度:',
+                                       disabled=False,
+                                       continuous_update=False,
+                                       orientation='horizontal',
+                                       readout=True,
+                                       readout_format='.1f',
+                                       layout=Layout(width="350px"))
+        link((minopacityslider, 'value'), (self, 'min_opacity'))
+        blurintslider = IntSlider(value=self.radius,
+                                  min=1,
+                                  max=100,
+                                  step=1,
+                                  description='模糊:',
+                                  disabled=False,
+                                  continuous_update=False,
+                                  orientation='horizontal',
+                                  readout=True,
+                                  readout_format='d',
+                                  layout=Layout(width="350px"))
+        link((blurintslider, 'value'), (self, 'blur'))
+        blurintslider = IntSlider(value=self.radius,
+                                  min=1,
+                                  max=100,
+                                  step=1,
+                                  description='模糊:',
+                                  disabled=False,
+                                  continuous_update=False,
+                                  orientation='horizontal',
+                                  readout=True,
+                                  readout_format='d',
+                                  layout=Layout(width="350px"))
+        link((blurintslider, 'value'), (self, 'blur'))
+        maxslider = IntSlider(value=1,
+                              min=0,
+                              max=math.ceil(self.max),
+                              step=1,
+                              description='max:',
+                              disabled=False,
+                              continuous_update=False,
+                              orientation='horizontal',
+                              readout=True,
+                              readout_format='d',
+                              layout=Layout(width="350px"))
+        link((maxslider, 'value'), (self, 'max'))
+        return widgets.VBox([radiusintslider, minopacityslider, blurintslider, maxslider])
+
+
+class MapVLayer(Layer):
+    _view_name = Unicode("SuperMapMapVLayerView").tag(sync=True)
+    _model_name = Unicode("SuperMapMapVLayerModel").tag(sync=True)
+    _view_module = Unicode("iclientpy").tag(sync=True)
+    _model_module = Unicode("iclientpy").tag(sync=True)
+    _view_module_version = Unicode(EXTENSION_VERSION).tag(sync=True)
+    _model_module_version = Unicode(EXTENSION_VERSION).tag(sync=True)
+
+    data_set = List([]).tag(sync=True)
+    fill_style = Unicode('rgba(55, 50, 250, 0.8)').tag(sync=True, o=True)
+    shadow_color = Unicode('rgba(255, 250, 50, 1)').tag(sync=True, o=True)
+    shadow_blur = Int(20).tag(sync=True, o=True)
+    max = Int(100).tag(sync=True, o=True)
+    size = Int(50).tag(sync=True, o=True)
+    label = Dict({'show': True, 'filleStyle': 'white'}).tag(sync=True, o=True);
+    global_alpha = Float(0.5).tag(sync=True, o=True)
+    gradient = Dict({0.25: "rgb(0,0,255)", 0.55: "rgb(0,255,0)", 0.85: "yellow", 1.0: "rgb(255,0,0)"}).tag(sync=True,
+                                                                                                           o=True)
+    draw = Unicode('honeycomb').tag(sync=True, o=True)
 
 
 class CloudTileLayer(TileLayer):
@@ -17,7 +130,7 @@ class CloudTileLayer(TileLayer):
     _view_module_version = Unicode(EXTENSION_VERSION).tag(sync=True)
     _model_module_version = Unicode(EXTENSION_VERSION).tag(sync=True)
 
-    mapName = Unicode('').tag(sync=True, o=True)
+    map_name = Unicode('').tag(sync=True, o=True)
     type = Unicode('').tag(sync=True, o=True)
 
 
@@ -38,12 +151,13 @@ class RankSymbolThemeLayer(Layer):
     _view_module_version = Unicode(EXTENSION_VERSION).tag(sync=True)
     _model_module_version = Unicode(EXTENSION_VERSION).tag(sync=True)
 
-    themeField = Unicode('value').tag(sync=True)
-    symbolType = Unicode('CIRCLE').tag(sync=True)
-    symbolSetting = Dict({}).tag(sync=True)
+    theme_field = Unicode('value').tag(sync=True)
+    symbol_type = Unicode('CIRCLE').tag(sync=True)
+    symbol_setting = Dict({}).tag(sync=True)
     name = Unicode('').tag(sync=True)
     sdata = Any([])
     data = List([]).tag(sync=True)
+    is_over_lay = Bool(True).tag(sync=True, o=True)
     address_key = Any(0)
     value_key = Any(1)
     codomain = Tuple((0, 40000)).tag(sync=True)
@@ -51,11 +165,6 @@ class RankSymbolThemeLayer(Layer):
     color = Unicode('#FFA500').tag(sync=True)
     codomainmin = Int(0)
     codomainmax = Int(1)
-
-    # address_key = Any(0).tag(sync=True)
-    # value_key = Any(1).tag(sync=True)
-    # lng_key = Any(2).tag(sync=True)
-    # lat_key = Any(3).tag(sync=True)
 
     def interact(self, **kwargs):
         codomainslider = IntRangeSlider(value=[self.codomain[0], self.codomain[1]],
@@ -148,6 +257,7 @@ class MapView(Map):
     center = List([34.5393842300, 108.9282514100]).tag(sync=True, o=True)
     zoom = Int(15).tag(sync=True, o=True)
     crs = Unicode('EPSG3857').tag(sync=True, o=True)
+    prefer_canvas = Bool(False).tag(sync=True, o=True)
 
     @default('default_tiles')
     def _default_tiles(self):
