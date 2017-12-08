@@ -1,5 +1,5 @@
 from ipyleaflet import Map, TileLayer, Layer
-from traitlets import Unicode, List, Int, default, validate, Dict, Any, Tuple, link, Bool, Float
+from traitlets import Unicode, List, Int, default, validate, Dict, Any, Tuple, link, Bool, Float, CaselessStrEnum
 from ipywidgets import Layout, IntRangeSlider, ColorPicker, IntSlider, FloatSlider
 import ipywidgets as widgets
 import pandas as pd
@@ -23,10 +23,6 @@ class HeatLayer(Layer):
     def _validate_heat_points(self, proposal):
         if (proposal['value'] is None):
             raise Exception("error data")
-        # cmax = max(dt[2] for dt in self.heatPoints)
-        # cmaxlog10 = math.floor(math.log10(abs(cmax)))
-        # cmaxmod = cmax // math.pow(10, cmaxlog10)
-        # self.max = int((cmaxmod + 1) * math.pow(10, cmaxlog10))
         self.max = max(dt[2] for dt in self.heat_points)
         return proposal['value']
 
@@ -62,19 +58,7 @@ class HeatLayer(Layer):
                                        readout_format='.1f',
                                        layout=Layout(width="350px"))
         link((minopacityslider, 'value'), (self, 'min_opacity'))
-        blurintslider = IntSlider(value=self.radius,
-                                  min=1,
-                                  max=100,
-                                  step=1,
-                                  description='模糊:',
-                                  disabled=False,
-                                  continuous_update=False,
-                                  orientation='horizontal',
-                                  readout=True,
-                                  readout_format='d',
-                                  layout=Layout(width="350px"))
-        link((blurintslider, 'value'), (self, 'blur'))
-        blurintslider = IntSlider(value=self.radius,
+        blurintslider = IntSlider(value=self.blur,
                                   min=1,
                                   max=100,
                                   step=1,
@@ -110,16 +94,89 @@ class MapVLayer(Layer):
     _model_module_version = Unicode(EXTENSION_VERSION).tag(sync=True)
 
     data_set = List([]).tag(sync=True)
-    fill_style = Unicode('rgba(55, 50, 250, 0.8)').tag(sync=True, o=True)
-    shadow_color = Unicode('rgba(255, 250, 50, 1)').tag(sync=True, o=True)
-    shadow_blur = Int(20).tag(sync=True, o=True)
-    max = Int(100).tag(sync=True, o=True)
-    size = Int(50).tag(sync=True, o=True)
-    label = Dict({'show': True, 'filleStyle': 'white'}).tag(sync=True, o=True);
-    global_alpha = Float(0.5).tag(sync=True, o=True)
-    gradient = Dict({0.25: "rgb(0,0,255)", 0.55: "rgb(0,255,0)", 0.85: "yellow", 1.0: "rgb(255,0,0)"}).tag(sync=True,
-                                                                                                           o=True)
-    draw = Unicode('honeycomb').tag(sync=True, o=True)
+    map_v_options = Dict().tag(sync=True)
+
+    @validate('map_v_options')
+    def _validate_map_v_options(self, proposal):
+        self.size = proposal['value']['size'] if 'size' in proposal['value']else 5
+        self.global_alpha = proposal['value']['globalAlpha'] if 'globalAlpha' in proposal['value'] else 1
+        self.fill_style = proposal['value']['fillStyle'] if 'fillStyle' in proposal['value'] else'#3732FA'
+        self.shadow_color = proposal['value']['shadowColor'] if 'shadowColor' in proposal['value'] else'#FFFA32'
+        self.shadow_blur = proposal['value']['shadowBlur'] if 'shadowBlur' in proposal['value'] else 35
+        # self.line_width = proposal['value']['lineWidth'] if 'lineWidth' in proposal['value'] else 4
+        return proposal['value']
+
+    size = Int().tag(sync=True)
+    global_alpha = Float().tag(sync=True)
+    fill_style = Unicode('').tag(sync=True)
+    shadow_color = Unicode('').tag(sync=True)
+    shadow_blur = Int().tag(sync=True)
+
+    # line_width = Int(4).tag(sync=True)
+
+    def interact(self):
+        sizeslider = IntSlider(value=self.size,
+                               min=0,
+                               max=100,
+                               step=1,
+                               description='大小:',
+                               disabled=False,
+                               continuous_update=False,
+                               orientation='horizontal',
+                               readout=True,
+                               readout_format='d',
+                               layout=Layout(width="350px"))
+        link((sizeslider, 'value'), (self, 'size'))
+        global_alpha_slider = FloatSlider(value=self.global_alpha,
+                                          min=0,
+                                          max=1.0,
+                                          step=0.1,
+                                          description='透明度:',
+                                          disabled=False,
+                                          continuous_update=False,
+                                          orientation='horizontal',
+                                          readout=True,
+                                          readout_format='.1f',
+                                          layout=Layout(width="350px"))
+        link((global_alpha_slider, 'value'), (self, 'global_alpha'))
+        fill_style_color = ColorPicker(concise=False,
+                                       description='填充颜色：',
+                                       value=self.fill_style,
+                                       disabled=False,
+                                       layout=Layout(width="350px"))
+        link((fill_style_color, 'value'), (self, 'fill_style'))
+        shadow_color_color = ColorPicker(concise=False,
+                                         description='描边颜色：',
+                                         value=self.shadow_color,
+                                         disabled=False,
+                                         layout=Layout(width="350px"))
+        link((shadow_color_color, 'value'), (self, 'shadow_color'))
+        shadow_blur_slider = IntSlider(value=self.shadow_blur,
+                                       min=0,
+                                       max=100,
+                                       step=1,
+                                       description='投影模糊级数:',
+                                       disabled=False,
+                                       continuous_update=False,
+                                       orientation='horizontal',
+                                       readout=True,
+                                       readout_format='d',
+                                       layout=Layout(width="350px"))
+        link((shadow_blur_slider, 'value'), (self, 'shadow_blur'))
+
+        # line_width_slider = IntSlider(value=self.line_width,
+        #                               min=0,
+        #                               max=100,
+        #                               step=1,
+        #                               description='描边宽度:',
+        #                               disabled=False,
+        #                               continuous_update=False,
+        #                               orientation='horizontal',
+        #                               readout=True,
+        #                               readout_format='d',
+        #                               layout=Layout(width="350px"))
+        # link((shadow_blur_slider, 'value'), (self, 'line_width'))
+        return widgets.VBox([sizeslider, global_alpha_slider, shadow_color_color, fill_style_color, shadow_blur_slider])
 
 
 class CloudTileLayer(TileLayer):

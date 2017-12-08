@@ -126,19 +126,46 @@ var SuperMapMapVLayerView = leaflet.LeafletLayerView.extend({
     create_obj: function () {
         var dataSet = this.model.get('data_set');
         var options = this.get_options();
-        if (!options.gradient || this.isNull(options.gradient)) {
-            delete options.gradient;
-        }
+        var mapvOptions = this.model.get('map_v_options')
+        var mapvOptions = this.model.get('map_v_options')
         var mapvDataSet = new mapv.DataSet(dataSet);
-        this.obj = L.supermap.mapVLayer(mapvDataSet, options)
+        this.obj = L.supermap.mapVLayer(mapvDataSet, mapvOptions, options)
     },
 
-    isNull: function (obj) {
-        for (var name in obj) {
-            return false;
-        }
-        return true;
+    refresh: function () {
+        var mapvOptions = this.model.get('map_v_options')
+        mapvOptions.size = this.model.get('size');
+        mapvOptions.globalAlpha = this.model.get('global_alpha');
+        mapvOptions.fillStyle = this.model.get('fill_style');
+        mapvOptions.shadowColor = this.model.get('shadow_color');
+        mapvOptions.shadowBlur = this.model.get('shadow_blur');
+        // mapvOptions.lineWidth = this.model.get('line_width');
+        var dataSet = this.model.get('data_set');
+        var mapvDataSet = new mapv.DataSet(dataSet);
+        this.obj.update({ data: mapvDataSet, options: mapvOptions })
     },
+
+    model_events: function () {
+        this.listenTo(this.model, 'change:size', function () {
+            this.refresh();
+        }, this);
+        this.listenTo(this.model, 'change:global_alpha', function () {
+            this.refresh();
+        }, this);
+        this.listenTo(this.model, 'change:fill_style', function () {
+            this.refresh();
+        }, this);
+        this.listenTo(this.model, 'change:shadow_color', function () {
+            this.refresh();
+        }, this);
+        this.listenTo(this.model, 'change:shadow_blur', function () {
+            this.refresh();
+        }, this);
+        // this.listenTo(this.model, 'change:line_width', function () {
+        //     this.refresh();
+        // }, this);
+    },
+
 })
 
 var SuperMapMapView = leaflet.LeafletMapView.extend({
@@ -200,15 +227,11 @@ var SuperMapMapVLayerModel = leaflet.LeafletLayerModel.extend({
 
 
         data_set: [],
+        size: 1,
+        global_alpha: 0.0,
         fill_style: '',
         shadow_color: '',
         shadow_blur: 0,
-        max: 1,
-        size: 1,
-        label: {},
-        global_alpha: 0.0,
-        gradient: {},
-        draw: ''
     })
 })
 
