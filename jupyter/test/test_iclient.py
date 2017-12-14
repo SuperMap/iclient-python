@@ -22,8 +22,8 @@ class TestIClient(TestCase):
         comm = Comm()
         comm.kernel = Kernel()
         layer.comm = comm
-        layer.mapName = 'quanguo'
-        expected = {'method': 'update', 'state': {'mapName': 'quanguo'}, 'buffer_paths': []}
+        layer.map_name = 'quanguo'
+        expected = {'method': 'update', 'state': {'map_name': 'quanguo'}, 'buffer_paths': []}
         mock_send.assert_called_with(data=expected, buffers=[])
         layer.type = 'web'
         expectedVisibility = {'method': 'update', 'state': {'type': 'web'}, 'buffer_paths': []}
@@ -59,7 +59,12 @@ class TestIClient(TestCase):
         :param mock_send:
         :return:
         """
-        layer = RankSymbolThemeLayer(name='test1', data=[]);
+        layer = RankSymbolThemeLayer(name='test1',
+                                     data=[{'name': '北京市', 'value': 23014.59},
+                                           {'name': '天津市', 'value': 16538.189999999999},
+                                           {'name': '河北省', 'value': 29806.110000000001}],
+                                     address_key='name',
+                                     value_key='value');
         layer._map = MapView()
         comm = Comm()
         comm.kernel = Kernel()
