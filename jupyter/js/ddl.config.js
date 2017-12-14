@@ -28,7 +28,7 @@ var rules = [
     },
     {
         test: [/\.js$/],
-        exclude: /node_modules[\/\\]proj4|classic|underscore|mapv/,
+        exclude: /node_modules[\/\\]underscore|mapv|geojson-utils|geojson-polygon-self-intersections/,
         loader: 'babel-loader',
         query: {
             presets: ['es2015'],
@@ -40,17 +40,11 @@ var rules = [
 ]
 
 const vendors = [
-    '@turf/turf',
-    'echarts',
-    'elasticsearch',
     'jupyter-leaflet',
-    'leaflet',
     'leaflet.heat',
     'lodash',
-    'mapv',
     'underscore',
     'vector-tile',
-    '@supermap/iclient-common',
     '@supermap/iclient-leaflet'
 ]
 

@@ -29,7 +29,7 @@ var rules = [
     },
     {
         test: [/\.js$/],
-        exclude: /node_modules[\/\\]proj4|classic|underscore|mapv/,
+        exclude: /node_modules[\/\\]underscore|mapv|geojson-utils|geojson-polygon-self-intersections/,
         loader: 'babel-loader',
         query: {
             presets: ['es2015'],
@@ -49,7 +49,6 @@ plugins = [
         from: './build/lib.js',
         to: path.resolve(__dirname, '..', 'iclientpy', 'static')
     }])
-
 ]
 
 module.exports = [
