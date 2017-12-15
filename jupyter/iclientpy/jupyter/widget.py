@@ -187,6 +187,8 @@ class CloudTileLayer(TileLayer):
     _view_module_version = Unicode(EXTENSION_VERSION).tag(sync=True)
     _model_module_version = Unicode(EXTENSION_VERSION).tag(sync=True)
 
+    url = Unicode('').tag(sync=True)
+    attribution = Unicode('').tag(sync=True, o=True)
     map_name = Unicode('').tag(sync=True, o=True)
     type = Unicode('').tag(sync=True, o=True)
 
