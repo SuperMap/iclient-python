@@ -225,6 +225,8 @@ class RankSymbolThemeLayer(Layer):
     codomainmin = Int(0)
     codomainmax = Int(1)
 
+    privinces_geojson = []
+
     def interact(self, **kwargs):
         codomainslider = IntRangeSlider(value=[self.codomain[0], self.codomain[1]],
                                         min=self.codomainmin,
@@ -267,17 +269,22 @@ class RankSymbolThemeLayer(Layer):
     def _validate_sdata(self, proposal):
         if (proposal['value'] is None):
             raise Exception("error data")
+
+        if not self.privinces_geojson:
+            self.privinces_geojson = load_geojson_data()
+
         tempdata = []
         if isinstance(proposal['value'], list):
             for d in proposal['value']:
-                feature = get_privince_geojson_data(d[self.address_key])
+                feature = get_privince_geojson_data(geojson=self.privinces_geojson, name=d[self.address_key])
                 row = (d[self.address_key], d[self.value_key], feature["properties"]["cp"][0],
                        feature["properties"]["cp"][1])
                 tempdata.append(row)
 
         elif isinstance(proposal['value'], pd.DataFrame):
             for index, row in proposal['value'].iterrows():
-                feature = get_privince_geojson_data(proposal['value'][self.address_key][index])
+                feature = get_privince_geojson_data(geojson=self.privinces_geojson,
+                                                    name=proposal['value'][self.address_key][index])
                 trow = (proposal['value'][self.address_key][index], proposal['value'][self.value_key][index],
                         feature["properties"]["cp"][0],
                         feature["properties"]["cp"][1])
@@ -323,11 +330,14 @@ class MapView(Map):
         return CloudTileLayer()
 
 
-def get_privince_geojson_data(name):
+def load_geojson_data():
     with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "chinageojson.json"), 'r',
               encoding='utf-8') as geoJsonFile:
-        fc = geojson.load(geoJsonFile)
-        for i in range(0, len(fc["features"])):
-            feature = fc["features"][i]
-            if (name in feature["properties"]["name"]):
-                return feature
+        return geojson.load(geoJsonFile)
+
+
+def get_privince_geojson_data(geojson, name):
+    for i in range(0, len(geojson["features"])):
+        feature = geojson["features"][i]
+        if (name in feature["properties"]["name"]):
+            return feature
