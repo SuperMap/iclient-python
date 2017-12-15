@@ -46,8 +46,9 @@ class TestIClient(TestCase):
         self.assertIsInstance(map.default_tiles, CloudTileLayer)
 
     def test_GetPrivinceGeoJSON(self):
+        geojsondata = widget.load_geojson_data()
         privName = '天津'
-        feature = widget.get_privince_geojson_data(privName)
+        feature = widget.get_privince_geojson_data(geojsondata, privName)
         self.assertEqual('天津市', feature["properties"]["name"])
         self.assertEqual([117.215268, 39.120963], feature["properties"]["cp"])
 
