@@ -102,6 +102,11 @@ class NPM(Command):
         node_modules_exists = os.path.exists(self.node_modules)
         return self.has_npm()
 
+    def should_run_npm_build_lib(self):
+        lib_js = os.path.join(node_root, 'build', 'lib.js')
+        lib_js_exists = os.path.exists(lib_js)
+        return lib_js_exists
+
     def run(self):
         has_npm = self.has_npm()
         if not has_npm:
@@ -116,6 +121,14 @@ class NPM(Command):
             npmName = self.get_npm_name();
             check_call([npmName, 'install'], cwd=node_root, stdout=sys.stdout, stderr=sys.stderr)
             os.utime(self.node_modules, None)
+
+        if self.should_run_npm_build_lib:
+            log.info("Build third-part dependencies to lib.js")
+            npmName = self.get_npm_name();
+            check_call([npmName, 'run', 'ddl'], cwd=node_root, stdout=sys.stdout, stderr=sys.stderr)
+            os.utime(os.path.join(node_root, 'build', 'lib.js'), None)
+
+        check_call([npmName, 'run', 'package'], cwd=node_root, stdout=sys.stdout, stderr=sys.stderr)
 
         for t in self.targets:
             if not os.path.exists(t):
