@@ -166,7 +166,7 @@ setup_args = {
         'pandas>=0.20.3',
         'geojson>=2.3.0',
     ],
-    'packages': find_packages(),
+    'packages': find_packages(exclude=['test']),
     'zip_safe': False,
     'cmdclass': {
         'build_py': js_prerelease(build_py),

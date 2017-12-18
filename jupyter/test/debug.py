@@ -10,15 +10,13 @@ from os.path import dirname, abspath, join as pjoin
 
 def uninstall_develop():
     rootdir = pjoin(dirname(abspath(__file__)), '..')
-    root_cwd = py.path.local(rootdir)
     develop_cmd = [
         sys.executable,
         'setup.py',
         'develop',
         '-u'
     ]
-    with root_cwd.as_cwd():
-        subprocess.check_call(develop_cmd)
+    subprocess.check_call(develop_cmd, cwd=rootdir)
 
 
 def uninstall_nbextension():
@@ -35,14 +33,12 @@ def clear_dir():
 
 def install_develop():
     rootdir = pjoin(dirname(abspath(__file__)), '..')
-    root_cwd = py.path.local(rootdir)
     develop_cmd = [
         sys.executable,
         'setup.py',
         'develop'
     ]
-    with root_cwd.as_cwd():
-        subprocess.check_call(develop_cmd)
+    subprocess.check_call(develop_cmd, cwd=rootdir)
 
 
 def install_nbextension():
