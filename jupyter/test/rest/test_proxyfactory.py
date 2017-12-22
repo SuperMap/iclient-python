@@ -12,7 +12,7 @@ class TestProxyFactory(TestCase):
 
     def test(self):
         handler = RestInvocationHandler();
-        handler.handle_rest_invocation = MagicMock()
+        handler.handle_rest_invocation = MagicMock(unsafe=True)
         instance = create(SomeService, handler) # type SomeService
         instance.someapi()
         handler.handle_rest_invocation.assert_called()
