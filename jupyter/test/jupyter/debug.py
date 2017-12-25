@@ -9,7 +9,7 @@ from os.path import dirname, abspath, join as pjoin
 
 
 def uninstall_develop():
-    rootdir = pjoin(dirname(abspath(__file__)), '..')
+    rootdir = pjoin(dirname(abspath(__file__)), '..', '..')
     develop_cmd = [
         sys.executable,
         'setup.py',
@@ -25,14 +25,14 @@ def uninstall_nbextension():
 
 
 def clear_dir():
-    static_dir = pjoin(dirname(abspath(__file__)), '..', 'iclientpy', 'static')
-    build_dir = pjoin(dirname(abspath(__file__)), '..', 'build')
+    static_dir = pjoin(dirname(abspath(__file__)), '..', '..', 'iclientpy', 'static')
+    build_dir = pjoin(dirname(abspath(__file__)), '..', '..', 'build')
     os.removedirs(static_dir)
     os.removedirs(build_dir)
 
 
 def install_develop():
-    rootdir = pjoin(dirname(abspath(__file__)), '..')
+    rootdir = pjoin(dirname(abspath(__file__)), '..', '..')
     develop_cmd = [
         sys.executable,
         'setup.py',
@@ -47,7 +47,7 @@ def install_nbextension():
 
 
 def run():
-    rootdir = pjoin(dirname(abspath(__file__)), '..')
+    rootdir = pjoin(dirname(abspath(__file__)), '..', '..')
     uninstall_nbextension()
     uninstall_develop()
     install_develop()
