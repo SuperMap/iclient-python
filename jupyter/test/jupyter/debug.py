@@ -1,7 +1,6 @@
 import os
 import sys
 import subprocess
-import py
 from notebook.nbextensions import install_nbextension_python, uninstall_nbextension_python, enable_nbextension_python, \
     disable_nbextension_python
 from notebook.notebookapp import main as nbmain
