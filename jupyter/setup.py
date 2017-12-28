@@ -8,6 +8,7 @@ import os
 import sys
 import platform
 from glob import glob
+from sphinx.setup_command import BuildDoc
 
 here = os.path.dirname(os.path.abspath(__file__))
 node_root = os.path.join(here, 'js')
@@ -173,6 +174,7 @@ setup_args = {
         'egg_info': js_prerelease(egg_info),
         'sdist': js_prerelease(sdist, strict=True),
         'jsdeps': NPM,
+        'build_sphinx': BuildDoc
     },
 
     'author': 'supermap',
