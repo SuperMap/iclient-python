@@ -1,11 +1,14 @@
 from unittest import TestCase
 from iclientpy.dtojson import *
-
+import typing
+import inspect
 
 from enum import  Enum
 
 class C(Enum):
     CA = 'CA'
+    CB = 'CB'
+    CC = 'CC'
 
 class B:
     b1: str
@@ -15,6 +18,7 @@ class A:
     a2: B
     a3: C
     a4: int
+    a5: typing.List[C]
 
 a = A()
 a.a1 = '1'
@@ -22,8 +26,7 @@ a.a2 = B()
 a.a2.b1 = 'b1'
 a.a4 = 1
 a.a3 = C.CA
-
-
+a.a5 = [C.CA, C.CB]
 class TestDTOJson(TestCase):
 
     def test(self):
@@ -33,3 +36,12 @@ class TestDTOJson(TestCase):
         self.assertEqual(parseresult.a2.b1, 'b1')
         self.assertEqual(parseresult.a3, C.CA)
         self.assertEqual(parseresult.a4, 1)
+        self.assertIn(C.CA, parseresult.a5)
+        self.assertIn(C.CB, parseresult.a5)
+        self.assertNotIn(C.CC, parseresult.a5)
+
+
+    def testArray(self) -> typing.List[C]:
+        annos = inspect.getfullargspec(self.testArray).annotations
+        list = from_json_str('["CA","CB"]', annos['return'])
+        self.assertEqual(len(list), 2)
