@@ -12,15 +12,19 @@ class HttpMethod(Enum):
 
 
 class REST:
-    def __init__(self, func, method, uri):
+    def __init__(self, func, method, uri: str, entityKW: str = None):
         """
         :type func:function
         :type uri:str
         :type method:HttpMethod
         """
         wraps(func)(self)
+        self._original = func
+        while hasattr(self._original, '__wrapped__'):
+            self._original = self._original.__wrapped__
         self._method = method
         self._uri = uri if uri.startswith('/') else ('/' + uri)
+        self._entityKW = entityKW
 
     def __call__(self, *args, **kwargs):
         return self.__wrapped__(*args, **kwargs)
@@ -31,20 +35,29 @@ class REST:
         else:
             return types.MethodType(self, instance)
 
-    def getMethod(self):
+    def get_original_func(self):
+        return self._original
+
+    def getMethod(self) -> HttpMethod:
         return self._method
 
-    def getUri(self):
+    def getUri(self) -> str:
         return self._uri
 
+    def getEntityKW(self) -> str:
+        return self._entityKW
 
-def rest(method, uri):
+
+def rest(method: HttpMethod, uri, entityKW: str = None):
     """
     :type uri:str
     :type method:HttpMethod
     """
     class RESTWrapper(REST):
         def __init__(self, func):
-            super().__init__(func, method, uri);
+            super().__init__(func, method, uri, entityKW);
 
     return RESTWrapper
+
+def post(uri: str, entityKW: str):
+    return rest(HttpMethod.POST, uri, entityKW)

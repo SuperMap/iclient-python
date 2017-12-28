@@ -4,7 +4,7 @@ from functools import wraps
 from .decorator import *
 class RestInvocationHandler:
 
-    def __call__(self, rest, args, kwargs):
+    def __call__(self, rest: REST, args, kwargs):
         """
         :type rest: REST
         :return:
@@ -62,7 +62,8 @@ _proxyclasses = {} # type: dict[str, type]
 def _create_proxy_class(clz):
     return types.new_class("Proxy" + clz.__name__, (clz,), {}, lambda ns: ns.update(cls_dict))
 
-def create(clz, handler):
+
+def create(clz, handler: RestInvocationHandler):
     """
     type clz:type
     type handler:RestInvocationHandler
