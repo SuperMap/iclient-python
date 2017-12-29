@@ -1,6 +1,7 @@
 from .proxyfactory import RestInvocationHandler
 from .decorator import  REST,HttpMethod
 from .api.management import Management
+from .api.restdata import DataService
 from .proxyfactory import create
 from ..dtojson import from_json_str,to_json_str
 import inspect
@@ -18,7 +19,7 @@ class CookieAuth(AuthBase):
 
 
 class RestInvocationHandlerImpl(RestInvocationHandler):
-    def __init__(self, base_url: str, auth : AuthBase, proxies = None):
+    def __init__(self, base_url: str, auth : AuthBase = None, proxies = None):
         self._base_url = base_url
         self._auth = auth
         self._proxies = proxies if proxies is not None else {}
@@ -40,7 +41,7 @@ class RestInvocationHandlerImpl(RestInvocationHandler):
     def head(self, rest, uri, args, kwargs):
         pass
 
-    def handle_rest_invocation(self, rest, func, args, kwargs):
+    def handle_rest_invocation(self, rest, args, kwargs: dict):
         methods = {
             HttpMethod.POST: self.post,
             HttpMethod.GET: self.get,
@@ -49,6 +50,11 @@ class RestInvocationHandlerImpl(RestInvocationHandler):
             HttpMethod.HEAD: self.head
         }
         uri = rest.getUri() # type:str
+        argspec = inspect.getfullargspec(rest.get_original_func())
+        kwargs = kwargs.copy()
+        names = argspec[0]
+        for index in range(len(args)):
+            kwargs[names[index + 1]] = args[index]
         uri = uri.format(**kwargs)
         return methods[rest.getMethod()](rest, uri, args, kwargs)
 
@@ -63,12 +69,15 @@ def createAuth(base_url: str, username: str, passwd: str, token: str, proxies = 
 
 class APIFactory:
     def __init__(self, base_url: str, username: str = None, passwd: str = None, token: str = None, proxies = None):
-        base_url = base_url if not base_url.endswith('/') else base_url[:-1]
-        _proxies = proxies if proxies is not  None else {}
-        auth = createAuth(base_url, username, passwd, token, proxies = proxies)
-        self._handler = RestInvocationHandlerImpl(base_url, auth, proxies = proxies)
+        self._base_url = base_url if not base_url.endswith('/') else base_url[:-1]
+        self._services_url = self._base_url + '/services'
+        self._proxies = proxies if proxies is not  None else {}
+        auth = createAuth(self._base_url, username, passwd, token, proxies = self._proxies)
+        self._handler = RestInvocationHandlerImpl(self._base_url, auth, proxies = self._proxies)
 
     def management(self) -> Management:
         return create(Management, self._handler);
 
-
+    def data_service(self, service_name:str) -> DataService:
+        handler = RestInvocationHandlerImpl(self._services_url + '/' + service_name, proxies=self._proxies)
+        return create(DataService, handler)

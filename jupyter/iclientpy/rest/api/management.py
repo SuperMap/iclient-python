@@ -1,5 +1,4 @@
-import abc
-from typing import NamedTuple,List
+from typing import List
 from enum import  Enum
 from ..decorator import post
 

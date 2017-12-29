@@ -39,13 +39,15 @@ def to_json_str(obj):
 
 
 def get_class( kls ):
-    parts = kls.split('.')
-    module = ".".join(parts[:-1])
-    m = __import__( module )
-    for comp in parts[1:]:
-        m = getattr(m, comp)
-    return m
-
+    try:
+        parts = kls.split('.')
+        module = ".".join(parts[:-1])
+        m = __import__( module )
+        for comp in parts[1:]:
+            m = getattr(m, comp)
+        return m
+    except Exception:
+        return eval(kls)
 
 def parse_jsonobj(jsonobj, clz:type):
     if isinstance(jsonobj, list):

@@ -1,9 +1,12 @@
 from unittest import TestCase, skip
+from iclientpy.dtojson import *
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import threading
 from iclientpy.rest.apifactory import APIFactory
 from iclientpy.rest.api.management import *
 import time
+from typing import List
+from iclientpy.rest.api.model import Feature
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -61,3 +64,15 @@ class TestAPI(TestCase):
             self.assertEqual(len(result), 1)
         except Exception:
             print(Exception)
+
+    @skip('暂时只能在本地用本地服务跑，启动mock的http服务还存在问题')
+    def test_post_feature(self):
+            proxies = {
+                'http': 'http://127.0.0.1:8888/'
+            }
+            facctory = APIFactory('http://127.0.0.1:8090/iserver', 'admin', 'iserver', proxies=proxies)
+            data_service = facctory.data_service('data-World/rest')
+            jsonstr = '[{"fieldNames":["SMID","SMSDRIW","SMSDRIN","SMSDRIE","SMSDRIS","SMUSERID","SMAREA","SMPERIMETER","SMGEOMETRYSIZE","SQKM","SQMI","COLOR_MAP","CAPITAL","COUNTRY","POP_1994","CONTINENT"],"fieldValues":["22","-7.433472633361816","62.35749816894531","-6.38972282409668","61.388328552246094","6","0.25430895154659083","5.743731026651685","4500","1474.69","569.38","5","示例首都a","示例国家a","47067.0","亚洲"],"geometry":{"id":22,"parts":[3],"points":[{"x":-40,"y":60},{"x":-45,"y":62},{"x":-40,"y":55},{"x":-40,"y":60}],"style":null,"type":"REGION"}},{"fieldNames":["SMID","SMSDRIW","SMSDRIN","SMSDRIE","SMSDRIS","SMUSERID","SMAREA","SMPERIMETER","SMGEOMETRYSIZE","SQKM","SQMI","COLOR_MAP","CAPITAL","COUNTRY","POP_1994","CONTINENT"],"fieldValues":["23","-7.433472633361816","62.35749816894531","-6.38972282409668","61.388328552246094","6","0.25430895154659083","5.743731026651685","4500","1474.69","569.38","5","示例首都b","示例国家b","47067.0","亚洲"],"geometry":{"id":23,"parts":[3],"points":[{"x":-40,"y":60},{"x":-45,"y":62},{"x":-40,"y":55},{"x":-40,"y":60}],"style":null,"type":"REGION","prjCoordSys":null}}]'
+            features = from_json_str(jsonstr, List[Feature])
+            result = data_service.postFeatures('World', 'Countries', features)
+            self.assertTrue(result.succeed)

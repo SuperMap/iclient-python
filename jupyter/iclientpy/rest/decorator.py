@@ -21,6 +21,7 @@ class REST:
         wraps(func)(self)
         self._original = func
         while hasattr(self._original, '__wrapped__'):
+            # TODO 处理多个装饰器并且装饰器中有类实例装饰器的情况
             self._original = self._original.__wrapped__
         self._method = method
         self._uri = uri if uri.startswith('/') else ('/' + uri)
