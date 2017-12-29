@@ -113,11 +113,12 @@ html_sidebars = {
         'about.html',
         'navigation.html',
         'relations.html',  # needs 'show_related': True theme option to display
-        'searchbox.html',
+        #'searchbox.html',
         'donate.html',
     ]
 }
 
+html_logo="_static/supermap-logo.png"
 
 # -- Options for HTMLHelp output ------------------------------------------
 
