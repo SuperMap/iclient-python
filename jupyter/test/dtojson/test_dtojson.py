@@ -45,3 +45,14 @@ class TestDTOJson(TestCase):
         annos = inspect.getfullargspec(self.testArray).annotations
         list = from_json_str('["CA","CB"]', annos['return'])
         self.assertEqual(len(list), 2)
+
+    def testDictProperty(self):
+        class WithDictProp:
+            dictProp: dict
+        parseresult = from_json_str('{"dictProp":{"key":"value"}}', WithDictProp) # type:WithDictProp
+        self.assertEqual(parseresult.dictProp['key'], 'value')
+
+        to_parse = WithDictProp()
+        to_parse.dictProp = {"key":"value"}
+        jsonstr = to_json_str(to_parse)
+        self.assertIn('{"key":"value"}', jsonstr.replace(' ', '', 3))

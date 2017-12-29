@@ -22,6 +22,8 @@ def to_dict_or_list(obj):
         return obj
     if isinstance(obj, Enum):
         return  obj.name
+    if isinstance(obj, dict):
+        return obj
     annos = clz.__dict__['__annotations__']# type:dict
     result = vars(obj).copy() # type:dict
     for key in annos.keys():
@@ -52,6 +54,8 @@ def parse_jsonobj(jsonobj, clz:type):
         return jsonobj
     if Enum in clz.__bases__:
         return clz[jsonobj]
+    if clz is dict:
+        return jsonobj
     return from_dict(jsonobj, clz)
 
 def from_list(jsonobjarray, clz:type):
