@@ -1,4 +1,5 @@
 import types
+from typing import List
 from enum import Enum
 from functools import wraps
 
@@ -12,7 +13,7 @@ class HttpMethod(Enum):
 
 
 class REST:
-    def __init__(self, func, method, uri: str, entityKW: str = None):
+    def __init__(self, func, method, uri: str, entityKW: str = None, queryKWs: List[str] = None):
         """
         :type func:function
         :type uri:str
@@ -26,6 +27,7 @@ class REST:
         self._method = method
         self._uri = uri if uri.startswith('/') else ('/' + uri)
         self._entityKW = entityKW
+        self._queryKWs = queryKWs
 
     def __call__(self, *args, **kwargs):
         return self.__wrapped__(*args, **kwargs)
@@ -39,26 +41,47 @@ class REST:
     def get_original_func(self):
         return self._original
 
-    def getMethod(self) -> HttpMethod:
+    def get_method(self) -> HttpMethod:
         return self._method
 
-    def getUri(self) -> str:
+    def get_uri(self) -> str:
         return self._uri
 
-    def getEntityKW(self) -> str:
+    def get_entityKW(self) -> str:
         return self._entityKW
 
+    def get_queryKWs(self) -> str:
+        return self._queryKWs
 
-def rest(method: HttpMethod, uri, entityKW: str = None):
+
+def rest(method: HttpMethod, uri, entityKW: str = None, queryKWs: List[str] = None):
     """
     :type uri:str
     :type method:HttpMethod
     """
+
     class RESTWrapper(REST):
         def __init__(self, func):
-            super().__init__(func, method, uri, entityKW);
+            super().__init__(func, method, uri, entityKW, queryKWs);
 
     return RESTWrapper
 
-def post(uri: str, entityKW: str):
-    return rest(HttpMethod.POST, uri, entityKW)
+
+def head(uri: str, entityKW: str = None, queryKWs: List[str] = None):
+    return rest(HttpMethod.HEAD, uri, entityKW, queryKWs)
+
+
+def post(uri: str, entityKW: str, queryKWs: List[str] = None):
+    return rest(HttpMethod.POST, uri, entityKW, queryKWs)
+
+
+def get(uri: str, entityKW: str = None, queryKWs: List[str] = None):
+    return rest(HttpMethod.GET, uri, entityKW, queryKWs)
+
+
+def put(uri: str, entityKW: str = None, queryKWs: List[str] = None):
+    return rest(HttpMethod.PUT, uri, entityKW, queryKWs)
+
+
+def delete(uri: str, entityKW: str = None, queryKWs: List[str] = None):
+    return rest(HttpMethod.DELETE, uri, entityKW, queryKWs)

@@ -1,6 +1,6 @@
 from typing import List
-from enum import  Enum
-from ..decorator import post
+from enum import Enum
+from ..decorator import post, get
 
 
 class ServiceType(Enum):
@@ -40,7 +40,21 @@ class PostWorkspaceResultItem:
     serviceAddress: str
     serviceType: ServiceType
 
+
+class GetWorkspaceResultItem:
+    address: str
+    enabled: bool
+    message: str
+    name: str
+    serviceName: str
+    serviceType: str
+
+
 class Management:
     @post('/manager/workspaces', 'param')
-    def postWorkspace(self, param: PostWorkspaceParameter) -> List[PostWorkspaceResultItem]:
+    def post_workspaces(self, param: PostWorkspaceParameter) -> List[PostWorkspaceResultItem]:
+        pass
+
+    @get('/manager/workspaces')
+    def get_workspaces(self) -> List[GetWorkspaceResultItem]:
         pass
