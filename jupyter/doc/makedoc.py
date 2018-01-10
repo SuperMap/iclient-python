@@ -20,8 +20,8 @@ def zipdir(path, ziph):
     # ziph is zipfile handle
     for root, dirs, files in os.walk(path):
         for file in files:
-            ziph.write(os.path.join(root, file))
+            ziph.write(os.path.join(root, file), os.path.join(root, file)[len(path):])
 
 zipf = zipfile.ZipFile('doc.zip', 'w', zipfile.ZIP_DEFLATED)
-zipdir('./build/', zipf)
+zipdir('./build/html/', zipf)
 zipf.close()
