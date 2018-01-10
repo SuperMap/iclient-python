@@ -1,0 +1,4 @@
+nbsphinx
+pandoc
+ipython
+nbsphinx_link
