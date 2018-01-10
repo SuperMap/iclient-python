@@ -1,11 +1,18 @@
-jupyter
-===========
+
+Jupyter数据可视化
+======================
+.. toctree::
+   :maxdepth: 3
+   :hidden:
+
+   等级符号专题图 <./sample/sample>
+   可视化CSV数据 <./sample/sample-csv>
+    热力图 <./sample/sample-heat>
+    蜂巢图 <./sample/sample-mapv>
 
 介绍
 ------
 
-
-当前对接iClient9D的功能有：
 
 * 等级符号专题图_
 * 热点图_
@@ -20,12 +27,13 @@ jupyter
 等级符号专题图
 ******************
 
+ :doc:`查看 <./sample/sample-csv>`
 
 等级符号专题图示例__
 
 .. __: http://iclientpy.supermap.io/notebooks/work/sample/sample-csv.ipynb
 
-	
+
 .. image:: _static/ranksymbol.png
 
 
