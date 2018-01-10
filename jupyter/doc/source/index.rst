@@ -3,30 +3,34 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-iclientpy文档
+SuperMap iClientPy
 =====================================
 
 .. toctree::
    :maxdepth: 3
-   :caption: 内容:
    :hidden:
-   
+
+   geticlientpy
    jupyter
    restapi
+   API <./api/modules>
 
-| iclientpy用于将iServer和iPortal的restapi封装成python api，并对接iClient的api用于地图展示，在jupyter notebook上可以快速，便捷的通过python代码进行业务处理
+iClientPy 是超图云 GIS 客户端 Python SDK。
 
+2018年6月，敬请期待！
 
-| 当前有两个模块：
+有想要的功你可以点 `这里 <https://gitee.com/isupermap/iClientPython/issues>`_ 告诉开发人员，觉得开发人员太渣渣也可以撸起袖子自己写，iClientPy开源哒。
 
-	* jupyter_
-	   当前主要功能是对接iClient9D的等级符号专题图，热点图，蜂巢图
-	* restapi_
-		当前主要对接了/manager/workspace的post请求
+不懂Python？ :doc:`简单了解一下 </hellopython>`，很简单很好玩很有用很强大。
 
-		
-.. _jupyter: jupyter.html
-.. _restapi: restapi.html
+用 iClientPy 能做什么？
+
+   * 与Jupyter Notebook深度结合，进行数据可视化。
+   * 用Python做数据处理，又想调用iServer做大数据分析，iClientPy 是不二选择。
+   * 脚本化iServer，iPortal管理。系统上线需要添加很多用户怎么办？用iClientPy
+   * 用Python写了个爬虫抓了些数据，想发布到SuperMap Online，或者iServer。当然还是iClientPy。
+
+`在线试试 <http://jupyter.supermap.io>`_
 
 
 
