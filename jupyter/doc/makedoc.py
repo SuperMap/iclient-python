@@ -15,13 +15,18 @@ exit_if_not_zero(main(argv))
 
 import os
 import zipfile
+import tarfile
 
-def zipdir(path, ziph):
+def writedir2file(path, targetfile):
     # ziph is zipfile handle
     for root, dirs, files in os.walk(path):
         for file in files:
-            ziph.write(os.path.join(root, file), os.path.join(root, file)[len(path):])
+            targetfile.write(os.path.join(root, file), os.path.join(root, file)[len(path):])
 
-zipf = zipfile.ZipFile('doc.zip', 'w', zipfile.ZIP_DEFLATED)
-zipdir('./build/html/', zipf)
+zipf = zipfile.ZipFile('./doc.zip', 'w', zipfile.ZIP_DEFLATED)
+writedir2file('./build/html/', zipf)
 zipf.close()
+tarf = tarfile.open('./doc.tar', 'w')
+tarf.write = tarf.add
+writedir2file('./build/html/', tarf)
+tarf.close()
