@@ -1,5 +1,7 @@
 from enum import Enum
 from typing import List
+
+
 class GeometryType(Enum):
     ARC = 'ARC'
     BSPLINE = 'BSPLINE'
@@ -30,9 +32,15 @@ class GeometryType(Enum):
     TEXTEPS = 'TEXTEPS'
     UNKNOWN = 'UNKNOWN'
 
+
 class Point2D:
     x: float
     y: float
+
+
+class Rectangle2D:
+    leftBottom: Point2D
+    rightTop: Point2D
 
 
 class Geometry:
@@ -41,13 +49,14 @@ class Geometry:
     partTopo: List[int]
     points: List[Point2D]
     type: GeometryType
-    #TODO prjCoordSys style
+    # TODO prjCoordSys style
 
 
 class Feature:
-    fieldNames:List[str]
-    fieldValues:List[str]
-    geometry:Geometry
+    fieldNames: List[str]
+    fieldValues: List[str]
+    geometry: Geometry
+
 
 class HttpError:
     code: int
@@ -68,5 +77,3 @@ class MethodResult:
     newResourceLocation: str
     postResultType: PostResultType
     succeed: bool
-
-
