@@ -62,7 +62,6 @@ class MapVLayer(Layer):
         self.fill_style = tmp_options['fillStyle'] if 'fillStyle' in tmp_options else'#3732FA'
         self.shadow_color = tmp_options['shadowColor'] if 'shadowColor' in tmp_options else'#FFFA32'
         self.shadow_blur = tmp_options['shadowBlur'] if 'shadowBlur' in tmp_options else 35
-        # self.line_width = tmp_options['lineWidth'] if 'lineWidth' in tmp_options else 4
         return tmp_options
 
     size = Int().tag(sync=True)

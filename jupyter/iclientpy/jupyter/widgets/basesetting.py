@@ -1,4 +1,4 @@
-from traitlets import HasTraits, Tuple, Int, Unicode, Float, Dict, default, validate
+from traitlets import HasTraits
 
 
 class BaseSetting(HasTraits):

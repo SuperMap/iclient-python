@@ -1,5 +1,5 @@
 from .proxyfactory import RestInvocationHandler
-from .decorator import REST, HttpMethod
+from .decorator import HttpMethod
 from .api.management import Management
 from .api.restdata import DataService
 from .proxyfactory import create

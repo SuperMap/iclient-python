@@ -1,6 +1,6 @@
 {
   "name": "iclientpy",
-  "version": "0.1.0",
+  "version": "9.0.0",
   "description": "iclient for jupyter",
   "author": "supermap",
   "main": "src/index.js",
