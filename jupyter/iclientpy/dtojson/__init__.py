@@ -21,11 +21,11 @@ def to_dict_or_list(obj):
     if is_primitive(obj):
         return obj
     if isinstance(obj, Enum):
-        return  obj.name
+        return obj.name
     if isinstance(obj, dict):
         return obj
-    annos = clz.__dict__['__annotations__']# type:dict
-    result = vars(obj).copy() # type:dict
+    annos = clz.__dict__['__annotations__']  # type:dict
+    result = vars(obj).copy()  # type:dict
     for key in annos.keys():
         value = result.get(key, None)
         # TODO enum
@@ -35,21 +35,22 @@ def to_dict_or_list(obj):
 
 
 def to_json_str(obj):
-    return json.dumps(to_dict_or_list(obj))
+    return obj.name if isinstance(obj, Enum) else json.dumps(to_dict_or_list(obj))
 
 
-def get_class( kls ):
+def get_class(kls):
     try:
         parts = kls.split('.')
         module = ".".join(parts[:-1])
-        m = __import__( module )
+        m = __import__(module)
         for comp in parts[1:]:
             m = getattr(m, comp)
         return m
     except Exception:
         return eval(kls)
 
-def parse_jsonobj(jsonobj, clz:type):
+
+def parse_jsonobj(jsonobj, clz: type):
     if isinstance(jsonobj, list):
         return from_list(jsonobj, clz)
     if clz in primitive_types:
@@ -60,9 +61,10 @@ def parse_jsonobj(jsonobj, clz:type):
         return jsonobj
     return from_dict(jsonobj, clz)
 
-def from_list(jsonobjarray, clz:type):
+
+def from_list(jsonobjarray, clz: type):
     result = []
-    clzname = clz.__str__(clz) # type:str
+    clzname = clz.__str__(clz)  # type:str
     start = clzname.find('[')
     end = clzname.find(']')
     elementclz = get_class(clzname[start + 1: end])
@@ -70,7 +72,8 @@ def from_list(jsonobjarray, clz:type):
         result.append(parse_jsonobj(e, elementclz))
     return result
 
-def from_dict(jsonobj: dict, clz:type):
+
+def from_dict(jsonobj: dict, clz: type):
     annos = clz.__dict__.get('__annotations__', None)  # type:dict
     assert annos is not None
     result = clz()

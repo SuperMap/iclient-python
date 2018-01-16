@@ -1,6 +1,6 @@
 from typing import List
 from enum import Enum
-from ..decorator import post, get
+from ..decorator import post, get, put, delete, head
 from .model import Point2D, Rectangle2D, Geometry
 
 
@@ -399,6 +399,10 @@ class GetTileJobResultItem:
     state: JobState
 
 
+class MethodResult:
+    succeed: bool
+
+
 class Management:
     @post('/manager/workspaces', 'param')
     def post_workspaces(self, param: PostWorkspaceParameter) -> List[PostWorkspaceResultItem]:
@@ -414,4 +418,24 @@ class Management:
 
     @get('/manager/tileservice/jobs')
     def get_tilejobs(self) -> List[GetTileJobResultItem]:
+        pass
+
+    @head('/manager/tileservice/jobs')
+    def head_tilejobs(self) -> int:
+        pass
+
+    @get('/manager/tileservice/jobs/{id}')
+    def get_job(self, id: str) -> GetTileJobResultItem:
+        pass
+
+    @put('/manager/tileservice/jobs/{id}', entityKW='entity')
+    def put_job(self, id: str, entity: BuildState) -> MethodResult:
+        pass
+
+    @delete('/manager/tileservice/jobs/{id}')
+    def delete_job(self, id: str) -> MethodResult:
+        pass
+
+    @head('/manager/tileservice/jobs/{id}')
+    def head_job(self, id: str) -> int:
         pass
