@@ -127,7 +127,6 @@ var SuperMapMapVLayerView = leaflet.LeafletLayerView.extend({
         var dataSet = this.model.get('data_set');
         var options = this.get_options();
         var mapvOptions = this.model.get('map_v_options')
-        var mapvOptions = this.model.get('map_v_options')
         var mapvDataSet = new mapv.DataSet(dataSet);
         this.obj = L.supermap.mapVLayer(mapvDataSet, mapvOptions, options)
     },

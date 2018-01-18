@@ -76,8 +76,40 @@ class OutputFormat(Enum):
     TIFF = 'TIFF'
 
 
-class TileSourceInfo:
+class DataStoreType(Enum):
+    RELATIONSHIP = 'RELATIONSHIP'
+    SPATIOTEMPORAL = 'SPATIOTEMPORAL'
+    TILES = 'TILES'
+    BIGDATAFILESHARE = 'BIGDATAFILESHARE'
+    BINARY = 'BINARY'
+    SPATIAL = 'SPATIAL'
+
+
+class DataStoreInfo:
+    datastoreType: DataStoreType
+
+
+class TileSourceType(Enum):
+    SMTiles = 'SMTiles'
+    FastDFS = 'FastDFS'
+    Hazelcast = 'Hazelcast'
+    UTFGrid = 'UTFGrid'
+    SVTiles = 'SVTiles'
+    Remote = 'Remote'
+    UGCV5 = 'UGCV5'
+    MongoDB = 'MongoDB'
+    UserDefined = 'UserDefined'
+    GeoPackage = 'GeoPackage'
+    GDP = 'GDP'
+    OTS = 'OTS'
+    ZXY = 'ZXY'
+
+
+class TileSourceInfo(DataStoreInfo):
     type: str
+
+
+class SMTilesTileSourceInfo(TileSourceInfo):
     outputPath: str
 
 
@@ -127,7 +159,7 @@ class VectorJobParameter:
     layers = List[VectorTileLayer]
 
 
-class PostTileJobItem:
+class PostTileJobsItem:
     dataConnectionString: str
     mapName: str
     tileSize: TileSize
@@ -385,7 +417,7 @@ class TileJob:
     targetTilesetInfo: TilesetDesc
 
 
-class PostTileJobResultItem:
+class PostTileJobsResultItem:
     succeed: str
     newResourceID: str
     customResult: TileJob
@@ -403,6 +435,136 @@ class MethodResult:
     succeed: bool
 
 
+class PostTilesetUpdateJobs:
+    sourceTileSourceInfo: TileSourceInfo
+    sourceTilesetIdentifier: str
+    targetTileSourceInfo: TileSourceInfo
+    targetTilesetIdentifier: str
+    scaleDenominators: List[float]
+    bounds: Rectangle2D
+    tileVersions: List[str]
+    targetInfo: str
+    relatedObject: str
+
+
+class PostTilesetUpdateJobsResultItem:
+    succeed: bool
+    newResourceID: str
+    newResourceLocation: str
+    postResultType: str
+
+
+class Projection:
+    name: str
+    type: str
+
+
+class CoordSys:
+    # TODO
+    unit: str
+    # datum:Datum
+    name: str
+
+
+class PrjCoordSys:
+    # TODO
+    epsgCode: int
+    # enum
+    distanceUnit: str
+    type: str
+    projection: Projection
+    coordUnit: str
+    name: str
+    coordSystem: CoordSys
+
+
+class MetaData:
+    mapName: str
+    tileWidth: int
+    tileHeight: int
+    resolutions: List[float]
+    scaleDenominators: List[float]
+    originalPoint: Point2D
+    prjCoordSys: PrjCoordSys
+    bounds: Rectangle2D
+    tileRuleVersion: str
+    tileType: TileType
+
+
+class VersionUpdate:
+    bounds: Rectangle2D
+    scaleDenominators: List[float]
+    resolutions: List[float]
+
+
+class TileVersion:
+    name: str
+    desc: str
+    parent: str
+    update: VersionUpdate
+    timestamp: int
+
+
+class TilesetInfo:
+    name: str
+    metaData: MetaData
+    tileVersions: List[TileVersion]
+
+
+class TilesetExportJobInfo:
+    sourceTilesetInfo: TilesetInfo
+    targetTilesetInfo: TilesetInfo
+    sourceTilesetDesc: TilesetDesc
+    targetTilesetDesc: TilesetDesc
+    sourceTileSourceInfo: TileSourceInfo
+    sourceTilesetIdentifier: str
+    targetTileSourceInfo: TileSourceInfo
+    targetTilesetIdentifier: str
+    scaleDenominators: List[float]
+    bounds: Rectangle2D
+    tileVersions: List[str]
+    targetInfo: str
+    relatedObject: str
+
+
+class TilesetExportJobRunState(Enum):
+    RUNNING = 'RUNNING'
+    STOPPED = 'STOPPED'
+    COMPLETED = 'COMPLETED'
+
+
+class TilesetExportScaleState:
+    total: int
+    completed: int
+    resolution: float
+    scaleDenominator: float
+    tileMatrix: TileMatrix
+
+
+class ExporttingScaleState(TilesetExportScaleState):
+    nextIndex: TileIndex
+
+
+class TilesetExportJobState:
+    runState: TilesetExportJobRunState
+    total: int
+    completed: int
+    actualCompleted: int
+    startTime: int
+    elapsedTime: int
+    remainTime: int
+    speedPerSecond: int
+    toExportScaleState: List[TilesetExportScaleState]
+    exporttingScale: ExporttingScaleState
+    completedScales: List[TilesetExportScaleState]
+
+
+class GetTilesetExportJobResultItem:
+    id: str
+    info: TilesetExportJobInfo
+    state: TilesetExportJobState
+
+
 class Management:
     @post('/manager/workspaces', 'param')
     def post_workspaces(self, param: PostWorkspaceParameter) -> List[PostWorkspaceResultItem]:
@@ -413,7 +575,7 @@ class Management:
         pass
 
     @post('/manager/tileservice/jobs', entityKW='entity')
-    def post_tilejobs(self, entity: PostTileJobItem) -> PostTileJobResultItem:
+    def post_tilejobs(self, entity: PostTileJobsItem) -> PostTileJobsResultItem:
         pass
 
     @get('/manager/tileservice/jobs')
@@ -438,4 +600,16 @@ class Management:
 
     @head('/manager/tileservice/jobs/{id}')
     def head_job(self, id: str) -> int:
+        pass
+
+    @post('/manager/tilesetupdatejobs', entityKW='entity')
+    def post_tilesetupdatejobs(self, entity: PostTilesetUpdateJobs) -> PostTilesetUpdateJobsResultItem:
+        pass
+
+    @get('/manager/tilesetupdatejobs')
+    def get_tilesetupdatejobs(self) -> List[GetTilesetExportJobResultItem]:
+        pass
+
+    @get('/manager/tilesetupdatejobs/{id}')
+    def get_tilesetupdatejob(self, id: str) -> GetTilesetExportJobResultItem:
         pass

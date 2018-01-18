@@ -74,6 +74,7 @@ def from_list(jsonobjarray, clz: type):
 
 
 def from_dict(jsonobj: dict, clz: type):
+    test = clz.__dict__
     annos = clz.__dict__.get('__annotations__', None)  # type:dict
     assert annos is not None
     result = clz()

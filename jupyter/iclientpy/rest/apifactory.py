@@ -114,7 +114,7 @@ class APIFactory:
         self._handler = RestInvocationHandlerImpl(self._base_url, auth, proxies=self._proxies)
 
     def management(self) -> Management:
-        return create(Management, self._handler);
+        return create(Management, self._handler)
 
     def data_service(self, service_name: str) -> DataService:
         handler = RestInvocationHandlerImpl(self._services_url + '/' + service_name, proxies=self._proxies)
