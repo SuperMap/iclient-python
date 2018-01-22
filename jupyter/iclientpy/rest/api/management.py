@@ -425,10 +425,16 @@ class PostTileJobsResultItem:
     postResultType: str
 
 
+class CompletedTilesetInfo:
+    name: str
+    filePath: str
+
+
 class GetTileJobResultItem:
     id: str
     info: JobInfo
     state: JobState
+    targetTilesetInfo: CompletedTilesetInfo
 
 
 class MethodResult:
