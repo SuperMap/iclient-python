@@ -1,16 +1,33 @@
 import re
 import time
+import uuid
 from typing import List
 from iclientpy.rest.api.model import Rectangle2D, Point2D
 from iclientpy.rest.api.management import ServiceType, TileSize, OutputFormat, PostWorkspaceParameter, PostTileJobsItem, \
-    BuildState, PostTilesetUpdateJobs, SMTilesTileSourceInfo, TilesetExportJobRunState
+    BuildState, PostTilesetUpdateJobs, SMTilesTileSourceInfo, TilesetExportJobRunState, TileType
 from iclientpy.rest.apifactory import APIFactory
 
 
-def update_smtilestileset(address: str, username: str, password: str, w_loc: str, w_servicetypes: List[ServiceType],
-                          map_name: str, scale: List[float], tile_size: TileSize, tile_type: str, format: OutputFormat,
-                          epsgcode: int, storageid: str, storageconfig: SMTilesTileSourceInfo, original_point: Point2D,
-                          cacheBounds: Rectangle2D, u_loc: str, bounds: Rectangle2D):
+def update_smtilestileset(address: str, username: str, password: str, w_loc: str, map_name: str,
+                          original_point: tuple, cacheBounds: tuple, u_loc: str,
+                          scale: List[float], w_servicetypes: List[ServiceType] = [ServiceType.RESTMAP],
+                          tile_size: TileSize = TileSize.SIZE_256, tile_type: TileType = TileType.Image,
+                          format: OutputFormat = OutputFormat.PNG, epsgcode: int = -1, storageid: str = None,
+                          storageconfig: SMTilesTileSourceInfo = None):
+    if len(original_point) is not 2:
+        raise Exception("切图原点坐标长度错误")
+    tem_original_point = Point2D()
+    tem_original_point.x = original_point[0]
+    tem_original_point.y = original_point[1]
+    if len(cacheBounds) is not 4:
+        raise Exception("切图范围长度错误")
+    tem_cache_Bounds = Rectangle2D()
+    tem_cache_Bounds.leftBottom = Point2D()
+    tem_cache_Bounds.leftBottom.x = cacheBounds[0]
+    tem_cache_Bounds.leftBottom.y = cacheBounds[1]
+    tem_cache_Bounds.rightTop = Point2D()
+    tem_cache_Bounds.rightTop.x = cacheBounds[2]
+    tem_cache_Bounds.rightTop.y = cacheBounds[3]
     api = APIFactory(address, username, password)
     mng = api.management()
     post_param = PostWorkspaceParameter()
@@ -26,10 +43,15 @@ def update_smtilestileset(address: str, username: str, password: str, w_loc: str
     post_tile_jobs_param.tileType = tile_type
     post_tile_jobs_param.format = format
     post_tile_jobs_param.epsgCode = epsgcode
-    post_tile_jobs_param.storageID = storageid
-    post_tile_jobs_param.storeConfig = storageconfig
-    post_tile_jobs_param.originalPoint = original_point
-    post_tile_jobs_param.cacheBounds = cacheBounds
+    post_tile_jobs_param.storageID = storageid if storageid is not None else 'iclientpy_' + uuid.uuid1().__str__()
+    if storageconfig is not None:
+        post_tile_jobs_param.storeConfig = storageconfig
+    else:
+        post_tile_jobs_param.storeConfig = SMTilesTileSourceInfo()
+        post_tile_jobs_param.storeConfig.type = 'SMTiles'
+        post_tile_jobs_param.storeConfig.outputPath = '../webapps/iserver/output/sqlite_' + uuid.uuid1().__str__()
+    post_tile_jobs_param.originalPoint = tem_original_point
+    post_tile_jobs_param.cacheBounds = tem_cache_Bounds
     ptjr = mng.post_tilejobs(post_tile_jobs_param)
     while (mng.get_job(ptjr.newResourceID).state.runState is BuildState.BUILDING):
         time.sleep(5)
@@ -38,7 +60,7 @@ def update_smtilestileset(address: str, username: str, password: str, w_loc: str
         raise Exception('切图失败')
     post_tile_update_param = PostTilesetUpdateJobs()
     post_tile_update_param.scaleDenominators = scale
-    post_tile_update_param.bounds = bounds
+    post_tile_update_param.bounds = tem_cache_Bounds
     post_tile_update_param.targetTilesetIdentifier = u_loc
     post_tile_update_param.targetTileSourceInfo = SMTilesTileSourceInfo()
     post_tile_update_param.targetTileSourceInfo.type = 'SMTiles'
@@ -46,7 +68,7 @@ def update_smtilestileset(address: str, username: str, password: str, w_loc: str
     post_tile_update_param.sourceTilesetIdentifier = gjr.targetTilesetInfo.filePath
     post_tile_update_param.sourceTileSourceInfo = SMTilesTileSourceInfo()
     post_tile_update_param.sourceTileSourceInfo.type = 'SMTiles'
-    post_tile_update_param.sourceTileSourceInfo.outputPath = storageconfig.outputPath
+    post_tile_update_param.sourceTileSourceInfo.outputPath = post_tile_jobs_param.storeConfig.outputPath
     ptur = mng.post_tilesetupdatejobs(post_tile_update_param)
     while (mng.get_tilesetupdatejob(ptur.newResourceID).state.runState is TilesetExportJobRunState.RUNNING):
         time.sleep(5)

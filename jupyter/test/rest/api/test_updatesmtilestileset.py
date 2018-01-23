@@ -1,8 +1,6 @@
 from unittest import TestCase
 import httpretty
 from iclientpy.rest.api.updatetileset import update_smtilestileset
-from iclientpy.rest.api.model import Rectangle2D, Point2D
-from iclientpy.rest.api.management import ServiceType, TileSize, OutputFormat, SMTilesTileSourceInfo, TileType
 
 
 class TestUpdateTileSet(TestCase):
@@ -35,40 +33,8 @@ class TestUpdateTileSet(TestCase):
         httpretty.register_uri(httpretty.GET,
                                base_uri + '/manager/tilesetupdatejobs/f1341552-d09f-456d-8c06-0b04612b5762.json',
                                body=get_update_job_body, status=200)
-        username = 'admin'
-        password = 'iserver'
-        w_loc = '/etc/icloud/World2/World.sxwu'
-        w_servicetypes = [ServiceType.RESTMAP]
-        map_name = 'World'
-        scale = [4000000.000014754, 8000000.000197801, 15999999.999974867, 31999999.999949735, 63999999.99821653,
-                 124999999.99967217, 249999999.99934435]
-        tile_size = TileSize.SIZE_256
-        tile_type = TileType.Image
-        format = OutputFormat.PNG
-        epsgcode = -1
-        storageid = 'aa'
-        storageconfig = SMTilesTileSourceInfo()
-        storageconfig.type = 'SMTiles'
-        storageconfig.outputPath = '/etc/icloud/SuperMapiServer/webapps/iserver/output/sqlite71'
-        original_point = Point2D()
-        original_point.x = -180
-        original_point.y = 90
-        cacheBounds = Rectangle2D()
-        cacheBounds.leftBottom = Point2D()
-        cacheBounds.leftBottom.x = 0
-        cacheBounds.leftBottom.y = -90
-        cacheBounds.rightTop = Point2D()
-        cacheBounds.rightTop.x = 180
-        cacheBounds.rightTop.y = 90
-        u_loc = '/etc/icloud/SuperMapiServer/webapps/iserver/output/sqlite70/World_1881337416_256X256_PNG.smtiles'
-        bounds = Rectangle2D()
-        bounds.leftBottom = Point2D()
-        bounds.leftBottom.x = -180
-        bounds.leftBottom.y = -90
-        bounds.rightTop = Point2D()
-        bounds.rightTop.x = 180
-        bounds.rightTop.y = 90
-        update_smtilestileset(base_uri, username, password, w_loc, w_servicetypes, map_name, scale, tile_size,
-                              tile_type, format, epsgcode, storageid, storageconfig, original_point, cacheBounds, u_loc,
-                              bounds)
-
+        u_loc = '/etc/icloud/SuperMapiServer/bin/iserver/output/sqlite113/World_1881337416_256X256_PNG.smtiles'
+        update_smtilestileset(base_uri, 'admin', 'iserver', '/etc/icloud/World2/World.sxwu', 'World', (-180, 90),
+                              (-180, -90, 180, 90), u_loc,
+                              [4000000.000014754, 8000000.000197801, 15999999.999974867, 31999999.999949735,
+                               63999999.99821653, 124999999.99967217, 249999999.99934435])
