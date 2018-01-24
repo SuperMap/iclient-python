@@ -3,11 +3,6 @@ import argparse
 from iclientpy.rest.api.updatetileset import update_smtilestileset
 
 
-#
-# def run(argv):
-#     print(argv)
-
-
 def get_parser():
     parser = argparse.ArgumentParser(usage='%(prog)s [OPTIONS]',
                                      epilog='for more information , visit<http://iclientpy.supermap.io/>.', description="""
@@ -70,7 +65,6 @@ def main(argv=sys.argv[1:]):
         d['cache_bounds'] = tuple(float(item) for item in d['cache_bounds'].strip("'").strip('"').split(','))
         d['scale'] = [float(item) for item in d['scale'].strip("'").strip('"').split(',')]
         update_smtilestileset(**d)
-        # run(d)
     except SystemExit as err:
         return err.code
     return 0
