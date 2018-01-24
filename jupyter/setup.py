@@ -176,7 +176,11 @@ setup_args = {
         'jsdeps': NPM,
         'build_sphinx': BuildDoc
     },
-
+    'entry_points': {
+        'console_scripts': [
+            'iclientpy-updatecache = iclientpy.rest.cmd.updatecache:main',
+        ],
+    },
     'author': 'supermap',
     'author_email': 'supermap@supermap.com',
     'url': 'https://gitee.com/isupermap/iClientPython',

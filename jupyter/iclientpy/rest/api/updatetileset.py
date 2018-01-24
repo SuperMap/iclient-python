@@ -9,7 +9,7 @@ from iclientpy.rest.apifactory import APIFactory
 
 
 def update_smtilestileset(address: str, username: str, password: str, w_loc: str, map_name: str,
-                          original_point: tuple, cacheBounds: tuple, u_loc: str,
+                          original_point: tuple, cache_bounds: tuple, u_loc: str,
                           scale: List[float], w_servicetypes: List[ServiceType] = [ServiceType.RESTMAP],
                           tile_size: TileSize = TileSize.SIZE_256, tile_type: TileType = TileType.Image,
                           format: OutputFormat = OutputFormat.PNG, epsgcode: int = -1, storageid: str = None,
@@ -19,15 +19,15 @@ def update_smtilestileset(address: str, username: str, password: str, w_loc: str
     tem_original_point = Point2D()
     tem_original_point.x = original_point[0]
     tem_original_point.y = original_point[1]
-    if len(cacheBounds) is not 4:
+    if len(cache_bounds) is not 4:
         raise Exception("切图范围长度错误")
     tem_cache_Bounds = Rectangle2D()
     tem_cache_Bounds.leftBottom = Point2D()
-    tem_cache_Bounds.leftBottom.x = cacheBounds[0]
-    tem_cache_Bounds.leftBottom.y = cacheBounds[1]
+    tem_cache_Bounds.leftBottom.x = cache_bounds[0]
+    tem_cache_Bounds.leftBottom.y = cache_bounds[1]
     tem_cache_Bounds.rightTop = Point2D()
-    tem_cache_Bounds.rightTop.x = cacheBounds[2]
-    tem_cache_Bounds.rightTop.y = cacheBounds[3]
+    tem_cache_Bounds.rightTop.x = cache_bounds[2]
+    tem_cache_Bounds.rightTop.y = cache_bounds[3]
     api = APIFactory(address, username, password)
     mng = api.management()
     post_param = PostWorkspaceParameter()
@@ -70,8 +70,9 @@ def update_smtilestileset(address: str, username: str, password: str, w_loc: str
     post_tile_update_param.sourceTileSourceInfo.type = 'SMTiles'
     post_tile_update_param.sourceTileSourceInfo.outputPath = post_tile_jobs_param.storeConfig.outputPath
     ptur = mng.post_tilesetupdatejobs(post_tile_update_param)
-    while (mng.get_tilesetupdatejob(ptur.newResourceID).state.runState is TilesetExportJobRunState.RUNNING):
-        time.sleep(5)
     gtur = mng.get_tilesetupdatejob(ptur.newResourceID)
+    while (not hasattr(gtur.state, 'runState') or gtur.state.runState is TilesetExportJobRunState.RUNNING):
+        time.sleep(5)
+        gtur = mng.get_tilesetupdatejob(ptur.newResourceID)
     if (gtur.state.runState is not TilesetExportJobRunState.COMPLETED):
         raise Exception('更新切片失败')
