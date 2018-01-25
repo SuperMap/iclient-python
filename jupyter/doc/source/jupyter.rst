@@ -31,7 +31,7 @@ Jupyter数据可视化
 
 等级符号专题图示例__
 
-.. __: http://iclientpy.supermap.io/notebooks/work/sample/sample-csv.ipynb
+.. __: http://jupyter.supermap.io/tree/work/sample/sample-csv.ipynb
 
 
 .. image:: _static/ranksymbol.png
@@ -47,7 +47,7 @@ Jupyter数据可视化
 
 热点图示例__
 
-.. __: http://iclientpy.supermap.io/notebooks/work/sample/sample-heat.ipynb
+.. __: http://jupyter.supermap.io/tree/work/sample/sample-heat.ipynb
 
 .. image:: _static/heat.png
 
@@ -62,7 +62,7 @@ Jupyter数据可视化
 
 蜂巢图示例__
 
-.. __ : http://iclientpy.supermap.io/notebooks/work/sample/sample-honeycomb.ipynb
+.. __ : http://jupyter.supermap.io/tree/work/sample/sample-honeycomb.ipynb
 
 .. image:: _static/honeycomb.png
 

@@ -593,19 +593,19 @@ class Management:
         pass
 
     @get('/manager/tileservice/jobs/{id}')
-    def get_job(self, id: str) -> GetTileJobResultItem:
+    def get_tilejob(self, id: str) -> GetTileJobResultItem:
         pass
 
     @put('/manager/tileservice/jobs/{id}', entityKW='entity')
-    def put_job(self, id: str, entity: BuildState) -> MethodResult:
+    def put_tilejob(self, id: str, entity: BuildState) -> MethodResult:
         pass
 
     @delete('/manager/tileservice/jobs/{id}')
-    def delete_job(self, id: str) -> MethodResult:
+    def delete_tilejob(self, id: str) -> MethodResult:
         pass
 
     @head('/manager/tileservice/jobs/{id}')
-    def head_job(self, id: str) -> int:
+    def head_tilejob(self, id: str) -> int:
         pass
 
     @post('/manager/tilesetupdatejobs', entityKW='entity')

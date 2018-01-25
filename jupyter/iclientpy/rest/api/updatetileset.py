@@ -53,9 +53,9 @@ def update_smtilestileset(address: str, username: str, password: str, w_loc: str
     post_tile_jobs_param.originalPoint = tem_original_point
     post_tile_jobs_param.cacheBounds = tem_cache_Bounds
     ptjr = mng.post_tilejobs(post_tile_jobs_param)
-    while (mng.get_job(ptjr.newResourceID).state.runState is BuildState.BUILDING):
+    while (mng.get_tilejob(ptjr.newResourceID).state.runState is BuildState.BUILDING):
         time.sleep(5)
-    gjr = mng.get_job(ptjr.newResourceID)
+    gjr = mng.get_tilejob(ptjr.newResourceID)
     if (gjr.state.runState is not BuildState.COMPLETED):
         raise Exception('切图失败')
     post_tile_update_param = PostTilesetUpdateJobs()
