@@ -8,7 +8,7 @@ Jupyter数据可视化
    等级符号专题图 <./sample/sample>
    可视化CSV数据 <./sample/sample-csv>
     热力图 <./sample/sample-heat>
-    蜂巢图 <./sample/sample-mapv>
+    蜂巢图 <./sample/sample-honeycomb>
 
 介绍
 ------
@@ -62,7 +62,7 @@ Jupyter数据可视化
 
 蜂巢图示例__
 
-.. __ : http://iclientpy.supermap.io/notebooks/work/sample/sample-mapv.ipynb
+.. __ : http://iclientpy.supermap.io/notebooks/work/sample/sample-honeycomb.ipynb
 
 .. image:: _static/honeycomb.png
 
