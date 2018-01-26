@@ -175,7 +175,7 @@ Management
         api = APIFactory('http://localhost:8090/iserver','admin','iserver')
         mng = api.management()
         idstr='id'
-        esult=mng.get_tilesetupdatejob(idstr)
+        result=mng.get_tilesetupdatejob(idstr)
 
 其他
 ******
