@@ -34,27 +34,23 @@ def ask_value(tip: str):
 
 
 def interact(d):
-    if 'address' not in d:
-        d['address'] = ask_value('请输入地址：')
-    if 'username' not in d:
-        d['username'] = ask_value('请输入用户名：')
-    if 'password' not in d:
-        d['password'] = ask_value('请输入密码：')
-    if 'w_loc' not in d:
-        d['w_loc'] = ask_value('请输入工作空间路径：')
-    if 'map_name' not in d:
-        d['map_name'] = ask_value('请输入切图地图名称：')
-    if 'original_point' not in d:
-        d['original_point'] = ask_value('请输入切图原点：')
-    if 'cache_bounds' not in d:
-        d['cache_bounds'] = ask_value('请输入缓存范围：')
-    if 'scale' not in d:
-        d['scale'] = ask_value('请输入切图比例尺：')
-    if 'u_loc' not in d:
-        d['u_loc'] = ask_value('请输入待更新切图文件位置：')
+    field_and_desc = {
+        'address':'请输入地址：',
+        'username' :'请输入用户名：',
+        'password' :'请输入密码：',
+        'w_loc' :'请输入工作空间路径：',
+        'map_name' :'请输入切图地图名称：',
+        'original_point' :'请输入切图原点：',
+        'cache_bounds' :'请输入缓存范围：',
+        'scale' :'请输入切图比例尺：',
+        'u_loc' :'请输入待更新切图文件位置：'
+    }
+    for field in field_and_desc.keys():
+        if field not in d:
+            d[field] = ask_value(field_and_desc[field])
 
 
-def main(argv=sys.argv[1:]):
+def main(argv=sys.argv[1:], fun=update_smtilestileset):
     parser = get_parser()
     try:
         args = parser.parse_args(argv)
@@ -64,7 +60,7 @@ def main(argv=sys.argv[1:]):
         d['original_point'] = tuple(float(item) for item in d['original_point'].strip("'").strip('"').split(','))
         d['cache_bounds'] = tuple(float(item) for item in d['cache_bounds'].strip("'").strip('"').split(','))
         d['scale'] = [float(item) for item in d['scale'].strip("'").strip('"').split(',')]
-        update_smtilestileset(**d)
+        fun(**d)
     except SystemExit as err:
         return err.code
     return 0
