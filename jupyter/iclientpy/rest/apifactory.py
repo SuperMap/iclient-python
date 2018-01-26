@@ -6,6 +6,8 @@ from .proxyfactory import create
 from ..dtojson import from_json_str, to_json_str
 import inspect
 import requests
+import sys
+import argparse
 from requests.auth import AuthBase
 
 default_session_cookie_name = 'JSESSIONID'
@@ -104,12 +106,17 @@ def create_auth(base_url: str, username: str, passwd: str, token: str, proxies=N
         value = response.cookies[default_session_cookie_name]
         return CookieAuth(value)
 
+def _get_proxy_from_arguments(argv = sys.argv):
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--iclientpy-rest-proxy', dest='proxy', nargs='?')
+    argv_dict = parser.parse_known_args(argv)[0]
+    return {} if 'proxy' not in argv_dict else {'http': argv_dict.proxy, 'https': argv_dict.proxy}
 
 class APIFactory:
     def __init__(self, base_url: str, username: str = None, passwd: str = None, token: str = None, proxies=None):
         self._base_url = base_url if not base_url.endswith('/') else base_url[:-1]
         self._services_url = self._base_url + '/services'
-        self._proxies = proxies if proxies is not None else {}
+        self._proxies = proxies if proxies is not None else _get_proxy_from_arguments()
         auth = create_auth(self._base_url, username, passwd, token, proxies=self._proxies)
         self._handler = RestInvocationHandlerImpl(self._base_url, auth, proxies=self._proxies)
 

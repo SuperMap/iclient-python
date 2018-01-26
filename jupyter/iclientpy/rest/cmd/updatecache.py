@@ -53,7 +53,7 @@ def interact(d):
 def main(argv=sys.argv[1:], fun=update_smtilestileset):
     parser = get_parser()
     try:
-        args = parser.parse_args(argv)
+        args = parser.parse_known_args(argv)[0]
         d = vars(args)
         d = dict((k, v) for k, v in d.items() if not (v is None))
         interact(d)
