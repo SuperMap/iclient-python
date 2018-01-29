@@ -1,5 +1,6 @@
 from .jupyter import *
 from ._version import version_info, __version__
+from .rest import *
 from ipyleaflet import *
 
 

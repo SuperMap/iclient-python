@@ -6,6 +6,10 @@ from .cloudtilelayer import CloudTileLayer
 
 
 class MapView(Map):
+    """
+    超图地图组件
+    """
+
     @default('layout')
     def _default_layout(self):
         return Layout(height='500px', align_self='stretch')

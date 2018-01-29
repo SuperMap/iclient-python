@@ -4,6 +4,9 @@ from iclientpy._version import EXTENSION_VERSION
 
 
 class TileMapLayer(TileLayer):
+    """
+    瓦片图层
+    """
     _view_name = Unicode("SuperMapTileMapLayerView").tag(sync=True)
     _model_name = Unicode("SuperMapTileMapLayerModel").tag(sync=True)
     _view_module = Unicode("iclientpy").tag(sync=True)

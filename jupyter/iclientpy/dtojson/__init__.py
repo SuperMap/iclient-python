@@ -35,6 +35,16 @@ def to_dict_or_list(obj):
 
 
 def to_json_str(obj):
+
+    """
+    将json对象转为json字符串
+
+    Args:
+        obj: python对象，用于转为json字符串
+
+    Returns:
+        字符串，python对象转成的json字符串
+    """
     return obj.name if isinstance(obj, Enum) else json.dumps(to_dict_or_list(obj))
 
 
@@ -92,5 +102,15 @@ def from_dict(jsonobj: dict, clz: type):
 
 
 def from_json_str(jsonstr: str, clz: type):
+    """
+    从json字符串转向对应的python对象
+
+    Args:
+        jsonstr: json字符串
+        clz: python对象类型
+
+    Returns:
+        返回对象的python对象实例
+    """
     jsonobj = json.loads(jsonstr)
     return parse_jsonobj(jsonobj, clz)

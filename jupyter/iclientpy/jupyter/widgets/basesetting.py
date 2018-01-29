@@ -2,7 +2,17 @@ from traitlets import HasTraits
 
 
 class BaseSetting(HasTraits):
+    """
+    专题图设置的基础类
+    """
+
     def get_settings(self):
+        """
+        获取设置，metadata通过setttings=true标志的属性
+
+        Returns:
+            返回设置
+        """
         setting = {}
         for k in [name for name in self.traits(settings=True)]:
             v = getattr(self, k)
@@ -15,7 +25,15 @@ class BaseSetting(HasTraits):
         return setting
 
     def _underline_to_camel(self, underline_format):
+        """
+        字符串从下划线命名法转为驼峰命名法
 
+        Args:
+            underline_format: 以下划线命名法命名的字符串
+
+        Returns:
+            驼峰命名法命名的字符串
+        """
         if isinstance(underline_format, str):
             split_strs = underline_format.split('_')
             camel_format = split_strs[0]
@@ -27,8 +45,13 @@ class BaseSetting(HasTraits):
 
     def _dict_key_underline_to_camel(self, source):
         """
-        :type source:dict
-        :type result:dict
+        将字典类型数据的key，从下划线命名法转为驼峰命名法
+
+        Args:
+            source: 需要转换的字典数据
+
+        Returns:
+            key以驼峰命名法的字典
         """
         result = {}
         for k, v in source.items():

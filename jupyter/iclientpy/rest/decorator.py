@@ -13,11 +13,20 @@ class HttpMethod(Enum):
 
 
 class REST:
+    """
+    REST请求的封装，用于封装python api参数与rest请求之间的对应关系，比如：查询字符串，请求体之类
+    """
+
     def __init__(self, func, method, uri: str, entityKW: str = None, queryKWs: List[str] = None):
         """
-        :type func:function
-        :type uri:str
-        :type method:HttpMethod
+        初始化REST类，存放实际调用的rest请求的相关信息
+
+        Args:
+            func: 调用请求的实际方法
+            method: http请求的方法
+            uri: 请求地址
+            entityKW: 请求体的key
+            queryKWs: 查询字符串的key
         """
         wraps(func)(self)
         self._original = func
@@ -39,25 +48,63 @@ class REST:
             return types.MethodType(self, instance)
 
     def get_original_func(self):
+        """
+        获取原始的请求发起方法，可用于获取请求的参数以及返回类型
+
+        Returns:
+            返回请求的发起方法
+        """
         return self._original
 
     def get_method(self) -> HttpMethod:
+        """
+        获取http方法
+
+        Returns:
+            返回http方法
+        """
         return self._method
 
     def get_uri(self) -> str:
+        """
+        获取请求的uri
+
+        Returns:
+            返回请求的uri
+        """
         return self._uri
 
     def get_entityKW(self) -> str:
+        """
+        获取请求的请求体的key，用于从原始方法参数中找到请求体的python对象
+
+        Returns:
+            返回请求体的key
+        """
         return self._entityKW
 
     def get_queryKWs(self) -> str:
+        """
+        获取请求的查询字符串的key，用于从原始方法参数中找到请求的查询参数
+
+        Returns:
+            返回查询字符串的key
+        """
         return self._queryKWs
 
 
 def rest(method: HttpMethod, uri, entityKW: str = None, queryKWs: List[str] = None):
     """
-    :type uri:str
-    :type method:HttpMethod
+    rest请求的封装方法
+
+    Args:
+        method: http方法
+        uri: 请求uri
+        entityKW: 请求的请求体的key
+        queryKWs: 请求的查询参数的key
+
+    Returns:
+        请求的封装类
     """
 
     class RESTWrapper(REST):
@@ -68,20 +115,75 @@ def rest(method: HttpMethod, uri, entityKW: str = None, queryKWs: List[str] = No
 
 
 def head(uri: str, entityKW: str = None, queryKWs: List[str] = None):
+    """
+    head请求的装饰器，可以在方法上直接通过@head方式使用
+
+    Args:
+        uri: 请求的uri
+        entityKW: 请求的请求体的key
+        queryKWs: 请求的查询字符串的key
+
+    Returns:
+        封装了请求的REST类
+    """
     return rest(HttpMethod.HEAD, uri, entityKW, queryKWs)
 
 
 def post(uri: str, entityKW: str, queryKWs: List[str] = None):
+    """
+    post请求的装饰器，可以在方法上直接通过@post方式使用
+
+    Args:
+        uri: 请求的uri
+        entityKW: 请求的请求体的key
+        queryKWs: 请求的查询字符串的key
+
+    Returns:
+        封装了请求的REST类
+    """
     return rest(HttpMethod.POST, uri, entityKW, queryKWs)
 
 
 def get(uri: str, entityKW: str = None, queryKWs: List[str] = None):
+    """
+    get请求的装饰器，可以在方法上直接通过@get方式使用
+
+    Args:
+        uri: 请求的uri
+        entityKW: 请求的请求体的key
+        queryKWs: 请求的查询字符串的key
+
+    Returns:
+        封装了请求的REST类
+    """
     return rest(HttpMethod.GET, uri, entityKW, queryKWs)
 
 
 def put(uri: str, entityKW: str = None, queryKWs: List[str] = None):
+    """
+    put请求的装饰器，可以在方法上直接通过@put方式使用
+
+    Args:
+        uri: 请求的uri
+        entityKW: 请求的请求体的key
+        queryKWs: 请求的查询字符串的key
+
+    Returns:
+        封装了请求的REST类
+    """
     return rest(HttpMethod.PUT, uri, entityKW, queryKWs)
 
 
 def delete(uri: str, entityKW: str = None, queryKWs: List[str] = None):
+    """
+    delete请求的装饰器，可以在方法上直接通过@delete方式使用
+
+    Args:
+        uri: 请求的uri
+        entityKW: 请求的请求体的key
+        queryKWs: 请求的查询字符串的key
+
+    Returns:
+        封装了请求的REST类
+    """
     return rest(HttpMethod.DELETE, uri, entityKW, queryKWs)

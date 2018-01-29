@@ -4,6 +4,10 @@ from iclientpy._version import EXTENSION_VERSION
 
 
 class CloudTileLayer(TileLayer):
+    """
+    超图云图层
+
+    """
     _view_name = Unicode("SuperMapCloudTileLayerView").tag(sync=True)
     _model_name = Unicode("SuperMapCloudTileLayerModel").tag(sync=True)
     _view_module = Unicode("iclientpy").tag(sync=True)

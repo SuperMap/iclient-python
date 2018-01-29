@@ -9,6 +9,10 @@ from ..units import load_geojson_data, get_privince_geojson_data
 
 
 class SymbolSetting(BaseSetting):
+    """
+    等级符号专题图设置类
+    """
+
     codomain = Tuple(default_value=(0, 100)).tag(settings=True)
     max_r = Int(default_value=100).tag(settings=True)
     min_r = Int(default_value=10).tag(settings=True)
@@ -49,6 +53,9 @@ class SymbolSetting(BaseSetting):
 
 
 class RankSymbolThemeLayer(Layer):
+    """
+    等级符号专题图图层
+    """
     _view_name = Unicode("SuperMapRankSymbolThemeLayerView").tag(sync=True)
     _model_name = Unicode("SuperMapRankSymbolThemeLayerModel").tag(sync=True)
     _view_module = Unicode("iclientpy").tag(sync=True)

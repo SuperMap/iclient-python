@@ -6,6 +6,10 @@ from .basesetting import BaseSetting
 
 
 class MapvOptions(BaseSetting):
+    """
+    mapv地图设置
+    """
+
     fill_style = Unicode(allow_none=True).tag(settings=True)
     shadow_color = Unicode(allow_none=True).tag(settings=True)
     shadow_blur = Int(35).tag(settings=True)
@@ -17,6 +21,10 @@ class MapvOptions(BaseSetting):
 
     @default('label')
     def _default_label(self):
+        """
+
+        :rtype: object
+        """
         tmp_label = {}
         for name in self.traits(label=True):
             v = getattr(self, name)
@@ -40,6 +48,10 @@ class MapvOptions(BaseSetting):
 
 
 class MapVLayer(Layer):
+    """
+     mapv图层，可以用于创建蜂巢图等
+    """
+
     _view_name = Unicode("SuperMapMapVLayerView").tag(sync=True)
     _model_name = Unicode("SuperMapMapVLayerModel").tag(sync=True)
     _view_module = Unicode("iclientpy").tag(sync=True)

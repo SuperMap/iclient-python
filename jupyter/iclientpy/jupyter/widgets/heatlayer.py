@@ -6,6 +6,9 @@ from iclientpy._version import EXTENSION_VERSION
 
 
 class HeatLayer(Layer):
+    """
+    热力图图层
+    """
     _view_name = Unicode("SuperMapHeatLayerView").tag(sync=True)
     _model_name = Unicode("SuperMapHeatLayerModel").tag(sync=True)
     _view_module = Unicode("iclientpy").tag(sync=True)
