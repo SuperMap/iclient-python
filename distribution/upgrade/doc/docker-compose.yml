@@ -1,0 +1,6 @@
+iclientpy-doc:
+    image: registry.cn-beijing.aliyuncs.com/iclientpy/iclientpy-supermap-io
+    container_name: iclientpy-doc
+    restart: always
+    ports:
+     - 80:80
