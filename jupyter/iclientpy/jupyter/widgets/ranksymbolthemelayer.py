@@ -13,12 +13,12 @@ class SymbolSetting(BaseSetting):
     等级符号专题图设置类
     """
 
-    codomain = Tuple(default_value=(0, 100)).tag(settings=True)
-    max_r = Int(default_value=100).tag(settings=True)
-    min_r = Int(default_value=10).tag(settings=True)
-    fill_color = Unicode(default_value='#FFA500').tag(settings=True)
+    codomain = Tuple(default_value=(0, 100)).tag(settings=True)  #:显示阈值
+    max_r = Int(default_value=100).tag(settings=True)  #:最大半径
+    min_r = Int(default_value=10).tag(settings=True)  #:最小半径
+    fill_color = Unicode(default_value='#FFA500').tag(settings=True)  #:填充颜色
 
-    fill_opacity = Float(default_value=0.8).tag(cs=True)
+    fill_opacity = Float(default_value=0.8).tag(cs=True)  #:透明度
 
     @validate('fill_opacity')
     def _validate_fill_opacity(self, proposal):
@@ -26,7 +26,7 @@ class SymbolSetting(BaseSetting):
             raise Exception("透明度范围是0-1之间")
         return proposal['value']
 
-    circle_style = Dict().tag(settings=True)
+    circle_style = Dict().tag(settings=True)  #:圆样式
 
     @default('circle_style')
     def _default_circle_style(self):
@@ -38,8 +38,8 @@ class SymbolSetting(BaseSetting):
             tmp_cs[name] = v
         return tmp_cs
 
-    circle_hover_style_fill_opacity = Float(default_value=0.8).tag(chs=True)
-    circle_hover_style = Dict().tag(settings=True)
+    circle_hover_style_fill_opacity = Float(default_value=0.8).tag(chs=True)  #:鼠标悬浮时圆的透明度
+    circle_hover_style = Dict().tag(settings=True)  #:鼠标悬浮时样式
 
     @default('circle_hover_style')
     def _default_circle_hover_style(self):
@@ -63,19 +63,19 @@ class RankSymbolThemeLayer(Layer):
     _view_module_version = Unicode(EXTENSION_VERSION).tag(sync=True)
     _model_module_version = Unicode(EXTENSION_VERSION).tag(sync=True)
 
-    theme_field = Unicode('value').tag(sync=True)
-    symbol_type = Unicode('CIRCLE').tag(sync=True)
-    symbol_setting = Any({}).tag(sync=True)
-    name = Unicode('').tag(sync=True)
-    data = Any([]).tag(sync=True)
-    is_over_lay = Bool(True).tag(sync=True, o=True)
-    address_key = Any(0)
-    value_key = Any(1)
-    codomain = Tuple((0, 40000)).tag(sync=True)
-    rrange = Tuple((0, 100)).tag(sync=True)
-    color = Unicode('#FFA500').tag(sync=True)
-    codomainmin = Int(0)
-    codomainmax = Int(1)
+    theme_field = Unicode('value').tag(sync=True)  #:主题字段
+    symbol_type = Unicode('CIRCLE').tag(sync=True)  #:类型，当前只支持Circle
+    symbol_setting = Any({}).tag(sync=True)  #:样式设置
+    name = Unicode('').tag(sync=True)  #:名称
+    data = Any([]).tag(sync=True)  #:展示数据
+    is_over_lay = Bool(True).tag(sync=True, o=True)  #:是否压盖
+    address_key = Any(0)  #:地址字段key
+    value_key = Any(1)  #:值字段key
+    codomain = Tuple((0, 40000)).tag(sync=True)  #:显示阈值范围
+    rrange = Tuple((0, 100)).tag(sync=True)  #:半径大小范围
+    color = Unicode('#FFA500').tag(sync=True)  #:颜色
+    _codomainmin = Int(0)  #:阈值最小值
+    _codomainmax = Int(1)  #:阈值最大值
 
     _privinces_geojson = []
 
@@ -121,12 +121,12 @@ class RankSymbolThemeLayer(Layer):
         cmin = min(dt[1] for dt in tempdata)
         cminlog10 = math.floor(math.log10(abs(cmin)))
         cminmod = cmin // math.pow(10, cminlog10)
-        self.codomainmin = int(cminmod * math.pow(10, cminlog10))
+        self._codomainmin = int(cminmod * math.pow(10, cminlog10))
 
         cmax = max(dt[1] for dt in tempdata)
         cmaxlog10 = math.floor(math.log10(abs(cmax)))
         cmaxmod = cmax // math.pow(10, cmaxlog10)
-        self.codomainmax = int((cmaxmod + 1) * math.pow(10, cmaxlog10))
+        self._codomainmax = int((cmaxmod + 1) * math.pow(10, cmaxlog10))
         return tempdata
 
     def __init__(self, name, data, **kwargs):
@@ -134,10 +134,13 @@ class RankSymbolThemeLayer(Layer):
         self.name = name
         self.data = data
 
-    def interact(self, **kwargs):
+    def interact(self):
+        """
+        获取交互式控制专题图样式部件
+        """
         codomainslider = IntRangeSlider(value=[self.codomain[0], self.codomain[1]],
-                                        min=self.codomainmin,
-                                        max=self.codomainmax,
+                                        min=self._codomainmin,
+                                        max=self._codomainmax,
                                         step=1,
                                         description='值域范围:',
                                         disabled=False,

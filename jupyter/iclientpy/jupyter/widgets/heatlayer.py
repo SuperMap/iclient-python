@@ -16,7 +16,7 @@ class HeatLayer(Layer):
     _view_module_version = Unicode(EXTENSION_VERSION).tag(sync=True)
     _model_module_version = Unicode(EXTENSION_VERSION).tag(sync=True)
 
-    heat_points = List([]).tag(sync=True)
+    heat_points = List([]).tag(sync=True)  #:热力点数据
 
     @validate('heat_points')
     def _validate_heat_points(self, proposal):
@@ -25,14 +25,17 @@ class HeatLayer(Layer):
         self.max = max(dt[2] for dt in self.heat_points)
         return proposal['value']
 
-    radius = Int(25).tag(sync=True, o=True)
-    min_opacity = Float(0.05).tag(sync=True, o=True)
-    max_zoom = Int().tag(sync=True, o=True)
-    max = Float(1.0).tag(sync=True, o=True)
-    blur = Int(15).tag(sync=True, o=True)
-    gradient = Dict().tag(sync=True, o=True)
+    radius = Int(25).tag(sync=True, o=True)  #:半径
+    min_opacity = Float(0.05).tag(sync=True, o=True)  #:最小透明度
+    max_zoom = Int().tag(sync=True, o=True)  #:最大缩放程度
+    max = Float(1.0).tag(sync=True, o=True)  #:最大值
+    blur = Int(15).tag(sync=True, o=True)  #:模糊度
+    gradient = Dict().tag(sync=True, o=True)  #:级别
 
     def interact(self):
+        """
+        获取交互式控制专题图样式部件
+        """
         radiusintslider = IntSlider(value=self.radius,
                                     min=1,
                                     max=100,
