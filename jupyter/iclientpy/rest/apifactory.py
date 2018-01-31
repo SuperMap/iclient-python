@@ -38,6 +38,25 @@ class CookieAuth(AuthBase):
         return r
 
 
+class TokenAuth(AuthBase):
+    """
+    基于Token认证
+    """
+
+    def __init__(self, token: str):
+        """
+        初始化方法
+
+        Args:
+            token: token值
+        """
+        self._token = token
+
+    def __call__(self, r: requests.PreparedRequest):
+        r.prepare_url(r.url, {'token': self._token})
+        return r
+
+
 class RestInvocationHandlerImpl(RestInvocationHandler):
     """
     rest请求的拦截器，拦截请求，并处理请求
@@ -238,6 +257,8 @@ def create_auth(base_url: str, username: str, passwd: str, token: str, proxies=N
         response.raise_for_status()
         value = response.cookies[default_session_cookie_name]
         return CookieAuth(value)
+    elif token is not None:
+        return TokenAuth(token)
 
 
 def _get_proxy_from_arguments(argv=sys.argv):
