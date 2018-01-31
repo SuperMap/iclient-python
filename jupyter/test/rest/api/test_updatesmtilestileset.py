@@ -33,6 +33,10 @@ class TestUpdateTileSet(TestCase):
         httpretty.register_uri(httpretty.GET,
                                base_uri + '/manager/tilesetupdatejobs/f1341552-d09f-456d-8c06-0b04612b5762.json',
                                body=get_update_job_body, status=200)
+        # delete map component
+        httpretty.register_uri(httpretty.DELETE,
+                               base_uri + '/manager/services/data-world2.json',
+                               body='{"succeed": true}', status=200)
         u_loc = '/etc/icloud/SuperMapiServer/bin/iserver/output/sqlite113/World_1881337416_256X256_PNG.smtiles'
         update_smtilestileset(base_uri, 'admin', 'iserver', '/etc/icloud/World2/World.sxwu', 'World', (-180, 90),
                               (-180, -90, 180, 90), u_loc,

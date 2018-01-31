@@ -580,6 +580,10 @@ class Management:
     def get_workspaces(self) -> List[GetWorkspaceResultItem]:
         pass
 
+    @delete('/manager/services/{name}')
+    def delete_mapcomponent(self, name: str) -> MethodResult:
+        pass
+
     @post('/manager/tileservice/jobs', entityKW='entity')
     def post_tilejobs(self, entity: PostTileJobsItem) -> PostTileJobsResultItem:
         pass

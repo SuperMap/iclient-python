@@ -76,3 +76,4 @@ def update_smtilestileset(address: str, username: str, password: str, w_loc: str
         gtur = mng.get_tilesetupdatejob(ptur.newResourceID)
     if (gtur.state.runState is not TilesetExportJobRunState.COMPLETED):
         raise Exception('更新切片失败')
+    mng.delete_mapcomponent(name=wkn)

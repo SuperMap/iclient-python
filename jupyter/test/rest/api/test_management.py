@@ -101,3 +101,7 @@ class ManagementTest(AbstractRESTTestCase):
                        self.baseuri + '/manager/tilesetupdatejobs/f1341552-d09f-456d-8c06-0b04612b5762.json',
                        HttpMethod.GET, httpretty.Response(body=job_get_body, status=200),
                        id='f1341552-d09f-456d-8c06-0b04612b5762')
+
+    def test_deletemapcomponent(self):
+        self.check_api('delete_mapcomponent', self.baseuri + '/manager/services/map.json', HttpMethod.DELETE,
+                       httpretty.Response(body='{"succeed": true}', status=200), name='map')
