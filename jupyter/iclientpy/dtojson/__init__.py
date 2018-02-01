@@ -88,7 +88,8 @@ def _get_all_annotations(clz:type):
     assert annos is not None
     annos = annos.copy()
     for base_clz in clz.__bases__:
-        annos.update(base_clz.__annotations__)
+        if hasattr(base_clz, '__annotations__'):
+            annos.update(base_clz.__annotations__)
     return annos
 
 
