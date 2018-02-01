@@ -2,7 +2,7 @@ from unittest import TestCase
 from iclientpy.dtojson import *
 import typing
 import inspect
-from iclientpy.rest.api.model import ProviderSetting,SMTilesMapProviderSetting
+from iclientpy.rest.api.model import ProviderSetting,SMTilesMapProviderSetting,MngServiceInfo
 
 from enum import  Enum
 
@@ -59,10 +59,15 @@ class TestDTOJson(TestCase):
         self.assertIn('{"key":"value"}', jsonstr.replace(' ', '', 3))
 
     def test_abstract_type_field(self):
-        jsonstr = '{"alias":null,"config":{"cacheMode":null,"cacheVersion":"4.0","dataPrjCoordSysType":null,"filePath":"C:/supermappackages/supermap-iserver-9.0.1-win64-deploy/bin/output/World_-452220655_256X256_PNG.smtiles","name":null,"outputPath":"./output","outputSite":"http://{ip}:{port}/iserver/output/","watermark":null},"enabled":true,"innerProviders":null,"name":"smtiles-World2","type":"com.supermap.services.providers.SMTilesMapProvider"}'
+        jsonstr = '{"isStreamingService":false,"interfaceTypes":"com.supermap.services.rest.RestServlet","isSet":false,"instances":[{"interfaceType":"com.supermap.services.rest.RestServlet","componentType":"com.supermap.services.components.impl.MapImpl","name":"map-smtiles-World2/rest","componentSetName":null,"authorizeSetting":{"permittedRoles":[],"deniedRoles":[],"type":"PUBLIC"},"id":null,"componentName":"map-smtiles-World2","interfaceName":"rest","enabled":true,"status":"OK"}],"isClusterService":false,"type":"com.supermap.services.components.impl.MapImpl","interfaceNames":"rest","clusterInterfaceNames":"","isDataflowService":false,"component":{"isScSet":false,"scSetSetting":null,"scSetting":{"disabledInterfaceNames":"","instanceCount":0,"name":"map-smtiles-World2","alias":"","interfaceNames":"rest","type":"com.supermap.services.components.impl.MapImpl","config":{"cacheReadOnly":false,"cacheConfigs":null,"useVectorTileCache":false,"utfGridCacheConfig":null,"tileCacheConfig":null,"vectorTileCacheConfig":null,"expired":0,"logLevel":"info","outputPath":"","useCache":false,"outputSite":"","useUTFGridCache":false,"clip":false},"providers":"smtiles-World2","enabled":true}},"providerNames":"smtiles-World2","name":"map-smtiles-World2","alias":"","providers":[{"spsetSetting":null,"isSPSet":false,"spSetting":{"name":"smtiles-World2","alias":null,"innerProviders":null,"type":"com.supermap.services.providers.SMTilesMapProvider","config":{"dataPrjCoordSysType":null,"watermark":null,"cacheVersion":"4.0","outputPath":"./output","filePath":"C:/supermappackages/supermap-iserver-9.0.1-win64-deploy/bin/output/World_-452220655_256X256_PNG.smtiles","cacheMode":null,"name":null,"outputSite":"http://{ip}:{port}/iserver/output/"},"enabled":true}}]}'
         def fun(json_obj):
             return SMTilesMapProviderSetting
-        provider_setting = from_json_str(jsonstr, ProviderSetting, {(ProviderSetting, 'config') : fun}) # type:ProviderSetting
-        self.assertIsInstance(provider_setting.config, SMTilesMapProviderSetting)
-        config = provider_setting.config # type:SMTilesMapProviderSetting
+        mng_serviceSetting = from_json_str(jsonstr, MngServiceInfo, {(ProviderSetting, 'config') : fun}) # type:MngServiceInfo
+        self.assertIsInstance(mng_serviceSetting.providers[0].spSetting.config, SMTilesMapProviderSetting)
+        config = mng_serviceSetting.providers[0].spSetting.config # type:SMTilesMapProviderSetting
         self.assertIn('World_-452220655_256X256_PNG.smtiles', config.filePath)
+
+
+    def test_dict_with_object_value(self):
+        obj_value_dict = {'key1': A(), 'key2': None}
+        to_json_str(obj_value_dict)# 不抛出异常就算过

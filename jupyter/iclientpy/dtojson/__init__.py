@@ -24,8 +24,12 @@ def to_dict_or_list(obj):
     if isinstance(obj, Enum):
         return obj.name
     if isinstance(obj, dict):
-        return obj
-    annos = clz.__dict__['__annotations__']  # type:dict
+        tmp_dict = obj # type:dict
+        result = {}
+        for key, value in tmp_dict.items():
+            result[key] = None if value is None else to_dict_or_list(value)
+        return result
+    annos = _get_all_annotations(clz)  # type:dict
     result = vars(obj).copy()  # type:dict
     for key in annos.keys():
         value = result.get(key, None)
@@ -63,7 +67,7 @@ def get_class(kls):
 
 def parse_jsonobj(jsonobj, clz: type, abstract_type_fields: typing.Dict[typing.Tuple[type, str], typing.Callable[[dict], type]] = {}):
     if isinstance(jsonobj, list):
-        return from_list(jsonobj, clz)
+        return from_list(jsonobj, clz, abstract_type_fields)
     if clz in primitive_types:
         return jsonobj
     if Enum in clz.__bases__:
@@ -73,14 +77,14 @@ def parse_jsonobj(jsonobj, clz: type, abstract_type_fields: typing.Dict[typing.T
     return from_dict(jsonobj, clz, abstract_type_fields)
 
 
-def from_list(jsonobjarray, clz: type):
+def from_list(jsonobjarray, clz: type, abstract_type_fields: typing.Dict[typing.Tuple[type, str], typing.Callable[[dict], type]]):
     result = []
     clzname = clz.__str__(clz)  # type:str
     start = clzname.find('[')
     end = clzname.find(']')
     elementclz = get_class(clzname[start + 1: end])
     for e in jsonobjarray:
-        result.append(parse_jsonobj(e, elementclz))
+        result.append(parse_jsonobj(e, elementclz, abstract_type_fields))
     return result
 
 def _get_all_annotations(clz:type):
@@ -103,7 +107,7 @@ def from_dict(jsonobj: dict, clz: type, abstract_type_fields: typing.Dict[typing
         if value is not None:
             if field in abstract_type_fields:
                 field_type = abstract_type_fields[field](jsonobj)
-                setattr(result, key, parse_jsonobj(value, field_type))
+                setattr(result, key, parse_jsonobj(value, field_type, abstract_type_fields))
             else:
                 if Enum in valuetype.__bases__:
                     setattr(result, key, valuetype[value])
@@ -111,7 +115,7 @@ def from_dict(jsonobj: dict, clz: type, abstract_type_fields: typing.Dict[typing
                     if valuetype in primitive_types:
                         setattr(result, key, value)
                     else:
-                        setattr(result, key, parse_jsonobj(value, valuetype))
+                        setattr(result, key, parse_jsonobj(value, valuetype, abstract_type_fields))
     return result
 
 

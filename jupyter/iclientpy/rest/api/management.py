@@ -1,7 +1,8 @@
 from typing import List
 from enum import Enum
 from ..decorator import post, get, put, delete, head
-from .model import Point2D, Rectangle2D, Geometry
+from .model import Point2D, Rectangle2D, Geometry,MngServiceInfo,ProviderSetting
+from .abstracttypefields import get_provider_setting_type_from_provider_type_name
 
 
 class ServiceType(Enum):
@@ -622,4 +623,8 @@ class Management:
 
     @get('/manager/tilesetupdatejobs/{id}')
     def get_tilesetupdatejob(self, id: str) -> GetTilesetExportJobResultItem:
+        pass
+
+    @get('/manager/services/{service_name}', abstract_type_fields={(ProviderSetting, 'config'): get_provider_setting_type_from_provider_type_name})
+    def get_service(self, service_name:str) -> MngServiceInfo:
         pass

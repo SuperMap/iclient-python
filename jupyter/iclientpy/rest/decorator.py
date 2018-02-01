@@ -1,5 +1,5 @@
 import types
-from typing import List
+from typing import List,Dict,Callable,Tuple
 from enum import Enum
 from functools import wraps
 
@@ -17,7 +17,7 @@ class REST:
     REST请求的封装，用于封装python api参数与rest请求之间的对应关系，比如：查询字符串，请求体之类
     """
 
-    def __init__(self, func, method, uri: str, entityKW: str = None, queryKWs: List[str] = None):
+    def __init__(self, func, method, uri: str, entityKW: str = None, queryKWs: List[str] = None, abstract_type_fields: Dict[Tuple[type, str], Callable[[dict], type]] = {}):
         """
         初始化REST类，存放实际调用的rest请求的相关信息
 
@@ -37,6 +37,7 @@ class REST:
         self._uri = uri if uri.startswith('/') else ('/' + uri)
         self._entityKW = entityKW
         self._queryKWs = queryKWs
+        self._abstract_type_fields = abstract_type_fields
 
     def __call__(self, *args, **kwargs):
         return self.__wrapped__(*args, **kwargs)
@@ -46,6 +47,9 @@ class REST:
             return self
         else:
             return types.MethodType(self, instance)
+
+    def get_abstract_type_fields(self):
+        return self._abstract_type_fields
 
     def get_original_func(self):
         """
@@ -93,7 +97,7 @@ class REST:
         return self._queryKWs
 
 
-def rest(method: HttpMethod, uri, entityKW: str = None, queryKWs: List[str] = None):
+def rest(method: HttpMethod, uri, entityKW: str = None, queryKWs: List[str] = None, abstract_type_fields: Dict[Tuple[type, str], Callable[[dict], type]] = {}):
     """
     rest请求的封装方法
 
@@ -109,7 +113,7 @@ def rest(method: HttpMethod, uri, entityKW: str = None, queryKWs: List[str] = No
 
     class RESTWrapper(REST):
         def __init__(self, func):
-            super().__init__(func, method, uri, entityKW, queryKWs);
+            super().__init__(func, method, uri, entityKW, queryKWs, abstract_type_fields);
 
     return RESTWrapper
 
@@ -144,7 +148,7 @@ def post(uri: str, entityKW: str, queryKWs: List[str] = None):
     return rest(HttpMethod.POST, uri, entityKW, queryKWs)
 
 
-def get(uri: str, entityKW: str = None, queryKWs: List[str] = None):
+def get(uri: str, entityKW: str = None, queryKWs: List[str] = None, abstract_type_fields: Dict[Tuple[type, str], Callable[[dict], type]] = {}):
     """
     get请求的装饰器，可以在方法上直接通过@get方式使用
 
@@ -156,7 +160,7 @@ def get(uri: str, entityKW: str = None, queryKWs: List[str] = None):
     Returns:
         封装了请求的REST类
     """
-    return rest(HttpMethod.GET, uri, entityKW, queryKWs)
+    return rest(HttpMethod.GET, uri, entityKW, queryKWs, abstract_type_fields)
 
 
 def put(uri: str, entityKW: str = None, queryKWs: List[str] = None):

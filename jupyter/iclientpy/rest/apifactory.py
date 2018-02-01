@@ -7,7 +7,7 @@ from requests.auth import AuthBase
 
 from .api.management import Management
 from .api.restdata import DataService
-from .decorator import HttpMethod
+from .decorator import HttpMethod,REST
 from .proxyfactory import RestInvocationHandler
 from .proxyfactory import create
 from ..dtojson import from_json_str, to_json_str
@@ -96,7 +96,7 @@ class RestInvocationHandlerImpl(RestInvocationHandler):
                         query_params[name] = to_json_str(kwages[name])
         return query_params
 
-    def _send_request(self, rest, *args, **kwargs):
+    def _send_request(self, rest: REST, *args, **kwargs):
         """
         发送请求的最终方法
 
@@ -117,7 +117,7 @@ class RestInvocationHandlerImpl(RestInvocationHandler):
         }
         response = requests_methods[rest.get_method()](*args, **kwargs)
         response.raise_for_status()
-        return from_json_str(response.text, inspect.getfullargspec(rest.get_original_func()).annotations['return'])
+        return from_json_str(response.text, inspect.getfullargspec(rest.get_original_func()).annotations['return'], rest.get_abstract_type_fields())
 
     def get(self, rest, uri, args, kwargs):
         """

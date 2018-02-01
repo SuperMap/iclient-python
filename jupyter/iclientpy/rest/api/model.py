@@ -100,6 +100,29 @@ class MapProviderSetting:
     #TODO watermarker
 
 
+class MngProvider:
+    isSPSet:bool
+    spSetting:ProviderSetting
+    spsetSetting:List[ProviderSetting]
+
+
+class MngServiceInfo:
+    alias:str
+    clusterInterfaceNames:str
+    #todo component
+    #todo instances
+    interfaceNames:str
+    interfaceTypes:str
+    isClusterService:bool
+    isDataflowService:bool
+    isSet:bool
+    isStreamingService:bool
+    name:str
+    providerNames:str
+    providers:List[MngProvider]
+    type:str
+
+
 class SMTilesMapProviderSetting(MapProviderSetting):
     filePath:str
 
