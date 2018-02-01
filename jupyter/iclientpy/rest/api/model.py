@@ -77,3 +77,31 @@ class MethodResult:
     newResourceLocation: str
     postResultType: PostResultType
     succeed: bool
+
+
+class AbstractServiceSetting:
+    alias:str
+    config:object
+    name:str
+    type:str
+
+
+class ProviderSetting(AbstractServiceSetting):
+    enabled:bool
+    innerProviders:List[str]
+
+
+class MapProviderSetting:
+    cacheMode:str
+    cacheVersion:str
+    name:str
+    outputPath:str
+    outputSite:str
+    #TODO watermarker
+
+
+class SMTilesMapProviderSetting(MapProviderSetting):
+    filePath:str
+
+
+

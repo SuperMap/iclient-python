@@ -2,6 +2,7 @@ from unittest import TestCase
 from iclientpy.dtojson import *
 import typing
 import inspect
+from iclientpy.rest.api.model import ProviderSetting,SMTilesMapProviderSetting
 
 from enum import  Enum
 
@@ -56,3 +57,12 @@ class TestDTOJson(TestCase):
         to_parse.dictProp = {"key":"value"}
         jsonstr = to_json_str(to_parse)
         self.assertIn('{"key":"value"}', jsonstr.replace(' ', '', 3))
+
+    def test_abstract_type_field(self):
+        jsonstr = '{"alias":null,"config":{"cacheMode":null,"cacheVersion":"4.0","dataPrjCoordSysType":null,"filePath":"C:/supermappackages/supermap-iserver-9.0.1-win64-deploy/bin/output/World_-452220655_256X256_PNG.smtiles","name":null,"outputPath":"./output","outputSite":"http://{ip}:{port}/iserver/output/","watermark":null},"enabled":true,"innerProviders":null,"name":"smtiles-World2","type":"com.supermap.services.providers.SMTilesMapProvider"}'
+        def fun(json_obj):
+            return SMTilesMapProviderSetting
+        provider_setting = from_json_str(jsonstr, ProviderSetting, {(ProviderSetting, 'config') : fun}) # type:ProviderSetting
+        self.assertIsInstance(provider_setting.config, SMTilesMapProviderSetting)
+        config = provider_setting.config # type:SMTilesMapProviderSetting
+        self.assertIn('World_-452220655_256X256_PNG.smtiles', config.filePath)

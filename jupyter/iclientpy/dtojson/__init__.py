@@ -1,4 +1,5 @@
 import json
+import typing
 from enum import Enum
 
 __all__ = [
@@ -60,7 +61,7 @@ def get_class(kls):
         return eval(kls)
 
 
-def parse_jsonobj(jsonobj, clz: type):
+def parse_jsonobj(jsonobj, clz: type, abstract_type_fields: typing.Dict[typing.Tuple[type, str], typing.Callable[[dict], type]] = {}):
     if isinstance(jsonobj, list):
         return from_list(jsonobj, clz)
     if clz in primitive_types:
@@ -69,7 +70,7 @@ def parse_jsonobj(jsonobj, clz: type):
         return clz[jsonobj]
     if clz is dict:
         return jsonobj
-    return from_dict(jsonobj, clz)
+    return from_dict(jsonobj, clz, abstract_type_fields)
 
 
 def from_list(jsonobjarray, clz: type):
@@ -82,35 +83,48 @@ def from_list(jsonobjarray, clz: type):
         result.append(parse_jsonobj(e, elementclz))
     return result
 
-
-def from_dict(jsonobj: dict, clz: type):
-    test = clz.__dict__
+def _get_all_annotations(clz:type):
     annos = clz.__dict__.get('__annotations__', None)  # type:dict
     assert annos is not None
+    annos = annos.copy()
+    for base_clz in clz.__bases__:
+        annos.update(base_clz.__annotations__)
+    return annos
+
+
+def from_dict(jsonobj: dict, clz: type, abstract_type_fields: typing.Dict[typing.Tuple[type, str], typing.Callable[[dict], type]] = {}):
+    test = clz.__dict__
+    annos = _get_all_annotations(clz)  # type:dict
     result = clz()
     for (key, valuetype) in annos.items():
+        field = (clz, key)
         value = jsonobj.get(key, None)
         if value is not None:
-            if Enum in valuetype.__bases__:
-                setattr(result, key, valuetype[value])
+            if field in abstract_type_fields:
+                field_type = abstract_type_fields[field](jsonobj)
+                setattr(result, key, parse_jsonobj(value, field_type))
             else:
-                if valuetype in primitive_types:
-                    setattr(result, key, value)
+                if Enum in valuetype.__bases__:
+                    setattr(result, key, valuetype[value])
                 else:
-                    setattr(result, key, parse_jsonobj(value, valuetype))
+                    if valuetype in primitive_types:
+                        setattr(result, key, value)
+                    else:
+                        setattr(result, key, parse_jsonobj(value, valuetype))
     return result
 
 
-def from_json_str(jsonstr: str, clz: type):
+def from_json_str(jsonstr: str, clz: type, abstract_type_fields: typing.Dict[typing.Tuple[type, str], typing.Callable[[dict], type]] = {}):
     """
     从json字符串转向对应的python对象
 
     Args:
         jsonstr: json字符串
         clz: python对象类型
+        abstract_type_fields: 类型为抽象类型的字段具体类型判断函数
 
     Returns:
         返回对象的python对象实例
     """
     jsonobj = json.loads(jsonstr)
-    return parse_jsonobj(jsonobj, clz)
+    return parse_jsonobj(jsonobj, clz, abstract_type_fields)
