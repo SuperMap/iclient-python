@@ -1,6 +1,7 @@
 from typing import List
+
+from .model import Feature, MethodResult, GeometryType, Point2D
 from ..decorator import post, get
-from .model import Feature, MethodResult, GeometryType
 
 
 class Features:
@@ -8,6 +9,12 @@ class Features:
     childUriList: List[str]
     geometryType: GeometryType
     featureCount: int
+
+
+class GetMapResult:
+    name: str
+    center: Point2D
+    visibleScales: List[float]
 
 
 class DataService:
@@ -20,4 +27,8 @@ class DataService:
     @get('/data/datasources/{datasourceName}/datasets/{datasetName}/features', queryKWs=['fromIndex', 'toIndex'])
     def get_features(self, datasourceName: str, datasetName: str, fromIndex: int = None,
                      toIndex: int = None) -> Features:
+        pass
+
+    @get('/maps/{map}')
+    def get_map(self, map: str) -> GetMapResult:
         pass
