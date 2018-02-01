@@ -8,9 +8,9 @@ from iclientpy.rest.api.management import ServiceType, TileSize, OutputFormat, P
 from iclientpy.rest.apifactory import APIFactory
 
 
-def update_smtilestileset(address: str, username: str, password: str, w_loc: str, map_name: str,
-                          original_point: tuple, cache_bounds: tuple, u_loc: str,
-                          scale: List[float], w_servicetypes: List[ServiceType] = [ServiceType.RESTMAP],
+def update_smtilestileset(address: str, username: str, password: str, component_name: str, w_loc: str, map_name: str,
+                          original_point: tuple, cache_bounds: tuple, u_loc: str, scale: List[float] = None,
+                          w_servicetypes: List[ServiceType] = [ServiceType.RESTMAP],
                           tile_size: TileSize = TileSize.SIZE_256, tile_type: TileType = TileType.Image,
                           format: OutputFormat = OutputFormat.PNG, epsgcode: int = -1, storageid: str = None,
                           storageconfig: SMTilesTileSourceInfo = None):
@@ -35,6 +35,12 @@ def update_smtilestileset(address: str, username: str, password: str, w_loc: str
     post_param.servicesTypes = w_servicetypes
     pwr = mng.post_workspaces(post_param)
     wkn = re.findall('services/[^/]*', pwr[0].serviceAddress)[0].lstrip('services/')
+    if scale is None:
+        ds = api.data_service(component_name + '/rest')
+        mr = ds.get_map(map_name)
+        scale = [1 / x for x in mr.visibleScales]
+    if scale is None or len(scale) is 0:
+        raise Exception('无法获取目标地图比例尺且未指定比例尺')
     post_tile_jobs_param = PostTileJobsItem()
     post_tile_jobs_param.dataConnectionString = wkn
     post_tile_jobs_param.mapName = map_name
