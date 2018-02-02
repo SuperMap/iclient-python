@@ -264,19 +264,18 @@ def create_auth(base_url: str, username: str, passwd: str, token: str, proxies=N
         return TokenAuth(token)
 
 
-def _get_proxy_from_arguments(argv=sys.argv):
+def _get_proxy_from_arguments():
     """
     从命令行中获取设置的代理服务地址
 
     Args:
-        argv: 参数，用于获取从命令行设置过来的代理服务器地址
 
     Returns:
         返回设置代理后的代理的字典
     """
     parser = argparse.ArgumentParser()
     parser.add_argument('--iclientpy-rest-proxy', dest='proxy', nargs='?')
-    argv_dict = parser.parse_known_args(argv)[0]
+    argv_dict = parser.parse_known_args(sys.argv)[0]
     return {} if 'proxy' not in argv_dict else {'http': argv_dict.proxy, 'https': argv_dict.proxy}
 
 

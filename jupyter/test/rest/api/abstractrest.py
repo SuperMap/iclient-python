@@ -1,5 +1,6 @@
 import inspect
 import httpretty
+import json
 from sure import expect
 from unittest import TestCase
 from iclientpy.dtojson import to_json_str, from_json_str
@@ -29,7 +30,7 @@ class AbstractREST(object):
             self.api = method(*args, **kwargs)
 
     @httpretty.activate
-    def check_api(self, method_name, uri, http_method: HttpMethod, response: httpretty.Response, *args, **kwargs):
+    def check_api(self, method, uri, http_method: HttpMethod, response: httpretty.Response, *args, **kwargs):
         methods = {
             HttpMethod.POST: httpretty.POST,
             HttpMethod.GET: httpretty.GET,
@@ -38,7 +39,10 @@ class AbstractREST(object):
             HttpMethod.HEAD: httpretty.HEAD
         }
         httpretty.register_uri(methods[http_method], uri, responses=[response])
-        method = getattr(self.api, method_name)
+        if type(method) == str:
+            method = getattr(self.api, method)
+        else :
+            method = getattr(self.api, method.__name__)
         result = method(*args, **kwargs)
         if http_method != HttpMethod.HEAD:
             expect(to_json_str(result)).should.within(

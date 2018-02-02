@@ -127,6 +127,32 @@ class SMTilesMapProviderSetting(MapProviderSetting):
     filePath: str
 
 
+class FastDFSTileProviderSetting(MapProviderSetting):
+    #TODO
+    pass
+
+
+class MongoDBTileProviderSetting(MapProviderSetting):
+    #TODO
+    pass
+
+
+class  OTSTileProviderSetting(MapProviderSetting):
+    #TODO
+    pass
+
+
+class UGCV5TileProviderSetting(MapProviderSetting):
+    #todo
+    pass
+
+
+class  GeoPackageMapProviderSetting(MapProviderSetting):
+    #todo
+    pass
+
+
+
 class PostFileUploadTaskResult:
     fileNames: str
     fielPath: str

@@ -3,13 +3,14 @@ import time
 import uuid
 from typing import List
 from iclientpy.rest.api.model import Rectangle2D, Point2D
-from iclientpy.rest.api.management import ServiceType, TileSize, OutputFormat, PostWorkspaceParameter, PostTileJobsItem, \
-    BuildState, PostTilesetUpdateJobs, SMTilesTileSourceInfo, TilesetExportJobRunState, TileType
+from iclientpy.rest.api.management import Management,ServiceType, TileSize, OutputFormat, PostWorkspaceParameter, PostTileJobsItem, \
+    BuildState, PostTilesetUpdateJobs, SMTilesTileSourceInfo, TilesetExportJobRunState, TileType, TileSourceInfo
 from iclientpy.rest.apifactory import APIFactory
+from .cacheutils import provider_setting_to_tile_source_info
 
 
 def update_smtilestileset(address: str, username: str, password: str, component_name: str, w_loc: str, map_name: str,
-                          original_point: tuple, cache_bounds: tuple, u_loc: str, scale: List[float] = None,
+                          original_point: tuple, cache_bounds: tuple, scale: List[float] = None,
                           w_servicetypes: List[ServiceType] = [ServiceType.RESTMAP],
                           tile_size: TileSize = TileSize.SIZE_256, tile_type: TileType = TileType.Image,
                           format: OutputFormat = OutputFormat.PNG, epsgcode: int = -1, storageid: str = None,
@@ -67,10 +68,8 @@ def update_smtilestileset(address: str, username: str, password: str, component_
     post_tile_update_param = PostTilesetUpdateJobs()
     post_tile_update_param.scaleDenominators = scale
     post_tile_update_param.bounds = tem_cache_Bounds
-    post_tile_update_param.targetTilesetIdentifier = u_loc
-    post_tile_update_param.targetTileSourceInfo = SMTilesTileSourceInfo()
-    post_tile_update_param.targetTileSourceInfo.type = 'SMTiles'
-    post_tile_update_param.targetTileSourceInfo.outputPath = "/".join(u_loc.split('/')[:-1])
+    post_tile_update_param.targetTilesetIdentifier = uuid.uuid1().__str__()
+    post_tile_update_param.targetTileSourceInfo = _get_tile_source_info_from_service(mng, component_name)
     post_tile_update_param.sourceTilesetIdentifier = gjr.targetTilesetInfo.filePath
     post_tile_update_param.sourceTileSourceInfo = SMTilesTileSourceInfo()
     post_tile_update_param.sourceTileSourceInfo.type = 'SMTiles'
@@ -83,3 +82,7 @@ def update_smtilestileset(address: str, username: str, password: str, component_
     if (gtur.state.runState is not TilesetExportJobRunState.COMPLETED):
         raise Exception('更新切片失败')
     mng.delete_mapcomponent(name=wkn)
+
+def _get_tile_source_info_from_service(mng:Management, name:str) -> TileSourceInfo:
+    service_info = mng.get_service(name)
+    return provider_setting_to_tile_source_info(service_info.providers[0].spSetting.config)

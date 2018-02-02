@@ -17,7 +17,6 @@ def get_parser():
     require_group.add_argument('-m', '--map-name', dest='map_name', help='切图地图名称')
     require_group.add_argument('-o', '--origin-point', dest='original_point', help='切图原点，需以单引号开始和结束，如：\'-180,90\'')
     require_group.add_argument('-b', '--bounds', dest='cache_bounds', help='缓存范围，需以单引号开始和结束，如：\'-180,-90,0,0\'')
-    require_group.add_argument('--u-loc', dest='u_loc', help='待更新切图文件位置')
     optional_group = parser.add_argument_group('可选参数')
     optional_group.add_argument('-s', '--scale', dest='scale', help='缓存比例尺分母，如：8000000,4000000,2000000')
     optional_group.add_argument('--service-type', dest='w_servicetype', help='工作空间服务类型')
@@ -43,8 +42,7 @@ def interact(d):
         'w_loc': '请输入工作空间路径：',
         'map_name': '请输入切图地图名称：',
         'original_point': '请输入切图原点：',
-        'cache_bounds': '请输入缓存范围：',
-        'u_loc': '请输入待更新切图文件位置：'
+        'cache_bounds': '请输入缓存范围：'
     }
     for field in field_and_desc.keys():
         if field not in d:

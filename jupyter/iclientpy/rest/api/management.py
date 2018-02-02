@@ -109,10 +109,14 @@ class TileSourceType(Enum):
 
 class TileSourceInfo(DataStoreInfo):
     type: str
+    def __init__(self, type:str = None):
+        self.type = type
 
 
 class SMTilesTileSourceInfo(TileSourceInfo):
     outputPath: str
+    def __init__(self):
+        super().__init__('SMTiles')
 
 
 class TileType(Enum):

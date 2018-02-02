@@ -1,5 +1,6 @@
 import httpretty
-from unittest import mock
+
+from unittest import mock, skip
 from iclientpy.rest.api.management import *
 from iclientpy.rest.decorator import HttpMethod
 from iclientpy.rest.api.management import PostTileJobsItem, TileSize, OutputFormat, TileType, TileSourceInfo
@@ -107,6 +108,7 @@ class ManagementTest(AbstractRESTTestCase):
         self.check_api('delete_mapcomponent', self.baseuri + '/manager/services/map.json', HttpMethod.DELETE,
                        httpretty.Response(body='{"succeed": true}', status=200), name='map')
 
+
     @mock.patch('builtins.open', mock.mock_open(read_data='1'))
     def test_fileuploadtask(self):
         param = PostFileUploadTasksParam()
@@ -123,3 +125,10 @@ class ManagementTest(AbstractRESTTestCase):
         self.check_api('get_fileuploadtask',
                        self.baseuri + '/manager/filemanager/uploadtasks/38efbec5de2846d1bd499866637aec46_74d0dd27cf454fe1875f0b94490e7280.json',
                        HttpMethod.GET, httpretty.Response(body=get_fileuploadtask, status=200), id=taskid)
+
+    @skip('这个方法的返回值不能直接反系列化，导致无法测试')
+    def test_get_service(self):
+        get_mng_service_body = '{"isStreamingService":false,"interfaceTypes":"com.supermap.services.rest.RestServlet","isSet":false,"instances":[{"interfaceType":"com.supermap.services.rest.RestServlet","componentType":"com.supermap.services.components.impl.MapImpl","name":"cache-World/rest","componentSetName":null,"authorizeSetting":{"permittedRoles":[],"deniedRoles":[],"type":"PUBLIC"},"id":null,"componentName":"map-smtiles-World2","interfaceName":"rest","enabled":true,"status":"OK"}],"isClusterService":false,"type":"com.supermap.services.components.impl.MapImpl","interfaceNames":"rest","clusterInterfaceNames":"","isDataflowService":false,"component":{"isScSet":false,"scSetSetting":null,"scSetting":{"disabledInterfaceNames":"","instanceCount":0,"name":"map-smtiles-World2","alias":"","interfaceNames":"rest","type":"com.supermap.services.components.impl.MapImpl","config":{"cacheReadOnly":false,"cacheConfigs":null,"useVectorTileCache":false,"utfGridCacheConfig":null,"tileCacheConfig":null,"vectorTileCacheConfig":null,"expired":0,"logLevel":"info","outputPath":"","useCache":false,"outputSite":"","useUTFGridCache":false,"clip":false},"providers":"smtiles-World2","enabled":true}},"providerNames":"smtiles-World2","name":"cache-World","alias":"","providers":[{"spsetSetting":null,"isSPSet":false,"spSetting":{"name":"smtiles-World2","alias":null,"innerProviders":null,"type":"com.supermap.services.providers.SMTilesMapProvider","config":{"dataPrjCoordSysType":null,"watermark":null,"cacheVersion":"4.0","outputPath":"./output","filePath":"/etc/icloud/SuperMapiServer/bin/iserver/output/sqlite113/World_1881337416_256X256_PNG.smtiles","cacheMode":null,"name":null,"outputSite":"http://{ip}:{port}/iserver/output/"},"enabled":true}}]}'
+        response = httpretty.Response(body=get_mng_service_body, status=200)
+        self.check_api(Management.get_service, self.baseuri + '/manager/services/cache-World.json', HttpMethod.GET,
+                           response, service_name='cache-World')
