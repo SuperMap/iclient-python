@@ -1,4 +1,5 @@
 from unittest import TestCase
+import  json
 from iclientpy.dtojson import *
 import typing
 import inspect
@@ -67,7 +68,38 @@ class TestDTOJson(TestCase):
         config = mng_serviceSetting.providers[0].spSetting.config # type:SMTilesMapProviderSetting
         self.assertIn('World_-452220655_256X256_PNG.smtiles', config.filePath)
 
-
     def test_dict_with_object_value(self):
         obj_value_dict = {'key1': A(), 'key2': None}
-        to_json_str(obj_value_dict)# 不抛出异常就算过
+        to_json_str(obj_value_dict)  # 不抛出异常就算过
+
+    def test_base_fields(self):
+        class FieldType:
+            a:str
+            def __init__(self, a = None):
+                self.a = a
+
+            def __eq__(self, other):
+                return self.a == other.a
+
+
+        class Base1:
+            base1:FieldType
+
+
+        class Base2(Base1):
+            base2:FieldType
+
+
+        class Kls(Base2):
+            kls:FieldType
+
+
+        kls = Kls()
+        kls.kls = FieldType('kls')
+        kls.base1 = FieldType('base1')
+        kls.base2 = FieldType('base2')
+        jsonstr = to_json_str(kls)
+        json_dict = json.loads(jsonstr)  #type:dict
+        self.assertSetEqual(set(json_dict.keys()), set(['base1', 'base2', 'kls']))
+        parse_result = from_json_str(jsonstr, Kls)
+        self.assertDictEqual(vars(kls), vars(parse_result))

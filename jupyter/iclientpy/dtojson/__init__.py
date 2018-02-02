@@ -87,14 +87,14 @@ def from_list(jsonobjarray, clz: type, abstract_type_fields: typing.Dict[typing.
         result.append(parse_jsonobj(e, elementclz, abstract_type_fields))
     return result
 
-def _get_all_annotations(clz:type):
+def _get_all_annotations(clz:type) -> dict:
+    result = {}
     annos = clz.__dict__.get('__annotations__', None)  # type:dict
-    assert annos is not None
-    annos = annos.copy()
+    if annos is not None:
+        result.update(annos)
     for base_clz in clz.__bases__:
-        if hasattr(base_clz, '__annotations__'):
-            annos.update(base_clz.__annotations__)
-    return annos
+        result.update(_get_all_annotations(base_clz))
+    return result
 
 
 def from_dict(jsonobj: dict, clz: type, abstract_type_fields: typing.Dict[typing.Tuple[type, str], typing.Callable[[dict], type]] = {}):
