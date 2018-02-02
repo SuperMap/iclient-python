@@ -1,7 +1,8 @@
 from typing import List
 from enum import Enum
 from ..decorator import post, get, put, delete, head
-from .model import Point2D, Rectangle2D, Geometry,MngServiceInfo,ProviderSetting
+from .model import Point2D, Rectangle2D, Geometry, MngServiceInfo, ProviderSetting, PostFileUploadTasksParam, \
+    PostFileUploadTaskResult, GetFileUploadTaskResult, PostUploadTasksResult, GetFileUploadResult
 from .abstracttypefields import get_provider_setting_type_from_provider_type_name
 
 
@@ -625,6 +626,24 @@ class Management:
     def get_tilesetupdatejob(self, id: str) -> GetTilesetExportJobResultItem:
         pass
 
-    @get('/manager/services/{service_name}', abstract_type_fields={(ProviderSetting, 'config'): get_provider_setting_type_from_provider_type_name})
-    def get_service(self, service_name:str) -> MngServiceInfo:
+    @get('/manager/services/{service_name}',
+         abstract_type_fields={(ProviderSetting, 'config'): get_provider_setting_type_from_provider_type_name})
+    def get_service(self, service_name: str) -> MngServiceInfo:
+        pass
+
+    @get('/manager/filemanager/uploadtasks')
+    def get_fileuploadtasks(self) -> List[GetFileUploadResult]:
+        pass
+
+    @post('/manager/filemanager/uploadtasks', entityKW='entity')
+    def post_fileuploadtasks(self, entity: PostFileUploadTasksParam) -> PostUploadTasksResult:
+        pass
+
+    @post('/manager/filemanager/uploadtasks/{id}', queryKWs=['toFile', 'overwrite', 'unzip'], fileKW='file_loc')
+    def post_fileuploadtask(self, id: str, file_loc: str, toFile: str, overwrite: bool = False,
+                            unzip: bool = False) -> PostFileUploadTaskResult:
+        pass
+
+    @get('/manager/filemanager/uploadtasks/{id}')
+    def get_fileuploadtask(self, id: str) -> GetFileUploadTaskResult:
         pass

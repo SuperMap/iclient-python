@@ -1,5 +1,5 @@
 import types
-from typing import List,Dict,Callable,Tuple
+from typing import List, Dict, Callable, Tuple
 from enum import Enum
 from functools import wraps
 
@@ -17,7 +17,8 @@ class REST:
     REST请求的封装，用于封装python api参数与rest请求之间的对应关系，比如：查询字符串，请求体之类
     """
 
-    def __init__(self, func, method, uri: str, entityKW: str = None, queryKWs: List[str] = None, abstract_type_fields: Dict[Tuple[type, str], Callable[[dict], type]] = {}):
+    def __init__(self, func, method, uri: str, entityKW: str = None, queryKWs: List[str] = None,
+                 abstract_type_fields: Dict[Tuple[type, str], Callable[[dict], type]] = {}, fileKW: str = None):
         """
         初始化REST类，存放实际调用的rest请求的相关信息
 
@@ -38,6 +39,7 @@ class REST:
         self._entityKW = entityKW
         self._queryKWs = queryKWs
         self._abstract_type_fields = abstract_type_fields
+        self._fileKW = fileKW
 
     def __call__(self, *args, **kwargs):
         return self.__wrapped__(*args, **kwargs)
@@ -96,8 +98,17 @@ class REST:
         """
         return self._queryKWs
 
+    def get_fileKW(self) -> str:
+        """
+        获取请求的文件的key，用于post请求发送文件
+        Returns:
+            返回文件的key
+        """
+        return self._fileKW
 
-def rest(method: HttpMethod, uri, entityKW: str = None, queryKWs: List[str] = None, abstract_type_fields: Dict[Tuple[type, str], Callable[[dict], type]] = {}):
+
+def rest(method: HttpMethod, uri, entityKW: str = None, queryKWs: List[str] = None,
+         abstract_type_fields: Dict[Tuple[type, str], Callable[[dict], type]] = {}, fileKW: str = None):
     """
     rest请求的封装方法
 
@@ -113,7 +124,7 @@ def rest(method: HttpMethod, uri, entityKW: str = None, queryKWs: List[str] = No
 
     class RESTWrapper(REST):
         def __init__(self, func):
-            super().__init__(func, method, uri, entityKW, queryKWs, abstract_type_fields);
+            super().__init__(func, method, uri, entityKW, queryKWs, abstract_type_fields, fileKW);
 
     return RESTWrapper
 
@@ -133,7 +144,7 @@ def head(uri: str, entityKW: str = None, queryKWs: List[str] = None):
     return rest(HttpMethod.HEAD, uri, entityKW, queryKWs)
 
 
-def post(uri: str, entityKW: str, queryKWs: List[str] = None):
+def post(uri: str, entityKW: str = None, queryKWs: List[str] = None, fileKW: str = None):
     """
     post请求的装饰器，可以在方法上直接通过@post方式使用
 
@@ -141,14 +152,16 @@ def post(uri: str, entityKW: str, queryKWs: List[str] = None):
         uri: 请求的uri
         entityKW: 请求的请求体的key
         queryKWs: 请求的查询字符串的key
+        fileKW: 请求的文件的key
 
     Returns:
         封装了请求的REST类
     """
-    return rest(HttpMethod.POST, uri, entityKW, queryKWs)
+    return rest(HttpMethod.POST, uri, entityKW, queryKWs, fileKW=fileKW)
 
 
-def get(uri: str, entityKW: str = None, queryKWs: List[str] = None, abstract_type_fields: Dict[Tuple[type, str], Callable[[dict], type]] = {}):
+def get(uri: str, entityKW: str = None, queryKWs: List[str] = None,
+        abstract_type_fields: Dict[Tuple[type, str], Callable[[dict], type]] = {}):
     """
     get请求的装饰器，可以在方法上直接通过@get方式使用
 

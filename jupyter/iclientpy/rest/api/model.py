@@ -80,51 +80,91 @@ class MethodResult:
 
 
 class AbstractServiceSetting:
-    alias:str
-    config:object
-    name:str
-    type:str
+    alias: str
+    config: object
+    name: str
+    type: str
 
 
 class ProviderSetting(AbstractServiceSetting):
-    enabled:bool
-    innerProviders:List[str]
+    enabled: bool
+    innerProviders: List[str]
 
 
 class MapProviderSetting:
-    cacheMode:str
-    cacheVersion:str
-    name:str
-    outputPath:str
-    outputSite:str
-    #TODO watermarker
+    cacheMode: str
+    cacheVersion: str
+    name: str
+    outputPath: str
+    outputSite: str
+    # TODO watermarker
 
 
 class MngProvider:
-    isSPSet:bool
-    spSetting:ProviderSetting
-    spsetSetting:List[ProviderSetting]
+    isSPSet: bool
+    spSetting: ProviderSetting
+    spsetSetting: List[ProviderSetting]
 
 
 class MngServiceInfo:
-    alias:str
-    clusterInterfaceNames:str
-    #todo component
-    #todo instances
-    interfaceNames:str
-    interfaceTypes:str
-    isClusterService:bool
-    isDataflowService:bool
-    isSet:bool
-    isStreamingService:bool
-    name:str
-    providerNames:str
-    providers:List[MngProvider]
-    type:str
+    alias: str
+    clusterInterfaceNames: str
+    # todo component
+    # todo instances
+    interfaceNames: str
+    interfaceTypes: str
+    isClusterService: bool
+    isDataflowService: bool
+    isSet: bool
+    isStreamingService: bool
+    name: str
+    providerNames: str
+    providers: List[MngProvider]
+    type: str
 
 
 class SMTilesMapProviderSetting(MapProviderSetting):
-    filePath:str
+    filePath: str
 
 
+class PostFileUploadTaskResult:
+    fileNames: str
+    fielPath: str
+    fileSize: int
+    isDirectory: bool
 
+
+class FileUploadState(Enum):
+    NEW = 'NEW'
+    UPLOADING = 'UPLOADING'
+    COMLETED = 'COMPLETED'
+    UPLOADING_ERROR = 'UPLOADING_ERROR'
+    ERROR = 'ERROR'
+
+
+class GetFileUploadTaskResult:
+    path: str
+    progress: float
+    md5: str
+    uploadedDataMD5: str
+    state: FileUploadState
+    uploadedByteCount: int
+
+
+class PostFileUploadTasksParam:
+    md5: str
+    fileSize: int
+    path: str
+
+
+class PostUploadTasksResult:
+    newResourceID: str
+    newResourceLocation: str
+    postResultType: str
+    succeed: bool
+
+
+class GetFileUploadResult:
+    path: str
+    progress: float
+    taskID: str

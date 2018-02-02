@@ -7,7 +7,7 @@ from requests.auth import AuthBase
 
 from .api.management import Management
 from .api.restdata import DataService
-from .decorator import HttpMethod,REST
+from .decorator import HttpMethod, REST
 from .proxyfactory import RestInvocationHandler
 from .proxyfactory import create
 from ..dtojson import from_json_str, to_json_str
@@ -117,7 +117,8 @@ class RestInvocationHandlerImpl(RestInvocationHandler):
         }
         response = requests_methods[rest.get_method()](*args, **kwargs)
         response.raise_for_status()
-        return from_json_str(response.text, inspect.getfullargspec(rest.get_original_func()).annotations['return'], rest.get_abstract_type_fields())
+        return from_json_str(response.text, inspect.getfullargspec(rest.get_original_func()).annotations['return'],
+                             rest.get_abstract_type_fields())
 
     def get(self, rest, uri, args, kwargs):
         """
@@ -149,9 +150,11 @@ class RestInvocationHandlerImpl(RestInvocationHandler):
         Returns:
               根据实际方法的返回类型，将post请求的响应体转换为对应的python对象
         """
-        return self._send_request(rest, self._base_url + uri + '.json', data=to_json_str(kwargs[rest.get_entityKW()]),
+        files = {'file': open(kwargs[rest.get_fileKW()], 'rb')} if rest.get_fileKW() is not None else {}
+        data = to_json_str(kwargs[rest.get_entityKW()]) if rest.get_entityKW() is not None else {}
+        return self._send_request(rest, self._base_url + uri + '.json', data=data,
                                   params=self._get_query_params(kwargs, rest.get_queryKWs()), proxies=self._proxies,
-                                  auth=self._auth)
+                                  auth=self._auth, files=files)
 
     def put(self, rest, uri, args, kwargs):
         """
@@ -237,7 +240,7 @@ class RestInvocationHandlerImpl(RestInvocationHandler):
 
 def create_auth(base_url: str, username: str, passwd: str, token: str, proxies=None) -> AuthBase:
     """
-    登录服务，并将记录登录信息的CookieAuth返回，用于授权需要访问权限的api
+    登录服务，并将记录登录信息的CookieAuth/TokenAuth返回，用于授权需要访问权限的api
 
     Args:
         base_url: 服务地址
@@ -247,7 +250,7 @@ def create_auth(base_url: str, username: str, passwd: str, token: str, proxies=N
         proxies: 设置请求的代理
 
     Returns:
-        返回CookieAuth，存放登录信息的cookie值
+        返回CookieAuth/TokenAuth，存放登录信息
     """
     if username is not None and passwd is not None:
         # TODO iPortal和online，iServer CAS登录后续考虑

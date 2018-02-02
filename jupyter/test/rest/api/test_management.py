@@ -1,4 +1,5 @@
 import httpretty
+from unittest import mock
 from iclientpy.rest.api.management import *
 from iclientpy.rest.decorator import HttpMethod
 from iclientpy.rest.api.management import PostTileJobsItem, TileSize, OutputFormat, TileType, TileSourceInfo
@@ -105,3 +106,20 @@ class ManagementTest(AbstractRESTTestCase):
     def test_deletemapcomponent(self):
         self.check_api('delete_mapcomponent', self.baseuri + '/manager/services/map.json', HttpMethod.DELETE,
                        httpretty.Response(body='{"succeed": true}', status=200), name='map')
+
+    @mock.patch('builtins.open', mock.mock_open(read_data='1'))
+    def test_fileuploadtask(self):
+        param = PostFileUploadTasksParam()
+        post_fileuploadtasks = '{"newResourceID":"38efbec5de2846d1bd499866637aec46_74d0dd27cf454fe1875f0b94490e7280","succeed":true,"newResourceLocation":"http://192.168.20.158:8090/iserver/manager/filemanager/uploadtasks/38efbec5de2846d1bd499866637aec46_74d0dd27cf454fe1875f0b94490e7280"}'
+        self.check_api('post_fileuploadtasks', self.baseuri + '/manager/filemanager/uploadtasks.json', HttpMethod.POST,
+                       httpretty.Response(body=post_fileuploadtasks, status=200), entity=param)
+        taskid = '38efbec5de2846d1bd499866637aec46_74d0dd27cf454fe1875f0b94490e7280'
+        post_fileuploadtask = '{"fileName":"World0","fileSize":0,"filePath":"/etc/icloud/SuperMapiServer/webapps/iserver/./World0/","isDirectory":true}'
+        self.check_api('post_fileuploadtask',
+                       self.baseuri + '/manager/filemanager/uploadtasks/38efbec5de2846d1bd499866637aec46_74d0dd27cf454fe1875f0b94490e7280.json',
+                       HttpMethod.POST, httpretty.Response(body=post_fileuploadtask, status=200), id=taskid,
+                       file_loc='./world.zip', toFile='./World.zip')
+        get_fileuploadtask = '{"uploadedByteCount":0,"path":"/etc/icloud/SuperMapiServer/upload","progress":100,"state":"UPLOADING","uploadedDataMD5":null,"taskID":"38efbec5de2846d1bd499866637aec46_9f2791745913493abe53d2db755ecaf1","md5":null}'
+        self.check_api('get_fileuploadtask',
+                       self.baseuri + '/manager/filemanager/uploadtasks/38efbec5de2846d1bd499866637aec46_74d0dd27cf454fe1875f0b94490e7280.json',
+                       HttpMethod.GET, httpretty.Response(body=get_fileuploadtask, status=200), id=taskid)
