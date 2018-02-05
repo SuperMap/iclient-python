@@ -150,11 +150,16 @@ class RestInvocationHandlerImpl(RestInvocationHandler):
         Returns:
               根据实际方法的返回类型，将post请求的响应体转换为对应的python对象
         """
-        files = {'file': open(kwargs[rest.get_fileKW()], 'rb')} if rest.get_fileKW() is not None else {}
+        if rest.get_fileKW() is not None:
+            fb=open(kwargs[rest.get_fileKW()], 'rb')
+        files = {'file': fb} if rest.get_fileKW() is not None else {}
         data = to_json_str(kwargs[rest.get_entityKW()]) if rest.get_entityKW() is not None else {}
-        return self._send_request(rest, self._base_url + uri + '.json', data=data,
+        result = self._send_request(rest, self._base_url + uri + '.json', data=data,
                                   params=self._get_query_params(kwargs, rest.get_queryKWs()), proxies=self._proxies,
                                   auth=self._auth, files=files)
+        if 'file' in files:
+            fb.close()
+        return result
 
     def put(self, rest, uri, args, kwargs):
         """

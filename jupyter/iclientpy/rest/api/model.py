@@ -163,7 +163,7 @@ class PostFileUploadTaskResult:
 class FileUploadState(Enum):
     NEW = 'NEW'
     UPLOADING = 'UPLOADING'
-    COMLETED = 'COMPLETED'
+    COMPLETED = 'COMPLETED'
     UPLOADING_ERROR = 'UPLOADING_ERROR'
     ERROR = 'ERROR'
 

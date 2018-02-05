@@ -1,10 +1,12 @@
-from unittest import TestCase
+import os
 import httpretty
+from unittest import TestCase, mock
 from iclientpy.rest.api.updatetileset import update_smtilestileset
 
 
 class TestUpdateTileSet(TestCase):
     @httpretty.activate
+    @mock.patch('builtins.open', mock.mock_open(read_data='1'))
     def test_update_smtilestilset(self):
         base_uri = "http://192.168.20.158:8090/iserver"
         # do login
@@ -44,5 +46,20 @@ class TestUpdateTileSet(TestCase):
         get_mng_service_body = '{"isStreamingService":false,"interfaceTypes":"com.supermap.services.rest.RestServlet","isSet":false,"instances":[{"interfaceType":"com.supermap.services.rest.RestServlet","componentType":"com.supermap.services.components.impl.MapImpl","name":"cache-World/rest","componentSetName":null,"authorizeSetting":{"permittedRoles":[],"deniedRoles":[],"type":"PUBLIC"},"id":null,"componentName":"map-smtiles-World2","interfaceName":"rest","enabled":true,"status":"OK"}],"isClusterService":false,"type":"com.supermap.services.components.impl.MapImpl","interfaceNames":"rest","clusterInterfaceNames":"","isDataflowService":false,"component":{"isScSet":false,"scSetSetting":null,"scSetting":{"disabledInterfaceNames":"","instanceCount":0,"name":"map-smtiles-World2","alias":"","interfaceNames":"rest","type":"com.supermap.services.components.impl.MapImpl","config":{"cacheReadOnly":false,"cacheConfigs":null,"useVectorTileCache":false,"utfGridCacheConfig":null,"tileCacheConfig":null,"vectorTileCacheConfig":null,"expired":0,"logLevel":"info","outputPath":"","useCache":false,"outputSite":"","useUTFGridCache":false,"clip":false},"providers":"smtiles-World2","enabled":true}},"providerNames":"smtiles-World2","name":"cache-World","alias":"","providers":[{"spsetSetting":null,"isSPSet":false,"spSetting":{"name":"smtiles-World2","alias":null,"innerProviders":null,"type":"com.supermap.services.providers.SMTilesMapProvider","config":{"dataPrjCoordSysType":null,"watermark":null,"cacheVersion":"4.0","outputPath":"./output","filePath":"/etc/icloud/SuperMapiServer/bin/iserver/output/sqlite113/World_1881337416_256X256_PNG.smtiles","cacheMode":null,"name":null,"outputSite":"http://{ip}:{port}/iserver/output/"},"enabled":true}}]}'
         httpretty.register_uri(httpretty.GET, base_uri + "/manager/services/cache-World.json",
                                body=get_mng_service_body, status=200)
-        update_smtilestileset(base_uri, 'admin', 'iserver', 'cache-World', '/etc/icloud/World2/World.sxwu', 'World',
+        # post file upload tasks
+        post_fileuploadtasks_body = '{"newResourceID":"38efbec5de2846d1bd499866637aec46_74d0dd27cf454fe1875f0b94490e7280","succeed":true,"newResourceLocation":"http://192.168.20.158:8090/iserver/manager/filemanager/uploadtasks/38efbec5de2846d1bd499866637aec46_74d0dd27cf454fe1875f0b94490e7280"}'
+        httpretty.register_uri(httpretty.POST, base_uri + '/manager/filemanager/uploadtasks.json',
+                               body=post_fileuploadtasks_body, status=200)
+        # post file upload task
+        post_fileuploadtask_body = '{"fileName":"World0","fileSize":0,"filePath":"/etc/icloud/SuperMapiServer/webapps/iserver/./World0/","isDirectory":true}'
+        httpretty.register_uri(httpretty.POST,
+                               base_uri + '/manager/filemanager/uploadtasks/38efbec5de2846d1bd499866637aec46_74d0dd27cf454fe1875f0b94490e7280.json',
+                               body=post_fileuploadtask_body, status=200)
+        # get file upload task
+        get_fileuploadtask_body = '{"uploadedByteCount":0,"path":"/etc/icloud/SuperMapiServer/upload","progress":100,"state":"COMPLETED","uploadedDataMD5":null,"taskID":"38efbec5de2846d1bd499866637aec46_9f2791745913493abe53d2db755ecaf1","md5":null}'
+        httpretty.register_uri(httpretty.GET,
+                               base_uri + '/manager/filemanager/uploadtasks/38efbec5de2846d1bd499866637aec46_74d0dd27cf454fe1875f0b94490e7280.json',
+                               body=get_fileuploadtask_body, status=200)
+        update_smtilestileset(base_uri, 'admin', 'iserver', 'cache-World',
+                              os.path.join(os.path.dirname(os.path.abspath(__file__)), "World.zip"), 'World',
                               (-180, 90), (-180, -90, 180, 90))

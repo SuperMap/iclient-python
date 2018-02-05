@@ -1,10 +1,14 @@
 import re
 import time
 import uuid
+import os
 from typing import List
+import zipfile
 from iclientpy.rest.api.model import Rectangle2D, Point2D
-from iclientpy.rest.api.management import Management,ServiceType, TileSize, OutputFormat, PostWorkspaceParameter, PostTileJobsItem, \
+from iclientpy.rest.api.management import Management, ServiceType, TileSize, OutputFormat, PostWorkspaceParameter, \
+    PostTileJobsItem, \
     BuildState, PostTilesetUpdateJobs, SMTilesTileSourceInfo, TilesetExportJobRunState, TileType, TileSourceInfo
+from iclientpy.rest.api.model import PostFileUploadTasksParam, FileUploadState
 from iclientpy.rest.apifactory import APIFactory
 from .cacheutils import provider_setting_to_tile_source_info
 
@@ -31,8 +35,17 @@ def update_smtilestileset(address: str, username: str, password: str, component_
     tem_cache_Bounds.rightTop.y = cache_bounds[3]
     api = APIFactory(address, username, password)
     mng = api.management()
+    param = PostFileUploadTasksParam()
+    pfutsr = mng.post_fileuploadtasks(param)
+    mng.post_fileuploadtask(pfutsr.newResourceID, w_loc, './' + os.path.basename(w_loc), overwrite=True, unzip=True)
+    gfutr = mng.get_fileuploadtask(pfutsr.newResourceID)
+    if gfutr.state is not FileUploadState.COMPLETED:
+        raise Exception('文件上传失败')
     post_param = PostWorkspaceParameter()
-    post_param.workspaceConnectionInfo = w_loc
+    zipf = zipfile.ZipFile(w_loc)
+    zipfns = zipf.namelist()
+    name = [item for item in zipfns if item.endswith('.sxwu')][0]
+    post_param.workspaceConnectionInfo = './' + os.path.basename(w_loc).split('.')[0] + '/' + name
     post_param.servicesTypes = w_servicetypes
     pwr = mng.post_workspaces(post_param)
     wkn = re.findall('services/[^/]*', pwr[0].serviceAddress)[0].lstrip('services/')
@@ -68,7 +81,7 @@ def update_smtilestileset(address: str, username: str, password: str, component_
     post_tile_update_param = PostTilesetUpdateJobs()
     post_tile_update_param.scaleDenominators = scale
     post_tile_update_param.bounds = tem_cache_Bounds
-    post_tile_update_param.targetTilesetIdentifier = uuid.uuid1().__str__()
+    post_tile_update_param.targetTilesetIdentifier = None
     post_tile_update_param.targetTileSourceInfo = _get_tile_source_info_from_service(mng, component_name)
     post_tile_update_param.sourceTilesetIdentifier = gjr.targetTilesetInfo.filePath
     post_tile_update_param.sourceTileSourceInfo = SMTilesTileSourceInfo()
@@ -83,6 +96,7 @@ def update_smtilestileset(address: str, username: str, password: str, component_
         raise Exception('更新切片失败')
     mng.delete_mapcomponent(name=wkn)
 
-def _get_tile_source_info_from_service(mng:Management, name:str) -> TileSourceInfo:
+
+def _get_tile_source_info_from_service(mng: Management, name: str) -> TileSourceInfo:
     service_info = mng.get_service(name)
     return provider_setting_to_tile_source_info(service_info.providers[0].spSetting.config)
