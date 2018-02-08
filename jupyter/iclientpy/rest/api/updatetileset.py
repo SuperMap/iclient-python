@@ -4,6 +4,7 @@ import uuid
 import os
 from typing import List
 import zipfile
+import progressbar
 from iclientpy.rest.api.model import Rectangle2D, Point2D
 from iclientpy.rest.api.management import Management, ServiceType, TileSize, OutputFormat, PostWorkspaceParameter, \
     PostTileJobsItem, \
@@ -50,8 +51,8 @@ def update_smtilestileset(address: str, username: str, password: str, component_
     pwr = mng.post_workspaces(post_param)
     wkn = re.findall('services/[^/]*', pwr[0].serviceAddress)[0].lstrip('services/')
     if scale is None:
-        ds = api.data_service(component_name + '/rest')
-        mr = ds.get_map(map_name)
+        map_service = api.map_service(component_name + '/rest')
+        mr = map_service.get_map(map_name)
         scale = [1 / x for x in mr.visibleScales]
     if scale is None or len(scale) is 0:
         raise Exception('无法获取目标地图比例尺且未指定比例尺')
@@ -73,8 +74,14 @@ def update_smtilestileset(address: str, username: str, password: str, component_
     post_tile_jobs_param.originalPoint = tem_original_point
     post_tile_jobs_param.cacheBounds = tem_cache_Bounds
     ptjr = mng.post_tilejobs(post_tile_jobs_param)
-    while (mng.get_tilejob(ptjr.newResourceID).state.runState is BuildState.BUILDING):
+    jobstate = mng.get_tilejob(ptjr.newResourceID).state
+
+    bar = _process_bar('切图', _PercentageCounter(), jobstate.total)
+    while (jobstate.runState is BuildState.BUILDING):
         time.sleep(5)
+        jobstate = mng.get_tilejob(ptjr.newResourceID).state
+        bar.update(jobstate.completed)
+
     gjr = mng.get_tilejob(ptjr.newResourceID)
     if (gjr.state.runState is not BuildState.COMPLETED):
         raise Exception('切图失败')
@@ -89,9 +96,11 @@ def update_smtilestileset(address: str, username: str, password: str, component_
     post_tile_update_param.sourceTileSourceInfo.outputPath = post_tile_jobs_param.storeConfig.outputPath
     ptur = mng.post_tilesetupdatejobs(post_tile_update_param)
     gtur = mng.get_tilesetupdatejob(ptur.newResourceID)
+    bar = _process_bar('更新', _PercentageCounter(), gtur.state.total)
     while (not hasattr(gtur.state, 'runState') or gtur.state.runState is TilesetExportJobRunState.RUNNING):
         time.sleep(5)
         gtur = mng.get_tilesetupdatejob(ptur.newResourceID)
+        bar.update(gtur.state.actualCompleted)
     if (gtur.state.runState is not TilesetExportJobRunState.COMPLETED):
         raise Exception('更新切片失败')
     mng.delete_mapcomponent(name=wkn)
@@ -100,3 +109,32 @@ def update_smtilestileset(address: str, username: str, password: str, component_
 def _get_tile_source_info_from_service(mng: Management, name: str) -> TileSourceInfo:
     service_info = mng.get_service(name)
     return provider_setting_to_tile_source_info(service_info.providers[0].spSetting.config)
+
+def _custom_len(value):
+    total = 0
+    for c in value:
+        if c >= u'\u4e00' and c <= u'\u9fa5':
+            #中文字符宽度为2
+            total += 2
+        else:
+            total += 1
+    return total
+
+
+def _process_bar(name:str, counter:progressbar.Counter, max_value:int) -> progressbar.ProgressBar:
+    return progressbar.ProgressBar(
+        widgets=[
+            name + '进度: ',
+            progressbar.Bar(),
+            ' ',
+            counter,
+        ],
+        len_func=_custom_len,
+        max_value=max_value
+    )
+
+
+class _PercentageCounter(progressbar.Counter):
+    def __call__(self, progress, data, format=None):
+        #processbar似乎计算宽度有问题导致换行，给多加几个空格让希望显示的内容不换行。
+        return '{0:5}%    '.format(round(data['value'] / data['max_value'] * 100, 2))
