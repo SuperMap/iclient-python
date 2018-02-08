@@ -24,10 +24,13 @@ class AbstractREST(object):
                                    set_cookie='JSESSIONID=958322873908FF9CA99B5CB443ADDD5C')
             self.factory = APIFactory(self.baseuri, self.username, self.password)
 
-    def init_api(self, method_name, *args, **kwargs):
+    def init_api(self, method, *args, **kwargs):
         if not hasattr(self, 'api'):
-            method = getattr(self.factory, method_name)
-            self.api = method(*args, **kwargs)
+            if type(method) == str:
+                method = getattr(self.factory, method)
+                self.api = method(*args, **kwargs)
+            else:
+                self.api = method(self.factory, *args, **kwargs)
 
     @httpretty.activate
     def check_api(self, method, uri, http_method: HttpMethod, response: httpretty.Response, *args, **kwargs):

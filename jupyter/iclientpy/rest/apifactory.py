@@ -7,6 +7,7 @@ from requests.auth import AuthBase
 
 from .api.management import Management
 from .api.restdata import DataService
+from .api.restmap import MapService
 from .decorator import HttpMethod, REST
 from .proxyfactory import RestInvocationHandler
 from .proxyfactory import create
@@ -326,3 +327,15 @@ class APIFactory:
         """
         handler = RestInvocationHandlerImpl(self._services_url + '/' + service_name, proxies=self._proxies)
         return create(DataService, handler)
+
+    def map_service(self, service_name: str) -> MapService:
+        """
+        返回指定地图服务的相关数据的api
+
+        Args:
+            service_name: 服务名称
+
+        Returns:
+            返回iServer指定服务的api
+        """
+        return create(MapService, RestInvocationHandlerImpl(self._services_url + '/' + service_name, proxies=self._proxies))

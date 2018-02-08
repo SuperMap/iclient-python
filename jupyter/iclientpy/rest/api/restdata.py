@@ -11,12 +11,6 @@ class Features:
     featureCount: int
 
 
-class GetMapResult:
-    name: str
-    center: Point2D
-    visibleScales: List[float]
-
-
 class DataService:
     @post('/data/datasources/{datasourceName}/datasets/{datasetName}/features', entityKW='entity',
           queryKWs=['isUseBatch', 'returnContent', '_method'])
@@ -27,8 +21,4 @@ class DataService:
     @get('/data/datasources/{datasourceName}/datasets/{datasetName}/features', queryKWs=['fromIndex', 'toIndex'])
     def get_features(self, datasourceName: str, datasetName: str, fromIndex: int = None,
                      toIndex: int = None) -> Features:
-        pass
-
-    @get('/maps/{map}')
-    def get_map(self, map: str) -> GetMapResult:
         pass
