@@ -1,0 +1,8 @@
+iclientpy-hub:
+    labels:
+        io.rancher.scheduler.affinity:host_label: product=iclientpy
+    image: registry-internal.cn-beijing.aliyuncs.com/iclientpy/jupyterhub
+    container_name: iclientpy-hub
+    restart: always
+    ports:
+     - 8000:8000
