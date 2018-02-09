@@ -1,0 +1,5 @@
+setuptools>=38.4.0
+tornado>=4.5.3
+jupyterhub>=0.8.1
+pamela>=0.3.0
+python_dateutil>=2.6.1
