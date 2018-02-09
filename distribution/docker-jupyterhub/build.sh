@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash
 docker login registry.cn-beijing.aliyuncs.com -u guyongquan@outlook.com -p $(cat /data/teamcity_agent/conf/alidockerregistrypwd)
 docker rmi -f $(docker images | grep iclientpy/jupyterhub | awk '{print $3}')
 rm ./iclientpy-*.whl
