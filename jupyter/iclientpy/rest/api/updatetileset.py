@@ -3,7 +3,6 @@ import time
 import uuid
 import os
 from typing import List
-import zipfile
 import progressbar
 from iclientpy.rest.api.model import Rectangle2D, Point2D
 from iclientpy.rest.api.management import Management, ServiceType, TileSize, OutputFormat, PostWorkspaceParameter, \
@@ -12,6 +11,8 @@ from iclientpy.rest.api.management import Management, ServiceType, TileSize, Out
 from iclientpy.rest.api.model import PostFileUploadTasksParam, FileUploadState
 from iclientpy.rest.apifactory import APIFactory
 from .cacheutils import provider_setting_to_tile_source_info
+import zipfile
+from io import BufferedIOBase
 
 
 def update_smtilestileset(address: str, username: str, password: str, component_name: str, w_loc: str, map_name: str,
@@ -38,15 +39,13 @@ def update_smtilestileset(address: str, username: str, password: str, component_
     mng = api.management()
     param = PostFileUploadTasksParam()
     pfutsr = mng.post_fileuploadtasks(param)
-    mng.post_fileuploadtask(pfutsr.newResourceID, w_loc, './' + os.path.basename(w_loc), overwrite=True, unzip=True)
+    remote_workspace_file_full_path = _upload_workspace_file(mng, w_loc, pfutsr.newResourceID)
     gfutr = mng.get_fileuploadtask(pfutsr.newResourceID)
     if gfutr.state is not FileUploadState.COMPLETED:
         raise Exception('文件上传失败')
     post_param = PostWorkspaceParameter()
-    zipf = zipfile.ZipFile(w_loc)
-    zipfns = zipf.namelist()
-    name = [item for item in zipfns if item.endswith('.sxwu')][0]
-    post_param.workspaceConnectionInfo = './' + os.path.basename(w_loc).split('.')[0] + '/' + name
+
+    post_param.workspaceConnectionInfo = remote_workspace_file_full_path
     post_param.servicesTypes = w_servicetypes
     pwr = mng.post_workspaces(post_param)
     wkn = re.findall('services/[^/]*', pwr[0].serviceAddress)[0].lstrip('services/')
@@ -138,3 +137,61 @@ class _PercentageCounter(progressbar.Counter):
     def __call__(self, progress, data, format=None):
         #processbar似乎计算宽度有问题导致换行，给多加几个空格让希望显示的内容不换行。
         return '{0:5}%    '.format(round(data['value'] / data['max_value'] * 100, 2))
+
+
+class _DisableSeekAndTellIOWrapper(BufferedIOBase):
+    """
+    zipfile压缩文件的时候会通过seek和tell来定位写入zip文件头信息。
+    但是管道流不能正常的seek和tell，故通过这个wrapper来禁用seek和tell，从而强迫zipfile使用流式压缩
+    """
+    def __init__(self, towrap):
+        self._wrapped = towrap
+
+    def seek(self,*args, **kwargs):
+        raise AttributeError()
+
+    def tell(self, *args, **kwargs):
+        raise AttributeError()
+
+    def seekable(self, *args, **kwargs):
+        return False
+
+    def __getattribute__(self, item):
+        if item in ('_wrapped','seek', 'seekable', 'tell'):
+            return object.__getattribute__(self, item)
+        return self._wrapped.__getattribute__(item)
+
+    def __enter__(self):
+        self._wrapped.__enter__()
+        return self
+
+    def __exit__(self, *args, **kwargs):
+        self._wrapped.__exit__(*args, **kwargs)
+
+
+def _zip_files_in_workspace_directory(w_loc:str) -> BufferedIOBase:
+    rfd, wfd = os.pipe()
+    def zip_in_thread(wfd):
+        dirname = os.path.dirname(w_loc)
+        with os.fdopen(wfd, 'wb') as outputfile:
+            with zipfile.ZipFile(_DisableSeekAndTellIOWrapper(outputfile), 'w') as zfile:
+                for root,dirs,files in os.walk(dirname):
+                    for name in files:
+                        fullpath = os.path.join(root, name)
+                        arcname = os.path.relpath(fullpath, dirname)
+                        zfile.write(fullpath, arcname)
+    import threading
+    threading.Thread(target=zip_in_thread, args=(wfd,), name='zip ' + w_loc).start()
+    return os.fdopen(rfd, 'rb')
+
+
+def _upload_workspace_file(mng:Management, w_loc:str, upload_task_id:str) -> str:
+    if w_loc.lower().endswith('.zip'):
+        with zipfile.ZipFile(w_loc) as zipf:
+            zipfns = zipf.namelist()
+            workspace_file_name = [item for item in zipfns if item.endswith('.sxwu')][0]
+        mng.post_fileuploadtask(upload_task_id, w_loc, './' + os.path.basename(w_loc), overwrite=True, unzip=True)
+    else:
+        workspace_file_name = os.path.basename(w_loc)
+        mng.post_fileuploadtask(upload_task_id, _zip_files_in_workspace_directory(w_loc), './' + workspace_file_name.split('.')[0] + '.zip', overwrite=True, unzip=True)
+    return './' + os.path.basename(w_loc).split('.')[0] + '/' + workspace_file_name

@@ -1,7 +1,7 @@
 import os
 import httpretty
 from unittest import TestCase, mock
-from iclientpy.rest.api.updatetileset import update_smtilestileset
+from iclientpy.rest.api.updatetileset import update_smtilestileset, _zip_files_in_workspace_directory as zipdir
 
 
 class TestUpdateTileSet(TestCase):
@@ -63,3 +63,46 @@ class TestUpdateTileSet(TestCase):
         update_smtilestileset(base_uri, 'admin', 'iserver', 'cache-World',
                               os.path.join(os.path.dirname(os.path.abspath(__file__)), "World.zip"), 'World',
                               (-180, 90), (-180, -90, 180, 90))
+
+
+class TestZipDir(TestCase):
+    def test(self):
+        dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        filetoread = zipdir(os.path.join(dir, 'workspace.sxwu'))
+        from io import BytesIO
+        import zipfile
+        with BytesIO() as output:
+            data = filetoread.read();
+            output.write(data)
+            with zipfile.ZipFile(output) as zfile:
+                filecount = 0
+                allfiles = []
+                for root, dirs, files in os.walk(dir):
+                    filecount += len(files)
+                    allfiles.extend(files)
+                self.assertEqual(len(zfile.namelist()), filecount, str(zfile.namelist()) + str(allfiles))
+
+from iclientpy.rest.api.updatetileset import _upload_workspace_file as uploadworkspace
+from iclientpy.rest.api.management import Management
+from unittest.mock import MagicMock
+import io
+
+
+class TestUploadWorkspace(TestCase):
+    def test_zip(self):
+        mng = Management()
+        mng.post_fileuploadtask = MagicMock(unsafe=True)
+        w_loc = os.path.join(os.path.dirname(os.path.abspath(__file__)), "World.zip")
+        self.assertEqual(uploadworkspace(mng, w_loc, 'id'), './World/World/World.sxwu')
+        mng.post_fileuploadtask.assert_called_with('id', w_loc, './World.zip', overwrite=True, unzip=True)
+
+    def test_not_zip(self):
+        mng = Management()
+        mng.post_fileuploadtask = MagicMock(unsafe=True)
+        w_loc = os.path.join(os.path.dirname(os.path.abspath(__file__)), "World.sxwu")
+        self.assertEqual(uploadworkspace(mng, w_loc, 'id'), './World/World.sxwu')
+        mng.post_fileuploadtask.assert_called()
+        args = mng.post_fileuploadtask.call_args
+        input = args[0][1]
+        with input:
+            self.assertIsInstance(input, io.IOBase)
