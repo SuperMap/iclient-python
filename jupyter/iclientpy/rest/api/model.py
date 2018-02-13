@@ -155,7 +155,7 @@ class  GeoPackageMapProviderSetting(MapProviderSetting):
 
 class PostFileUploadTaskResult:
     fileNames: str
-    fielPath: str
+    filePath: str
     fileSize: int
     isDirectory: bool
 

@@ -2,6 +2,7 @@ import os
 import httpretty
 from unittest import TestCase, mock
 from iclientpy.rest.api.updatetileset import update_smtilestileset, _zip_files_in_workspace_directory as zipdir
+from iclientpy.rest.api.model import PostFileUploadTaskResult
 
 
 class TestUpdateTileSet(TestCase):
@@ -93,14 +94,20 @@ class TestUploadWorkspace(TestCase):
         mng = Management()
         mng.post_fileuploadtask = MagicMock(unsafe=True)
         w_loc = os.path.join(os.path.dirname(os.path.abspath(__file__)), "World.zip")
-        self.assertEqual(uploadworkspace(mng, w_loc, 'id'), './World/World/World.sxwu')
+        post_result = PostFileUploadTaskResult()
+        post_result.filePath = './World/'
+        mng.post_fileuploadtask.return_value = post_result
+        self.assertEqual(uploadworkspace(mng, w_loc, 'id'), './World/./World/World.sxwu')
         mng.post_fileuploadtask.assert_called_with('id', w_loc, './World.zip', overwrite=True, unzip=True)
 
     def test_not_zip(self):
         mng = Management()
         mng.post_fileuploadtask = MagicMock(unsafe=True)
+        post_result = PostFileUploadTaskResult()
+        post_result.filePath = './World/'
+        mng.post_fileuploadtask.return_value = post_result
         w_loc = os.path.join(os.path.dirname(os.path.abspath(__file__)), "World.sxwu")
-        self.assertEqual(uploadworkspace(mng, w_loc, 'id'), './World/World.sxwu')
+        self.assertEqual(uploadworkspace(mng, w_loc, 'id'), './World/./World.sxwu')
         mng.post_fileuploadtask.assert_called()
         args = mng.post_fileuploadtask.call_args
         input = args[0][1]

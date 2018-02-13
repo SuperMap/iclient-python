@@ -4,7 +4,7 @@ import uuid
 import os
 from typing import List
 import progressbar
-from iclientpy.rest.api.model import Rectangle2D, Point2D
+from iclientpy.rest.api.model import Rectangle2D, Point2D,PostFileUploadTaskResult
 from iclientpy.rest.api.management import Management, ServiceType, TileSize, OutputFormat, PostWorkspaceParameter, \
     PostTileJobsItem, \
     BuildState, PostTilesetUpdateJobs, SMTilesTileSourceInfo, TilesetExportJobRunState, TileType, TileSourceInfo
@@ -186,12 +186,13 @@ def _zip_files_in_workspace_directory(w_loc:str) -> BufferedIOBase:
 
 
 def _upload_workspace_file(mng:Management, w_loc:str, upload_task_id:str) -> str:
+    r_post = None #type PostFileUploadTaskResult
     if w_loc.lower().endswith('.zip'):
         with zipfile.ZipFile(w_loc) as zipf:
             zipfns = zipf.namelist()
             workspace_file_name = [item for item in zipfns if item.endswith('.sxwu')][0]
-        mng.post_fileuploadtask(upload_task_id, w_loc, './' + os.path.basename(w_loc), overwrite=True, unzip=True)
+        r_post = mng.post_fileuploadtask(upload_task_id, w_loc, './' + os.path.basename(w_loc), overwrite=True, unzip=True)
     else:
         workspace_file_name = os.path.basename(w_loc)
-        mng.post_fileuploadtask(upload_task_id, _zip_files_in_workspace_directory(w_loc), './' + workspace_file_name.split('.')[0] + '.zip', overwrite=True, unzip=True)
-    return './' + os.path.basename(w_loc).split('.')[0] + '/' + workspace_file_name
+        r_post = mng.post_fileuploadtask(upload_task_id, _zip_files_in_workspace_directory(w_loc), './' + workspace_file_name.split('.')[0] + '.zip', overwrite=True, unzip=True)
+    return r_post.filePath + './' + workspace_file_name
