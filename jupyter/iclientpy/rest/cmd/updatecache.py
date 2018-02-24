@@ -25,6 +25,7 @@ def get_parser():
     optional_group.add_argument('--format', dest='format', help='切片输出格式')
     optional_group.add_argument('--epsgcode', dest='epsg_code', help='投影')
     optional_group.add_argument('--storageid', dest='storageid', help='存储id')
+    optional_group.add_argument('-rw',dest='remote_workspace', action='store_true',help='输入的工作空间地址是远程iServer所在服务器上的地址，不需要上传工作空间。')
     return parser
 
 
