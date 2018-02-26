@@ -167,7 +167,7 @@ setup_args = {
         'pandas>=0.20.3',
         'geojson>=2.3.0',
     ],
-    'packages': find_packages(exclude=['test']),
+    'packages': find_packages(exclude=("*.test", "*.test.*", "test.*", "test")),
     'zip_safe': False,
     'cmdclass': {
         'build_py': js_prerelease(build_py),
@@ -182,25 +182,22 @@ setup_args = {
         ],
     },
     'author': 'supermap',
-    'author_email': 'supermap@supermap.com',
+    'author_email': 'guyongquan@supermap.com',
     'url': 'https://gitee.com/isupermap/iClientPython',
     'keywords': [
         'ipython',
         'jupyter',
         'widgets',
+        'iclientpy'
     ],
     'classifiers': [
         'Development Status :: 4 - Beta',
         'Framework :: IPython',
+        'Framework :: Jupyter',
         'Intended Audience :: Developers',
         'Intended Audience :: Science/Research',
         'Topic :: Multimedia :: Graphics',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
     ],
 }
 
