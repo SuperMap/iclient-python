@@ -166,6 +166,7 @@ setup_args = {
         'ipyleaflet>=0.5.1',
         'pandas>=0.20.3',
         'geojson>=2.3.0',
+        'progressbar2>=3.34.3'
     ],
     'packages': find_packages(exclude=("*.test", "*.test.*", "test.*", "test")),
     'zip_safe': False,
@@ -178,7 +179,7 @@ setup_args = {
     },
     'entry_points': {
         'console_scripts': [
-            'iclientpy-updatecache = iclientpy.rest.cmd.updatecache:main',
+            'icpy-cachetool = iclientpy.rest.cmd.updatecache:main',
         ],
     },
     'author': 'supermap',
