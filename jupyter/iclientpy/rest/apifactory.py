@@ -8,6 +8,7 @@ from requests.auth import AuthBase
 from .api.management import Management
 from .api.restdata import DataService
 from .api.restmap import MapService
+from .api.securityservice import SecurityService
 from .decorator import HttpMethod, REST
 from .proxyfactory import RestInvocationHandler
 from .proxyfactory import create
@@ -118,6 +119,8 @@ class RestInvocationHandlerImpl(RestInvocationHandler):
         }
         response = requests_methods[rest.get_method()](*args, **kwargs)
         response.raise_for_status()
+        if inspect.getfullargspec(rest.get_original_func()).annotations['return'] in (int, str, bool, float):
+            return response.text
         return from_json_str(response.text, inspect.getfullargspec(rest.get_original_func()).annotations['return'],
                              rest.get_abstract_type_fields())
 
@@ -153,14 +156,14 @@ class RestInvocationHandlerImpl(RestInvocationHandler):
         if rest.get_fileKW() is not None:
             maybefileorstr = kwargs[rest.get_fileKW()]
             if isinstance(maybefileorstr, str):
-                fb=open(maybefileorstr, 'rb')
+                fb = open(maybefileorstr, 'rb')
             else:
                 fb = maybefileorstr
         files = {'file': fb} if rest.get_fileKW() is not None else {}
         data = to_json_str(kwargs[rest.get_entityKW()]) if rest.get_entityKW() is not None else {}
         result = self._send_request(rest, self._base_url + uri + '.json', data=data,
-                                  params=self._get_query_params(kwargs, rest.get_queryKWs()), proxies=self._proxies,
-                                  auth=self._auth, files=files)
+                                    params=self._get_query_params(kwargs, rest.get_queryKWs()), proxies=self._proxies,
+                                    auth=self._auth, files=files)
         if 'file' in files:
             fb.close()
         return result
@@ -341,4 +344,14 @@ class APIFactory:
         Returns:
             返回iServer指定服务的api
         """
-        return create(MapService, RestInvocationHandlerImpl(self._services_url + '/' + service_name, proxies=self._proxies))
+        return create(MapService,
+                      RestInvocationHandlerImpl(self._services_url + '/' + service_name, proxies=self._proxies))
+
+    def security_service(self) -> SecurityService:
+        """
+        返回安全类服务的api
+
+        Returns:
+            返回iServer安全相关的api
+        """
+        return create(SecurityService, RestInvocationHandlerImpl(self._services_url, proxies=self._proxies))

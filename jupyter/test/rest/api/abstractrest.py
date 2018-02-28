@@ -44,16 +44,19 @@ class AbstractREST(object):
         httpretty.register_uri(methods[http_method], uri, responses=[response])
         if type(method) == str:
             method = getattr(self.api, method)
-        else :
+        else:
             method = getattr(self.api, method.__name__)
         result = method(*args, **kwargs)
         if http_method != HttpMethod.HEAD:
-            expect(to_json_str(result)).should.within(
-                to_json_str(from_json_str(
-                    str(response.body, encoding='utf-8'),
-                    inspect.getfullargspec(method).annotations['return']
-                ))
-            )
+            if inspect.getfullargspec(method).annotations['return'] in (int, str, bool, float):
+                expect(result).should_not.be.empty
+            else:
+                expect(to_json_str(result)).should.within(
+                    to_json_str(from_json_str(
+                        str(response.body, encoding='utf-8'),
+                        inspect.getfullargspec(method).annotations['return']
+                    ))
+                )
         else:
             expect(result).should.equal(response.status)
 

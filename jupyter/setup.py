@@ -180,6 +180,7 @@ setup_args = {
     'entry_points': {
         'console_scripts': [
             'icpy-cachetool = iclientpy.rest.cmd.updatecache:main',
+            'icpy-tokentool = iclientpy.rest.cmd.obaintoken:main',
         ],
     },
     'author': 'supermap',

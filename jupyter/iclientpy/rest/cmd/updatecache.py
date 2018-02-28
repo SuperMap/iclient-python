@@ -26,6 +26,7 @@ def get_parser():
     optional_group.add_argument('--epsgcode', dest='epsg_code', help='投影')
     optional_group.add_argument('--storageid', dest='storageid', help='存储id')
     optional_group.add_argument('-rw',dest='remote_workspace', action='store_true',help='输入的工作空间地址是远程iServer所在服务器上的地址，不需要上传工作空间。')
+    optional_group.add_argument('--quite', dest='quite', action='store_true', help='不需要确认，直接运行')
     return parser
 
 

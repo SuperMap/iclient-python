@@ -1,6 +1,6 @@
 import os
 import httpretty
-from unittest import TestCase, mock
+from unittest import TestCase, mock, skip
 from iclientpy.rest.api.updatetileset import update_smtilestileset, _zip_files_in_workspace_directory as zipdir
 from iclientpy.rest.api.model import PostFileUploadTaskResult
 
@@ -63,7 +63,7 @@ class TestUpdateTileSet(TestCase):
                                body=get_fileuploadtask_body, status=200)
         update_smtilestileset(base_uri, 'admin', 'iserver', 'cache-World',
                               os.path.join(os.path.dirname(os.path.abspath(__file__)), "World.zip"), 'World',
-                              (-180, 90), (-180, -90, 180, 90))
+                              (-180, 90), (-180, -90, 180, 90), quite=True)
 
     @httpretty.activate
     def test_update_smtilestilset_remote_workspace(self):
@@ -107,7 +107,7 @@ class TestUpdateTileSet(TestCase):
                                body=get_mng_service_body, status=200)
         update_smtilestileset(base_uri, 'admin', 'iserver', 'cache-World',
                               os.path.join(os.path.dirname(os.path.abspath(__file__)), "World.zip"), 'World',
-                              (-180, 90), (-180, -90, 180, 90), remote_workspace=True)
+                              (-180, 90), (-180, -90, 180, 90), remote_workspace=True, quite=True)
 
 
 class TestZipDir(TestCase):
@@ -127,6 +127,7 @@ class TestZipDir(TestCase):
                     allfiles.extend(files)
                 self.assertEqual(len(zfile.namelist()), filecount, str(zfile.namelist()) + str(allfiles))
 
+
 from iclientpy.rest.api.updatetileset import _upload_workspace_file as uploadworkspace
 from iclientpy.rest.api.management import Management
 from unittest.mock import MagicMock
@@ -144,6 +145,7 @@ class TestUploadWorkspace(TestCase):
         self.assertEqual(uploadworkspace(mng, w_loc, 'id'), './World/./World/World.sxwu')
         mng.post_fileuploadtask.assert_called_with('id', w_loc, './World.zip', overwrite=True, unzip=True)
 
+    @skip
     def test_not_zip(self):
         mng = Management()
         mng.post_fileuploadtask = MagicMock(unsafe=True)

@@ -128,29 +128,28 @@ class SMTilesMapProviderSetting(MapProviderSetting):
 
 
 class FastDFSTileProviderSetting(MapProviderSetting):
-    #TODO
+    # TODO
     pass
 
 
 class MongoDBTileProviderSetting(MapProviderSetting):
-    #TODO
+    # TODO
     pass
 
 
-class  OTSTileProviderSetting(MapProviderSetting):
-    #TODO
+class OTSTileProviderSetting(MapProviderSetting):
+    # TODO
     pass
 
 
 class UGCV5TileProviderSetting(MapProviderSetting):
-    #todo
+    # todo
     pass
 
 
-class  GeoPackageMapProviderSetting(MapProviderSetting):
-    #todo
+class GeoPackageMapProviderSetting(MapProviderSetting):
+    # todo
     pass
-
 
 
 class PostFileUploadTaskResult:
@@ -194,3 +193,19 @@ class GetFileUploadResult:
     path: str
     progress: float
     taskID: str
+
+
+class ClientType(Enum):
+    IP = 'IP'
+    Referer = 'Referer'
+    RequestIP = 'RequestIP'
+    NONE = 'NONE'
+
+
+class PostTokenParameter:
+    userName: str
+    password: str
+    clientType: ClientType
+    ip: str
+    referer: str
+    expiration: int
