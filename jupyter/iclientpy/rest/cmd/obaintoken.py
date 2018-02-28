@@ -13,13 +13,9 @@ def get_parser():
     require_group.add_argument('-l', '--uri', dest='address', help='服务地址，如：http://localhost:8090/iserver')
     require_group.add_argument('-u', '--user', dest='username', help='用户名')
     require_group.add_argument('-p', '--password', dest='password', help='密码')
-    require_group.add_argument('-c', '--client_type', dest='client_type', help='''
-        发放令牌的方式。支持以下四个取值，分别对应四种发放令牌的方式：
-        IP，即指定的 IP 地址； 
-        Referer，即指定的 URL； 
-        RequestIP，即发送申请令牌请求的客户端 IP； 
-        NONE，即不做任何验证。
-    ''')
+    require_group.add_argument('-c', '--client_type', dest='client_type',
+                               choices=['IP', 'Referer', 'RequestIP', 'NONE'],
+                               help='发放令牌的方式。支持以下四个取值，分别对应四种发放令牌的方式：IP，即指定的 IP 地址；Referer，即指定的 URL；RequestIP，即发送申请令牌请求的客户端 IP；NONE，即不做任何验证。')
     require_group.add_argument('-e', '--expiration', dest='expiration',
                                help='申请令牌的有效期，默认单位为分钟，支持单位m(分)，h(小时)，d(天)，w(周)，M(月)，y(年)')
     optional_group = parser.add_argument_group('可选参数')
