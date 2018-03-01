@@ -1,7 +1,8 @@
 import os
 import httpretty
+from io import StringIO
 from unittest import TestCase, mock, skip
-from iclientpy.rest.api.updatetileset import update_smtilestileset, _zip_files_in_workspace_directory as zipdir
+from iclientpy.rest.api.updatetileset import update_smtilestileset, _zip_files_in_workspace_directory as zipdir, confirm
 from iclientpy.rest.api.model import PostFileUploadTaskResult
 
 
@@ -108,6 +109,15 @@ class TestUpdateTileSet(TestCase):
         update_smtilestileset(base_uri, 'admin', 'iserver', 'cache-World',
                               os.path.join(os.path.dirname(os.path.abspath(__file__)), "World.zip"), 'World',
                               (-180, 90), (-180, -90, 180, 90), remote_workspace=True, quite=True)
+
+    @mock.patch('sys.stdout', new_callable=StringIO)
+    @mock.patch('builtins.input', side_effect=['Y'])
+    @httpretty.activate
+    def test_confirm(self, mock_in, mock_out: StringIO):
+        d = {'address': 'http://localhost:8090/iserver'}
+        str = confirm(**d)
+        self.assertEqual(mock_out.getvalue(), '执行参数如下：\n地址: http://localhost:8090/iserver\n是否继续?(Y/N) ')
+        self.assertEqual(str, 'Y')
 
 
 class TestZipDir(TestCase):

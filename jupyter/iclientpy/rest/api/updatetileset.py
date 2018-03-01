@@ -36,7 +36,6 @@ def confirm(**d):
         'tile_type': '切片类型',
         'format': '切片输出格式',
         'epsg_code': '投影',
-        # 'storageid': '存储id',
         'remote_workspace': '远程工作空间'
     }
     output('执行参数如下：')

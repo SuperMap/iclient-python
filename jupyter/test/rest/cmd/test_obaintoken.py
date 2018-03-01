@@ -13,7 +13,7 @@ class TestObainToken(TestCase):
                                status=201, set_cookie='JSESSIONID=958322873908FF9CA99B5CB443ADDD5C')
         httpretty.register_uri(httpretty.POST, 'http://192.168.20.158:8090/iserver/services/security/tokens.json',
                                body="tokenstr", status=200)
-        main(r"-l http://192.168.20.158:8090/iserver -u admin -p iserver -c RequestIP -e 60d".split(' '))
+        main(r"-l http://192.168.20.158:8090/iserver -u admin -p iserver -c RequestIP -e 60d --ip 127.0.0.1 --referer referer".split(' '))
         self.assertEqual(mock_print.getvalue(), 'tokenstr\n')
 
     def test_convert_minutes(self):
