@@ -12,10 +12,10 @@ def get_parser():
     require_group.add_argument('-l', '--uri', dest='address', help='服务地址，如：http://localhost:8090/iserver')
     require_group.add_argument('-u', '--user', dest='username', help='用户名')
     require_group.add_argument('-p', '--password', dest='password', help='密码')
-    require_group.add_argument('-c', '--component-name', dest='component_name', help='服务名称')
+    require_group.add_argument('-c', '--component-name', dest='component_name', help='待更新缓存服务名称')
     require_group.add_argument('-w', '--w-loc', dest='w_loc', help='工作空间路径')
     require_group.add_argument('-m', '--map-name', dest='map_name', help='切图地图名称')
-    require_group.add_argument('-o', '--origin-point', dest='original_point', help='切图原点，需以单引号开始和结束，如：\'-180,90\'')
+    require_group.add_argument('-o', '--original-point', dest='original_point', help='切图原点，需以单引号开始和结束，如：\'-180,90\'')
     require_group.add_argument('-b', '--bounds', dest='cache_bounds', help='缓存范围，需以单引号开始和结束，如：\'-180,-90,0,0\'')
     optional_group = parser.add_argument_group('可选参数')
     optional_group.add_argument('-s', '--scale', dest='scale', help='缓存比例尺分母，如：8000000,4000000,2000000')
@@ -25,8 +25,11 @@ def get_parser():
     optional_group.add_argument('--format', dest='format', help='切片输出格式')
     optional_group.add_argument('--epsgcode', dest='epsg_code', help='投影')
     optional_group.add_argument('--storageid', dest='storageid', help='存储id')
-    optional_group.add_argument('-rw',dest='remote_workspace', action='store_true',help='输入的工作空间地址是远程iServer所在服务器上的地址，不需要上传工作空间。')
+    optional_group.add_argument('-rw', dest='remote_workspace', action='store_true',
+                                help='输入的工作空间地址是远程iServer所在服务器上的地址，不需要上传工作空间。')
     optional_group.add_argument('--quite', dest='quite', action='store_true', help='不需要确认，直接运行')
+    optional_group.add_argument('--source-component', dest='source_component_name', help='缓存更新数据源')
+    optional_group.add_argument('--update', dest='update', action='store_true', help='更新服务缓存')
     return parser
 
 

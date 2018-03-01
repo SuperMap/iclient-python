@@ -61,7 +61,7 @@ def update_smtilestileset(address: str, username: str, password: str, component_
                           tile_size: TileSize = TileSize.SIZE_256, tile_type: TileType = TileType.Image,
                           format: OutputFormat = OutputFormat.PNG, epsgcode: int = -1, storageid: str = None,
                           storageconfig: SMTilesTileSourceInfo = None, remote_workspace: bool = False,
-                          quite: bool = False):
+                          quite: bool = False, source_component_name: str = '', update: bool = False):
     if len(original_point) is not 2:
         raise Exception("切图原点坐标长度错误")
     tem_original_point = Point2D()
@@ -98,20 +98,22 @@ def update_smtilestileset(address: str, username: str, password: str, component_
             return
 
     mng = api.management()
-    param = PostFileUploadTasksParam()
-    if remote_workspace:
-        remote_workspace_file_full_path = w_loc
-    else:
-        pfutsr = mng.post_fileuploadtasks(param)
-        remote_workspace_file_full_path = _upload_workspace_file(mng, w_loc, pfutsr.newResourceID)
-        gfutr = mng.get_fileuploadtask(pfutsr.newResourceID)
-        if gfutr.state is not FileUploadState.COMPLETED:
-            raise Exception('文件上传失败')
-    post_param = PostWorkspaceParameter()
-    post_param.workspaceConnectionInfo = remote_workspace_file_full_path
-    post_param.servicesTypes = w_servicetypes
-    pwr = mng.post_workspaces(post_param)
-    wkn = re.findall('services/[^/]*', pwr[0].serviceAddress)[0].lstrip('services/')
+    wkn = source_component_name
+    if not update:
+        param = PostFileUploadTasksParam()
+        if remote_workspace:
+            remote_workspace_file_full_path = w_loc
+        else:
+            pfutsr = mng.post_fileuploadtasks(param)
+            remote_workspace_file_full_path = _upload_workspace_file(mng, w_loc, pfutsr.newResourceID)
+            gfutr = mng.get_fileuploadtask(pfutsr.newResourceID)
+            if gfutr.state is not FileUploadState.COMPLETED:
+                raise Exception('文件上传失败')
+        post_param = PostWorkspaceParameter()
+        post_param.workspaceConnectionInfo = remote_workspace_file_full_path
+        post_param.servicesTypes = w_servicetypes
+        pwr = mng.post_workspaces(post_param)
+        wkn = re.findall('services/[^/]*', pwr[0].serviceAddress)[0].lstrip('services/')
 
     post_tile_jobs_param = PostTileJobsItem()
     post_tile_jobs_param.dataConnectionString = wkn
