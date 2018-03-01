@@ -25,7 +25,7 @@ def confirm(**d):
         'address': '地址',
         'username': '用户名',
         'password': '密码',
-        'component_name': '服务名称',
+        'component_name': '待更新缓存服务名称',
         'w_loc': '工作空间路径',
         'map_name': '切图地图名称',
         'original_point': '切图原点',
@@ -36,7 +36,9 @@ def confirm(**d):
         'tile_type': '切片类型',
         'format': '切片输出格式',
         'epsg_code': '投影',
-        'remote_workspace': '远程工作空间'
+        'remote_workspace': '远程工作空间',
+        'source_component_name': '缓存更新数据来源服务',
+        'update': '更新服务缓存'
     }
     output('执行参数如下：')
     for field in field_and_desc.keys():
@@ -93,7 +95,8 @@ def update_smtilestileset(address: str, username: str, password: str, component_
                                 w_loc=w_loc, map_name=map_name, original_point=original_point,
                                 cache_bounds=cache_bounds, scale=scale, w_servicetype=w_servicetypes,
                                 tile_size=tile_size, tile_type=tile_type, format=format, epsg_code=epsgcode,
-                                storageid=storageid, remote_workspace=remote_workspace)
+                                storageid=storageid, remote_workspace=remote_workspace,
+                                source_component_name=source_component_name, update=update)
         if confirmResult.lower() == 'n':
             return
 
@@ -157,7 +160,8 @@ def update_smtilestileset(address: str, username: str, password: str, component_
         bar.update(gtur.state.actualCompleted)
     if (gtur.state.runState is not TilesetExportJobRunState.COMPLETED):
         raise Exception('更新切片失败')
-    mng.delete_mapcomponent(name=wkn)
+    if not update:
+        mng.delete_mapcomponent(name=wkn)
 
 
 def _get_tile_source_info_from_service(mng: Management, name: str) -> TileSourceInfo:

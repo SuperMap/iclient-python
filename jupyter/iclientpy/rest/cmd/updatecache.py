@@ -28,7 +28,7 @@ def get_parser():
     optional_group.add_argument('-rw', dest='remote_workspace', action='store_true',
                                 help='输入的工作空间地址是远程iServer所在服务器上的地址，不需要上传工作空间。')
     optional_group.add_argument('--quite', dest='quite', action='store_true', help='不需要确认，直接运行')
-    optional_group.add_argument('--source-component', dest='source_component_name', help='缓存更新数据源')
+    optional_group.add_argument('--source-component', dest='source_component_name', help='缓存更新数据来源服务')
     optional_group.add_argument('--update', dest='update', action='store_true', help='更新服务缓存')
     return parser
 
