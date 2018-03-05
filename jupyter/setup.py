@@ -162,11 +162,11 @@ setup_args = {
             'iclientpy/jupyter/chinageojson.json')),
     ],
     'install_requires': [
-        'ipywidgets>=7.0.0',
-        'ipyleaflet>=0.5.1',
-        'pandas>=0.20.3',
-        'geojson>=2.3.0',
-        'progressbar2>=3.34.3'
+        'ipywidgets==7.0.0',
+        'ipyleaflet==0.5.1',
+        'pandas==0.20.3',
+        'geojson==2.3.0',
+        'progressbar2==3.34.3'
     ],
     'packages': find_packages(exclude=("*.test", "*.test.*", "test.*", "test")),
     'zip_safe': False,
