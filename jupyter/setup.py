@@ -163,7 +163,7 @@ setup_args = {
     ],
     'install_requires': [
         'ipywidgets==7.0.0',
-        'ipyleaflet==0.5.1',
+        'ipyleaflet==0.5.3',
         'pandas==0.20.3',
         'geojson==2.3.0',
         'progressbar2==3.34.3'
