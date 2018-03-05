@@ -10,5 +10,7 @@ ADD ./sample /iclientpy/sample
 ADD *.whl /tmp/
 RUN pip install /tmp/*.whl \
 && jupyter nbextension install --py --symlink --sys-prefix iclientpy \
-&& jupyter nbextension enable --py --sys-prefix iclientpy
+&& jupyter nbextension enable --py --sys-prefix iclientpy \
+&& jupyter nbextension enable --py --sys-prefix widgetsnbextension \
+&& conda update --all
 ADD jupyterhub_config.py /srv/jupyterhub/
