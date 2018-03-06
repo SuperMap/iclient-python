@@ -10,6 +10,7 @@ iClientPy: SuperMap iClient Python
    :maxdepth: 3
    :hidden:
 
+   guide
    geticlientpy
    jupyter
    restapi

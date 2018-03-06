@@ -10,8 +10,9 @@ def get_parser():
         """)
     require_group = parser.add_argument_group('必选参数')
     require_group.add_argument('-l', '--uri', dest='address', help='服务地址，如：http://localhost:8090/iserver')
-    require_group.add_argument('-u', '--user', dest='username', help='用户名')
-    require_group.add_argument('-p', '--password', dest='password', help='密码')
+    require_group.add_argument('-u', '--user', dest='username', help='用户名', default=None)
+    require_group.add_argument('-p', '--password', dest='password', help='密码', default=None)
+    require_group.add_argument('-t', '--token', dest='token', help='用于身份验证的token')
     require_group.add_argument('-c', '--component-name', dest='component_name', help='待更新缓存服务名称')
     require_group.add_argument('-w', '--w-loc', dest='w_loc', help='工作空间路径')
     require_group.add_argument('-m', '--map-name', dest='map_name', help='切图地图名称')
@@ -33,34 +34,12 @@ def get_parser():
     return parser
 
 
-def ask_value(tip: str):
-    print(tip, end=' ')
-    return input('')
-
-
-def interact(d):
-    field_and_desc = {
-        'address': '请输入地址：',
-        'username': '请输入用户名：',
-        'password': '请输入密码：',
-        'component_name': '请输入服务名称：',
-        'w_loc': '请输入工作空间路径：',
-        'map_name': '请输入切图地图名称：',
-        'original_point': '请输入切图原点：',
-        'cache_bounds': '请输入缓存范围：'
-    }
-    for field in field_and_desc.keys():
-        if field not in d:
-            d[field] = ask_value(field_and_desc[field])
-
-
 def main(argv=sys.argv[1:], fun=update_smtilestileset):
     parser = get_parser()
     try:
         args = parser.parse_known_args(argv)[0]
         d = vars(args)
-        d = dict((k, v) for k, v in d.items() if not (v is None))
-        interact(d)
+        d = dict((k, v) for k, v in d.items() if k in ('username', 'password') or not (v is None))
         d['original_point'] = tuple(float(item) for item in d['original_point'].strip("'").strip('"').split(','))
         d['cache_bounds'] = tuple(float(item) for item in d['cache_bounds'].strip("'").strip('"').split(','))
         if 'scale' in d:

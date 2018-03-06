@@ -32,9 +32,11 @@ icpy-cachetool
 .. image:: _static/icpy-cachetool.png
 
 示例：
-icpy-cachetool -l http://localhost:8090/iserver -u admin -p iserver -c map-smtiles-World -w C:\World.zip -m World -o '-180,90' -b '-180,-90,0,90'
+icpy-cachetool -l http://localhost:8090/iserver -t {tokenstr} -c map-smtiles-World -w C:\World.zip -m World -o '-180,90' -b '-180,-90,0,90'
 
-icpy-cachetool -l http://localhost:8090/iserver -u admin -p iserver -c map-smtiles-World -m World -o '-180,90' -b '-180,-90,0,90' --source-component map-World --update
+icpy-cachetool -l http://localhost:8090/iserver -t {tokenstr} -c map-smtiles-World -m World -o '-180,90' -b '-180,-90,0,90' --source-component map-World --update
+
+**注：** {tokenstr}为占位字符串，生成token字符串请参考：token工具_
 
 token工具
 ******************

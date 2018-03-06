@@ -14,13 +14,14 @@ APIFactory
 ************
 
 api的工厂类，所有的api从这个类中生产
+**注：** {tokenstr}为占位字符串，生成token字符串请参考：:ref:`token工具`.
 
 * data_service
 
     生成iServer的数据服务类的api的方法。
     ::
 
-        api = APIFactory('http://localhost:8090/iserver','admin','iserver')
+        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
         ds = api.data_service('data-World/rest')
 
 * management
@@ -28,7 +29,7 @@ api的工厂类，所有的api从这个类中生产
     生成iServer管理类api的方法。
     ::
 
-        api = APIFactory('http://localhost:8090/iserver','admin','iserver')
+        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
         mng = api.management()
 
 DataService
@@ -41,7 +42,7 @@ DataService
     获取要素（feature）信息集合。
     ::
 
-        api = APIFactory('http://localhost:8090/iserver','admin','iserver')
+        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
         ds = api.data_service('data-World/rest')
         result = ds.get_features(datasourceName='World',datasetName='Countries',fromIndex=0,toIndex=3)
 
@@ -50,7 +51,7 @@ DataService
     添加、删除、修改要素集中的要素。
     ::
 
-        api = APIFactory('http://localhost:8090/iserver','admin','iserver')
+        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
         ds = api.data_service('data-World/rest')
         entity=[...]
         result = ds.get_features(datasourceName='World',datasetName='Countries',entity=entity)
@@ -65,7 +66,7 @@ Management
     获取当前所有工作空间列表。
     ::
 
-        api = APIFactory('http://localhost:8090/iserver','admin','iserver')
+        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
         mng = api.management()
         result = mng.get_workspaces()
 
@@ -74,7 +75,7 @@ Management
     将工作空间快速发布成服务。
     ::
 
-        api = APIFactory('http://localhost:8090/iserver','admin','iserver')
+        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
         mng = api.management()
         param=PostWorkspaceParameter()
         param....
@@ -85,7 +86,7 @@ Management
     检查 tileJobs 资源是否存在，或权限是否可以访问 tileJobs 资源。
     ::
 
-        api = APIFactory('http://localhost:8090/iserver','admin','iserver')
+        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
         mng = api.management()
         result = mng.head_tilejobs()
 
@@ -94,7 +95,7 @@ Management
     获取 tileJobs 资源的表述，即创建分布式缓存任务的入口，返回切图任务列表。
     ::
 
-        api = APIFactory('http://localhost:8090/iserver','admin','iserver')
+        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
         mng = api.management()
         result = mng.get_tilejobs()
 
@@ -103,7 +104,7 @@ Management
     创建新的切图任务。
     ::
 
-        api = APIFactory('http://localhost:8090/iserver','admin','iserver')
+        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
         mng = api.management()
         entity = PostTileJobsItem()
         result = mng.post_tilejobs(entity)
@@ -113,7 +114,7 @@ Management
     检查 tileJob 资源是否存在，或权限是否可以访问 tileJob 资源。
     ::
 
-        api = APIFactory('http://localhost:8090/iserver','admin','iserver')
+        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
         mng = api.management()
         result = mng.head_tilejob()
 
@@ -122,7 +123,7 @@ Management
     获取指定切图任务的状态和信息。
     ::
 
-        api = APIFactory('http://localhost:8090/iserver','admin','iserver')
+        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
         mng = api.management()
         idstr='id'
         result = mng.get_tilejob(idstr)
@@ -132,7 +133,7 @@ Management
     更新指定切图任务的运行状态。即启动/暂停切图任务。
     ::
 
-        api = APIFactory('http://localhost:8090/iserver','admin','iserver')
+        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
         mng = api.management()
         idstr='id'
         result = mng.put_tilejob(idstr,entity=BuildState.STOPPED)
@@ -142,7 +143,7 @@ Management
     删除当前指定的切图任务。
     ::
 
-        api = APIFactory('http://localhost:8090/iserver','admin','iserver')
+        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
         mng = api.management()
         idstr='id'
         result = mng.delete_tilejob(idstr)
@@ -152,7 +153,7 @@ Management
     获取切片更新的任务列表。
     ::
 
-        api = APIFactory('http://localhost:8090/iserver','admin','iserver')
+        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
         mng = api.management()
         result=mng.get_tilesetupdatejobs()
 
@@ -161,7 +162,7 @@ Management
     创建新的切片更新任务。
     ::
 
-        api = APIFactory('http://localhost:8090/iserver','admin','iserver')
+        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
         mng = api.management()
         entity=PostTilesetUpdateJobs()
         entity....
@@ -172,7 +173,7 @@ Management
     获取指定切片更新任务的状态和信息。
     ::
 
-        api = APIFactory('http://localhost:8090/iserver','admin','iserver')
+        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
         mng = api.management()
         idstr='id'
         result=mng.get_tilesetupdatejob(idstr)
@@ -185,5 +186,4 @@ Management
     便捷的对smtiles切片缓存进行更新。
     ::
 
-        update_smtilestileset("http://localhost:8090/iserver", 'admin', 'iserver', '/etc/data/World/World.sxwu', 'World', (-180, 90),
-                              (-180, -90, 180, 90), '/etc/data/update/update.smtiles',[4000000.000014754, 8000000.000197801])
+        update_smtilestileset("http://localhost:8090/iserver", None, None, '/etc/data/World/World.sxwu', 'World', (-180, 90),(-180, -90, 180, 90), '/etc/data/update/update.smtiles',[4000000.000014754, 8000000.000197801],token={tokenstr})

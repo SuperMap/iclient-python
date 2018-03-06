@@ -20,31 +20,36 @@ def output(tip: str):
     print(tip)
 
 
+field_and_desc = {
+    'address': '地址',
+    'username': '用户名',
+    'password': '密码',
+    'token': 'token',
+    'component_name': '待更新缓存服务名称',
+    'w_loc': '工作空间路径',
+    'map_name': '切图地图名称',
+    'original_point': '切图原点',
+    'cache_bounds': '缓存范围',
+    'scale': '缓存比例尺分母',
+    'w_servicetype': '工作空间服务类型',
+    'tile_size': '切片大小',
+    'tile_type': '切片类型',
+    'format': '切片输出格式',
+    'epsg_code': '投影',
+    'remote_workspace': '远程工作空间',
+    'source_component_name': '缓存更新数据来源服务',
+    'update': '更新服务缓存'
+}
+
+
 def confirm(**d):
-    field_and_desc = {
-        'address': '地址',
-        'username': '用户名',
-        'password': '密码',
-        'component_name': '待更新缓存服务名称',
-        'w_loc': '工作空间路径',
-        'map_name': '切图地图名称',
-        'original_point': '切图原点',
-        'cache_bounds': '缓存范围',
-        'scale': '缓存比例尺分母',
-        'w_servicetype': '工作空间服务类型',
-        'tile_size': '切片大小',
-        'tile_type': '切片类型',
-        'format': '切片输出格式',
-        'epsg_code': '投影',
-        'remote_workspace': '远程工作空间',
-        'source_component_name': '缓存更新数据来源服务',
-        'update': '更新服务缓存'
-    }
     output('执行参数如下：')
     for field in field_and_desc.keys():
         if field in d:
             val = ''
-            if isinstance(d[field], tuple):
+            if d[field] is None:
+                val = ''
+            elif isinstance(d[field], tuple):
                 val = ','.join(map(str, d[field]))
             elif isinstance(d[field], bool):
                 val = str(d[field])
@@ -63,7 +68,8 @@ def update_smtilestileset(address: str, username: str, password: str, component_
                           tile_size: TileSize = TileSize.SIZE_256, tile_type: TileType = TileType.Image,
                           format: OutputFormat = OutputFormat.PNG, epsgcode: int = -1, storageid: str = None,
                           storageconfig: SMTilesTileSourceInfo = None, remote_workspace: bool = False,
-                          quite: bool = False, source_component_name: str = '', update: bool = False):
+                          quite: bool = False, source_component_name: str = '', update: bool = False,
+                          token: str = None):
     if len(original_point) is not 2:
         raise Exception("切图原点坐标长度错误")
     tem_original_point = Point2D()
@@ -78,7 +84,7 @@ def update_smtilestileset(address: str, username: str, password: str, component_
     tem_cache_Bounds.rightTop = Point2D()
     tem_cache_Bounds.rightTop.x = cache_bounds[2]
     tem_cache_Bounds.rightTop.y = cache_bounds[3]
-    api = APIFactory(address, username, password)
+    api = APIFactory(address, username, password, token)
     if scale is None:
         map_service = api.map_service(component_name + '/rest')
         mr = map_service.get_map(map_name)
@@ -91,12 +97,12 @@ def update_smtilestileset(address: str, username: str, password: str, component_
         storageconfig.outputPath = '../webapps/iserver/output/sqlite_' + uuid.uuid1().__str__()
 
     if not quite:
-        confirmResult = confirm(address=address, username=username, password=password, component_name=password,
+        confirmResult = confirm(address=address, username=username, password=password, component_name=component_name,
                                 w_loc=w_loc, map_name=map_name, original_point=original_point,
                                 cache_bounds=cache_bounds, scale=scale, w_servicetype=w_servicetypes,
                                 tile_size=tile_size, tile_type=tile_type, format=format, epsg_code=epsgcode,
                                 storageid=storageid, remote_workspace=remote_workspace,
-                                source_component_name=source_component_name, update=update)
+                                source_component_name=source_component_name, update=update, token=token)
         if confirmResult.lower() == 'n':
             return
 
