@@ -48,3 +48,6 @@ def main(argv=sys.argv[1:], fun=update_smtilestileset):
     except SystemExit as err:
         return err.code
     return 0
+
+if __name__ == '__main__':
+    main()
