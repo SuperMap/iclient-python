@@ -13,7 +13,7 @@ iClientPy正在开发中，如果你有意试用，可以通过两个途径获�
         6. 执行命令jupyter nbextension install --py --symlink --sys-prefix iclientpy为jupyter安装扩展
         7. 执行命令jupyter nbextension enable --py --sys-prefix iclientpy启动扩展
     * 从docker镜像启动
-        1. 执行命令docker pull registry.cn-beijing.aliyuncs.com/iclientpy/jupyterhub拉取最新的iClientPy的jupyterhub镜像
-        2. 执行命令docker run --name iclientpy -p {port}:8000 registry.cn-beijing.aliyuncs.com/iclientpy/jupyterhub，{port}为docker宿主机上未被占用端口
-        3. 访问http://{ip}:{port}/hub
-           **注意：** 该服务需要登录，用户名密码可随机填写，在离开服务后6分钟之后会被销毁，新建或者修改的文件不会保留
+        1. 执行命令docker pull docker pull registry.cn-beijing.aliyuncs.com/iclientpy/iclientpy-jupyter-notebook拉取最新的iClientPy的jupyterhub镜像
+        2. 执行命令docker run --name {containername} -p {port}:8888 docker pull registry.cn-beijing.aliyuncs.com/iclientpy/iclientpy-jupyter-notebook，{containername}为创建后docker容器名称，{port}为docker宿主机上未被占用端口
+        3. 访问http://{ip}:{port}
+           **注意：** 该服务默认需要token登录，可以通过命令 docker logs {containername}查看notebook日志获取token
