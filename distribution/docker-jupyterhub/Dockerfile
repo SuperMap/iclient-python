@@ -14,3 +14,5 @@ RUN pip install /tmp/*.whl \
 && jupyter nbextension enable --py --sys-prefix widgetsnbextension \
 && conda update --all
 ADD jupyterhub_config.py /srv/jupyterhub/
+ADD supermap_logo.png /opt/conda/share/jupyter/hub/static/images/jupyter.png
+ADD supermap_logo.png /opt/conda/share/jupyter/hub/static/images/jupyterhub-80.png
