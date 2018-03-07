@@ -4,7 +4,7 @@ block_cipher = None
 
 
 cachetool_a = Analysis(['iclientpy\\rest\\cmd\\updatecache.py'],
-             pathex=['D:\\SuperMap\\iClientPython\\jupyter'],
+             pathex=['.'],
              binaries=[],
              datas=[],
              hiddenimports=[],
@@ -15,7 +15,7 @@ cachetool_a = Analysis(['iclientpy\\rest\\cmd\\updatecache.py'],
              win_private_assemblies=False,
              cipher=block_cipher)
 tokentool_a = Analysis(['iclientpy\\rest\\cmd\\obaintoken.py'],
-             pathex=['D:\\SuperMap\\iClientPython\\jupyter'],
+             pathex=['.'],
              binaries=[],
              datas=[],
              hiddenimports=[],
