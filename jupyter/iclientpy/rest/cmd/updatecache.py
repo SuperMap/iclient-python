@@ -4,8 +4,7 @@ from iclientpy.rest.api.updatetileset import update_smtilestileset
 
 
 def get_parser():
-    parser = argparse.ArgumentParser(usage='%(prog)s [OPTIONS]',
-                                     epilog='for more information , visit<http://iclientpy.supermap.io/>.', description="""
+    parser = argparse.ArgumentParser(epilog='for more information , visit<http://iclientpy.supermap.io/>.', description="""
             更新切片
         """)
     require_group = parser.add_argument_group('必选参数')
@@ -37,6 +36,9 @@ def get_parser():
 def main(argv=sys.argv[1:], fun=update_smtilestileset):
     parser = get_parser()
     try:
+        if not argv:
+            parser.print_usage()
+            parser.exit(1)
         args = parser.parse_known_args(argv)[0]
         d = vars(args)
         d = dict((k, v) for k, v in d.items() if k in ('username', 'password') or not (v is None))
@@ -48,6 +50,7 @@ def main(argv=sys.argv[1:], fun=update_smtilestileset):
     except SystemExit as err:
         return err.code
     return 0
+
 
 if __name__ == '__main__':
     main()

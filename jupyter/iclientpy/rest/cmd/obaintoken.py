@@ -5,9 +5,8 @@ from iclientpy.rest.api.model import PostTokenParameter, ClientType
 
 
 def get_parser():
-    parser = argparse.ArgumentParser(usage='%(prog)s [OPTIONS]',
-                                     epilog='for more information , visit<http://iclientpy.supermap.io/>.', description="""
-            更新切片
+    parser = argparse.ArgumentParser(epilog='for more information , visit<http://iclientpy.supermap.io/>.', description="""
+            获取token
         """)
     require_group = parser.add_argument_group('必选参数')
     require_group.add_argument('-l', '--uri', dest='address', help='服务地址，如：http://localhost:8090/iserver')
@@ -35,6 +34,9 @@ def convert_to_minutes(s):
 def main(argv=sys.argv[1:]):
     parser = get_parser()
     try:
+        if not argv:
+            parser.print_usage()
+            parser.exit(1)
         args = parser.parse_known_args(argv)[0]
         d = vars(args)
         d = dict((k, v) for k, v in d.items() if not (v is None))
