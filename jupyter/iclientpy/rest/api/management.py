@@ -4,6 +4,7 @@ from ..decorator import post, get, put, delete, head
 from .model import Point2D, Rectangle2D, Geometry, MngServiceInfo, ProviderSetting, PostFileUploadTasksParam, \
     PostFileUploadTaskResult, GetFileUploadTaskResult, PostUploadTasksResult, GetFileUploadResult
 from .abstracttypefields import get_provider_setting_type_from_provider_type_name
+from io import FileIO
 
 
 class ServiceType(Enum):
@@ -109,12 +110,14 @@ class TileSourceType(Enum):
 
 class TileSourceInfo(DataStoreInfo):
     type: str
-    def __init__(self, type:str = None):
+
+    def __init__(self, type: str = None):
         self.type = type
 
 
 class SMTilesTileSourceInfo(TileSourceInfo):
     outputPath: str
+
     def __init__(self):
         super().__init__('SMTiles')
 
@@ -643,8 +646,8 @@ class Management:
     def post_fileuploadtasks(self, entity: PostFileUploadTasksParam) -> PostUploadTasksResult:
         pass
 
-    @post('/manager/filemanager/uploadtasks/{id}', queryKWs=['toFile', 'overwrite', 'unzip'], fileKW='file_loc')
-    def post_fileuploadtask(self, id: str, file_loc: str, toFile: str, overwrite: bool = False,
+    @post('/manager/filemanager/uploadtasks/{id}', queryKWs=['toFile', 'overwrite', 'unzip'], fileKW='file')
+    def post_fileuploadtask(self, id: str, file: FileIO, toFile: str, overwrite: bool = False,
                             unzip: bool = False) -> PostFileUploadTaskResult:
         pass
 

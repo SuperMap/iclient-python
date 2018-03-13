@@ -247,7 +247,7 @@ def _zip_files_in_workspace_directory(w_loc: str) -> BufferedIOBase:
                     for name in files:
                         fullpath = os.path.join(root, name)
                         arcname = os.path.relpath(fullpath, dirname)
-                        zfile.write(fullpath, arcname)
+                        zfile.write(fullpath, arcname=arcname)
 
     import threading
     threading.Thread(target=zip_in_thread, args=(wfd,), name='zip ' + w_loc).start()
@@ -260,10 +260,12 @@ def _upload_workspace_file(mng: Management, w_loc: str, upload_task_id: str) -> 
         with zipfile.ZipFile(w_loc) as zipf:
             zipfns = zipf.namelist()
             workspace_file_name = [item for item in zipfns if item.endswith('.sxwu')][0]
-        r_post = mng.post_fileuploadtask(upload_task_id, w_loc, './' + os.path.basename(w_loc), overwrite=True,
-                                         unzip=True)
+        with open(w_loc, 'rb') as wf:
+            r_post = mng.post_fileuploadtask(upload_task_id, wf, './' + os.path.basename(w_loc), overwrite=True,
+                                             unzip=True)
     else:
         workspace_file_name = os.path.basename(w_loc)
-        r_post = mng.post_fileuploadtask(upload_task_id, _zip_files_in_workspace_directory(w_loc),
-                                         './' + workspace_file_name.split('.')[0] + '.zip', overwrite=True, unzip=True)
+        with _zip_files_in_workspace_directory(w_loc) as wf:
+            r_post = mng.post_fileuploadtask(upload_task_id, wf, './' + workspace_file_name.split('.')[0] + '.zip',
+                                             overwrite=True, unzip=True)
     return r_post.filePath + './' + workspace_file_name

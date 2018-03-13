@@ -144,8 +144,29 @@ from unittest.mock import MagicMock
 import io
 
 
+class MockZipFile:
+    def __init__(self, file, mode="r", compression=0, allowZip64=True):
+        self.files = []
+
+    def __iter__(self):
+        return iter(self.files)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, type, value, traceback):
+        self.close()
+
+    def write(self, filename, arcname=None, compress_type=None):
+        self.files.append(filename)
+
+    def close(self):
+        pass
+
+
 class TestUploadWorkspace(TestCase):
-    def test_zip(self):
+    @mock.patch("builtins.open", new_callable=mock.mock_open, read_data="data")
+    def test_zip(self, mock_file):
         mng = Management()
         mng.post_fileuploadtask = MagicMock(unsafe=True)
         w_loc = os.path.join(os.path.dirname(os.path.abspath(__file__)), "World.zip")
@@ -153,19 +174,15 @@ class TestUploadWorkspace(TestCase):
         post_result.filePath = './World/'
         mng.post_fileuploadtask.return_value = post_result
         self.assertEqual(uploadworkspace(mng, w_loc, 'id'), './World/./World/World.sxwu')
-        mng.post_fileuploadtask.assert_called_with('id', w_loc, './World.zip', overwrite=True, unzip=True)
+        mng.post_fileuploadtask.assert_called_with('id', mock_file(), './World.zip', overwrite=True, unzip=True)
 
-    @skip
+    @mock.patch("zipfile.ZipFile", MockZipFile)
     def test_not_zip(self):
         mng = Management()
         mng.post_fileuploadtask = MagicMock(unsafe=True)
         post_result = PostFileUploadTaskResult()
         post_result.filePath = './World/'
         mng.post_fileuploadtask.return_value = post_result
-        w_loc = os.path.join(os.path.dirname(os.path.abspath(__file__)), "World.sxwu")
+        w_loc = os.path.join(os.path.dirname(os.path.abspath(__file__)), "./World.sxwu")
         self.assertEqual(uploadworkspace(mng, w_loc, 'id'), './World/./World.sxwu')
         mng.post_fileuploadtask.assert_called()
-        args = mng.post_fileuploadtask.call_args
-        input = args[0][1]
-        with input:
-            self.assertIsInstance(input, io.IOBase)
