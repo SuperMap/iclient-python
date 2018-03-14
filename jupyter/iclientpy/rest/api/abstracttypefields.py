@@ -1,14 +1,14 @@
-from .model import SMTilesMapProviderSetting, FastDFSTileProviderSetting, MongoDBTileProviderSetting, OTSTileProviderSetting, UGCV5TileProviderSetting, GeoPackageMapProviderSetting
-
-_provider_type_name_to_setting_type = {
-    'com.supermap.services.providers.SMTilesMapProvider': SMTilesMapProviderSetting,
-    'com.supermap.services.providers.FastDFSTileProvider': FastDFSTileProviderSetting,
-    'com.supermap.services.providers.MongoDBTileProvider': MongoDBTileProviderSetting,
-    'com.supermap.services.providers.OTSTileProvider': OTSTileProviderSetting,
-    'com.supermap.services.providers.UGCV5TileProvider': UGCV5TileProviderSetting,
-    'com.supermap.services.providers.GeoPackageMapProvider': GeoPackageMapProviderSetting
+from .model import SMTilesMapProviderSetting, FastDFSTileProviderSetting, MongoDBTileProviderSetting, OTSTileProviderSetting, UGCV5TileProviderSetting, GeoPackageMapProviderSetting, MngServiceInfo, ProviderSetting
+from iclientpy.dtojson import *
+_provider_setting_parsers = {
+    'com.supermap.services.providers.SMTilesMapProvider': parser(SMTilesMapProviderSetting),
+    'com.supermap.services.providers.FastDFSTileProvider': parser(FastDFSTileProviderSetting),
+    'com.supermap.services.providers.MongoDBTileProvider': parser(MongoDBTileProviderSetting),
+    'com.supermap.services.providers.OTSTileProvider': parser(OTSTileProviderSetting),
+    'com.supermap.services.providers.UGCV5TileProvider': parser(UGCV5TileProviderSetting),
+    'com.supermap.services.providers.GeoPackageMapProvider': parser(GeoPackageMapProviderSetting)
 }
 
+provider_setting_parser_switcher = ByFieldValueParserSwitcher('type', _provider_setting_parsers)
+mng_service_info_deserializer = deserializer(MngServiceInfo, {(ProviderSetting, 'config'): provider_setting_parser_switcher})
 
-def get_provider_setting_type_from_provider_type_name(jsonobj) -> type:
-    return _provider_type_name_to_setting_type[jsonobj['type']]

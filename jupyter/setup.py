@@ -183,7 +183,7 @@ setup_args = {
             'icpy-tokentool = iclientpy.rest.cmd.obaintoken:main',
         ],
     },
-    'author': 'supermap',
+    'author': 'SuperMap',
     'author_email': 'guyongquan@supermap.com',
     'url': 'https://gitee.com/isupermap/iClientPython',
     'keywords': [

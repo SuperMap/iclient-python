@@ -108,7 +108,7 @@ class RestInvocationHandlerImpl(RestInvocationHandler):
             **kwargs: 可变参数中的字典参数，存放请求信息，根据类型进行匹配
 
         Returns:
-            根据实际请求的类，获取返回结果类型，将请求中响应体转换为python对象
+            根据实际请求的类，获取返回结果类型，将请求中响应体转换为Python对象
 
         """
         requests_methods = {
@@ -119,10 +119,7 @@ class RestInvocationHandlerImpl(RestInvocationHandler):
         }
         response = requests_methods[rest.get_method()](*args, **kwargs)
         response.raise_for_status()
-        if inspect.getfullargspec(rest.get_original_func()).annotations['return'] in (int, str, bool, float):
-            return response.text
-        return from_json_str(response.text, inspect.getfullargspec(rest.get_original_func()).annotations['return'],
-                             rest.get_abstract_type_fields())
+        return rest.get_json_deserializer()(response.text)
 
     def get(self, rest, uri, args, kwargs):
         """
@@ -135,7 +132,7 @@ class RestInvocationHandlerImpl(RestInvocationHandler):
             kwargs: 请求的字典参数
 
         Returns:
-            根据实际方法的返回类型，将get请求的响应体转换为对应的python对象
+            根据实际方法的返回类型，将get请求的响应体转换为对应的Python对象
         """
         return self._send_request(rest, self._base_url + uri + '.json',
                                   auth=self._auth)
@@ -151,7 +148,7 @@ class RestInvocationHandlerImpl(RestInvocationHandler):
             kwargs: 请求的字典参数
 
         Returns:
-              根据实际方法的返回类型，将post请求的响应体转换为对应的python对象
+              根据实际方法的返回类型，将post请求的响应体转换为对应的Python对象
         """
         files = {rest.get_fileKW(): kwargs[rest.get_fileKW()]} if rest.get_fileKW() is not None else {}
         data = to_json_str(kwargs[rest.get_entityKW()]) if rest.get_entityKW() is not None else {}
@@ -172,7 +169,7 @@ class RestInvocationHandlerImpl(RestInvocationHandler):
            kwargs: 请求的字典参数
 
        Returns:
-             根据实际方法的返回类型，将put请求的响应体转换为对应的python对象
+             根据实际方法的返回类型，将put请求的响应体转换为对应的Python对象
         """
         return self._send_request(rest, self._base_url + uri + '.json', data=to_json_str(kwargs[rest.get_entityKW()]),
                                   params=self._get_query_params(kwargs, rest.get_queryKWs()), proxies=self._proxies,
@@ -189,7 +186,7 @@ class RestInvocationHandlerImpl(RestInvocationHandler):
            kwargs: 请求的字典参数
 
        Returns:
-             根据实际方法的返回类型，将delete请求的响应体转换为对应的python对象
+             根据实际方法的返回类型，将delete请求的响应体转换为对应的Python对象
         """
         return self._send_request(rest, self._base_url + uri + '.json',
                                   params=self._get_query_params(kwargs, rest.get_queryKWs()),
@@ -223,7 +220,7 @@ class RestInvocationHandlerImpl(RestInvocationHandler):
             kwargs: 请求的字典参数
 
         Returns:
-            根据实际方法的返回类型，将请求的响应体转换为对应的python对象
+            根据实际方法的返回类型，将请求的响应体转换为对应的Python对象
         """
         methods = {
             HttpMethod.POST: self.post,

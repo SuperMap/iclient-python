@@ -132,7 +132,6 @@ def update_smtilestileset(address: str, username: str, password: str, component_
     post_tile_jobs_param.tileType = tile_type
     post_tile_jobs_param.format = format
     post_tile_jobs_param.epsgCode = epsgcode
-    post_tile_jobs_param.storageID = storageid if storageid is not None else 'iclientpy_' + uuid.uuid1().__str__()
     post_tile_jobs_param.storeConfig = storageconfig
     post_tile_jobs_param.originalPoint = tem_original_point
     post_tile_jobs_param.cacheBounds = tem_cache_Bounds

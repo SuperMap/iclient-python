@@ -2,6 +2,8 @@ import types
 from typing import List, Dict, Callable, Tuple
 from enum import Enum
 from functools import wraps
+from ..dtojson import deserializer
+import inspect
 
 
 class HttpMethod(Enum):
@@ -14,11 +16,11 @@ class HttpMethod(Enum):
 
 class REST:
     """
-    REST请求的封装，用于封装python api参数与rest请求之间的对应关系，比如：查询字符串，请求体之类
+    REST请求的封装，用于封装Python API参数与rest请求之间的对应关系，比如：查询字符串，请求体之类
     """
 
     def __init__(self, func, method, uri: str, entityKW: str = None, queryKWs: List[str] = None,
-                 abstract_type_fields: Dict[Tuple[type, str], Callable[[dict], type]] = {}, fileKW: str = None):
+                 json_deserializer = None, fileKW: str = None):
         """
         初始化REST类，存放实际调用的rest请求的相关信息
 
@@ -38,8 +40,8 @@ class REST:
         self._uri = uri if uri.startswith('/') else ('/' + uri)
         self._entityKW = entityKW
         self._queryKWs = queryKWs
-        self._abstract_type_fields = abstract_type_fields
         self._fileKW = fileKW
+        self._json_deserializer = json_deserializer if json_deserializer is not None else deserializer(inspect.getfullargspec(self._original).annotations.get('return', None))
 
     def __call__(self, *args, **kwargs):
         return self.__wrapped__(*args, **kwargs)
@@ -50,8 +52,8 @@ class REST:
         else:
             return types.MethodType(self, instance)
 
-    def get_abstract_type_fields(self):
-        return self._abstract_type_fields
+    def get_json_deserializer(self):
+        return self._json_deserializer
 
     def get_original_func(self):
         """
@@ -82,7 +84,7 @@ class REST:
 
     def get_entityKW(self) -> str:
         """
-        获取请求的请求体的key，用于从原始方法参数中找到请求体的python对象
+        获取请求的请求体的key，用于从原始方法参数中找到请求体的Python对象
 
         Returns:
             返回请求体的key
@@ -107,8 +109,7 @@ class REST:
         return self._fileKW
 
 
-def rest(method: HttpMethod, uri, entityKW: str = None, queryKWs: List[str] = None,
-         abstract_type_fields: Dict[Tuple[type, str], Callable[[dict], type]] = {}, fileKW: str = None):
+def rest(method: HttpMethod, uri, entityKW: str = None, queryKWs: List[str] = None, json_deserializer = None, fileKW: str = None):
     """
     rest请求的封装方法
 
@@ -124,7 +125,7 @@ def rest(method: HttpMethod, uri, entityKW: str = None, queryKWs: List[str] = No
 
     class RESTWrapper(REST):
         def __init__(self, func):
-            super().__init__(func, method, uri, entityKW, queryKWs, abstract_type_fields, fileKW);
+            super().__init__(func, method, uri, entityKW, queryKWs, json_deserializer, fileKW);
 
     return RESTWrapper
 
@@ -160,8 +161,7 @@ def post(uri: str, entityKW: str = None, queryKWs: List[str] = None, fileKW: str
     return rest(HttpMethod.POST, uri, entityKW, queryKWs, fileKW=fileKW)
 
 
-def get(uri: str, entityKW: str = None, queryKWs: List[str] = None,
-        abstract_type_fields: Dict[Tuple[type, str], Callable[[dict], type]] = {}):
+def get(uri: str, entityKW: str = None, queryKWs: List[str] = None, *args, **kwargs):
     """
     get请求的装饰器，可以在方法上直接通过@get方式使用
 
@@ -173,7 +173,7 @@ def get(uri: str, entityKW: str = None, queryKWs: List[str] = None,
     Returns:
         封装了请求的REST类
     """
-    return rest(HttpMethod.GET, uri, entityKW, queryKWs, abstract_type_fields)
+    return rest(HttpMethod.GET, uri, entityKW, queryKWs, *args, **kwargs)
 
 
 def put(uri: str, entityKW: str = None, queryKWs: List[str] = None):
