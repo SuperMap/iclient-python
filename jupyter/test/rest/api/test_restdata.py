@@ -1,7 +1,7 @@
 import httpretty
 from typing import List
 from iclientpy.rest.api.model import Feature
-from iclientpy.dtojson import from_json_str
+from iclientpy.dtojson import deserializer
 from iclientpy.rest.decorator import HttpMethod
 from iclientpy.rest.apifactory import APIFactory
 from .abstractrest import AbstractRESTTestCase
@@ -16,7 +16,7 @@ class RESTDataTest(AbstractRESTTestCase):
 
     def test_dataservice(self):
         jsonstr = '[{"fieldNames":["SMID","SMSDRIW","SMSDRIN","SMSDRIE","SMSDRIS","SMUSERID","SMAREA","SMPERIMETER","SMGEOMETRYSIZE","SQKM","SQMI","COLOR_MAP","CAPITAL","COUNTRY","POP_1994","CONTINENT"],"fieldValues":["22","-7.433472633361816","62.35749816894531","-6.38972282409668","61.388328552246094","6","0.25430895154659083","5.743731026651685","4500","1474.69","569.38","5","示例首都a","示例国家a","47067.0","亚洲"],"geometry":{"id":22,"parts":[3],"points":[{"x":-40,"y":60},{"x":-45,"y":62},{"x":-40,"y":55},{"x":-40,"y":60}],"style":null,"type":"REGION"}},{"fieldNames":["SMID","SMSDRIW","SMSDRIN","SMSDRIE","SMSDRIS","SMUSERID","SMAREA","SMPERIMETER","SMGEOMETRYSIZE","SQKM","SQMI","COLOR_MAP","CAPITAL","COUNTRY","POP_1994","CONTINENT"],"fieldValues":["23","-7.433472633361816","62.35749816894531","-6.38972282409668","61.388328552246094","6","0.25430895154659083","5.743731026651685","4500","1474.69","569.38","5","示例首都b","示例国家b","47067.0","亚洲"],"geometry":{"id":23,"parts":[3],"points":[{"x":-40,"y":60},{"x":-45,"y":62},{"x":-40,"y":55},{"x":-40,"y":60}],"style":null,"type":"REGION","prjCoordSys":null}}]'
-        features = from_json_str(jsonstr, List[Feature])
+        features = deserializer(List[Feature])(jsonstr)
         self.check_api('post_features',
                        self.baseuri + "/services/data-World/rest/data/datasources/World/datasets/Countries/features.json",
                        HttpMethod.POST, httpretty.Response(status=200, body='{"succeed": true}'),

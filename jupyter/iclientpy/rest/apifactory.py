@@ -12,7 +12,7 @@ from .api.securityservice import SecurityService
 from .decorator import HttpMethod, REST
 from .proxyfactory import RestInvocationHandler
 from .proxyfactory import create
-from ..dtojson import from_json_str, to_json_str
+from ..dtojson import to_json_str
 
 default_session_cookie_name = 'JSESSIONID'
 

@@ -1,7 +1,4 @@
 import httpretty
-from typing import List
-from iclientpy.rest.api.model import Feature
-from iclientpy.dtojson import from_json_str
 from iclientpy.rest.api.restmap import MapService
 from iclientpy.rest.decorator import HttpMethod
 from iclientpy.rest.apifactory import APIFactory

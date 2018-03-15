@@ -1,6 +1,6 @@
 from ..decorator import post, get, put, delete, head
 from .model import *
-from .abstracttypefields import mng_service_info_deserializer
+from .abstracttypefields import mng_service_info_deserializer, data_store_setting_array_deserializer
 from io import FileIO
 
 class Management:
@@ -76,4 +76,8 @@ class Management:
 
     @get('/manager/filemanager/uploadtasks/{id}')
     def get_fileuploadtask(self, id: str) -> GetFileUploadTaskResult:
+        pass
+
+    @get('/manager/datastores', json_deserializer = data_store_setting_array_deserializer)
+    def get_datastores(self) -> List[DataStoreSetting]:
         pass

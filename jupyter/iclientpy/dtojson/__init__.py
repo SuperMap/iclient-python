@@ -3,7 +3,7 @@ import typing
 from enum import Enum
 
 __all__ = [
-    'from_json_str', 'to_json_str', 'deserializer', 'ByFieldValueParserSwitcher', 'parser', 'AbstractTypeParserSwitcher'
+    'to_json_str', 'deserializer', 'ByFieldValueParserSwitcher', 'parser', 'AbstractTypeParserSwitcher'
 ]
 primitive_types = (int, str, bool, float)
 
@@ -73,21 +73,6 @@ def _get_all_annotations(clz:type) -> dict:
     for base_clz in clz.__bases__:
         result.update(_get_all_annotations(base_clz))
     return result
-
-
-def from_json_str(jsonstr: str, clz: type):
-    """
-    从json字符串转向对应的Python对象
-
-    Args:
-        jsonstr: json字符串
-        clz: Python对象类型
-        abstract_type_fields: 类型为抽象类型的字段具体类型判断函数
-
-    Returns:
-        返回对象的Python对象实例
-    """
-    return deserializer(clz)(jsonstr)
 
 
 class ObjectParser:
@@ -181,10 +166,20 @@ def _null_function(*args, **kwargs):
 from functools import partial
 
 
-def deserializer(root_clz:type, field_parser: typing.Dict[typing.Tuple[type, str], typing.Callable] = {}):
-    if root_clz is None:
+def deserializer(clz:type, field_parser: typing.Dict[typing.Tuple[type, str], typing.Callable] = {}):
+    """
+    创建指定类型的json字符串反序列化函数。
+
+    Args:
+        clz: 需要反序列化的类型
+        field_parser: 需要特殊处理的字段的反序列化函数
+
+    Returns:
+        反序列化函数，该函数接受一个json字符串为参数，返回指定类型的对象
+    """
+    if clz is None:
         return _null_function
-    return partial(_deserialize, parser(root_clz, field_parser))
+    return partial(_deserialize, parser(clz, field_parser))
 
 class ByFieldValueParserSwitcher:
     _field_name: str

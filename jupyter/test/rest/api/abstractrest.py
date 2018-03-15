@@ -3,7 +3,7 @@ import httpretty
 import json
 from sure import expect
 from unittest import TestCase
-from iclientpy.dtojson import to_json_str, from_json_str
+from iclientpy.dtojson import to_json_str
 from iclientpy.rest.decorator import HttpMethod
 from iclientpy.rest.apifactory import APIFactory
 
@@ -52,9 +52,8 @@ class AbstractREST(object):
                 expect(result).should_not.be.empty
             else:
                 expect(to_json_str(result)).should.within(
-                    to_json_str(from_json_str(
-                        str(response.body, encoding='utf-8'),
-                        inspect.getfullargspec(method).annotations['return']
+                    to_json_str(method._json_deserializer(
+                        str(response.body, encoding='utf-8')
                     ))
                 )
         else:
