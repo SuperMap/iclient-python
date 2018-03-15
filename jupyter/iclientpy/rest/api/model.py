@@ -295,6 +295,9 @@ class DataStoreType(Enum):
 class DataStoreInfo:
     datastoreType: DataStoreType
 
+    def __init__(self, datastoreType):
+        self.datastoreType = datastoreType
+
 
 class TileSourceType(Enum):
     SMTiles = 'SMTiles'
@@ -331,6 +334,7 @@ class TileSourceInfo(DataStoreInfo):
     type: str
 
     def __init__(self, type:TileSourceType = None):
+        super().__init__(DataStoreType.TILES)
         self.type = type
 
 
@@ -828,3 +832,12 @@ class GetTilesetExportJobResultItem:
 class DataStoreSetting:
     id: str
     dataStoreInfo: DataStoreInfo
+
+
+class RestMngTileStorageInfo:
+    id: str
+    tileSourceInfo: TileSourceInfo
+    tilesetInfos: List[TilesetInfo]
+    totalCount: int
+    currentCount: int
+    connct: bool

@@ -128,7 +128,7 @@ class ListParser:
         return result
 
 
-def parser(clz:type, field_parser: typing.Dict[typing.Tuple[type, str], typing.Callable] = {}):
+def parser(clz:type, field_parser: typing.Dict[typing.Tuple[type, str], typing.Callable] = {}, abstract_type_parser: typing.Dict[typing.Tuple[type, str], typing.Callable] = {}):
     if clz in primitive_types:
         return _primitive_parser
     if issubclass(clz, Enum):
@@ -142,15 +142,17 @@ def parser(clz:type, field_parser: typing.Dict[typing.Tuple[type, str], typing.C
         start = clzname.find('[')
         end = clzname.rfind(']')
         elementclz = get_class(clzname[start + 1: end])
-        return ListParser(parser(elementclz, field_parser))
+        return ListParser(parser(elementclz, field_parser, abstract_type_parser))
     annos = _get_all_annotations(clz)
     deserializers = {}
     for field_name, field_type in annos.items():
         field = (clz, field_name)
         if field in field_parser:
             deserializers[field_name] = field_parser[field]
+        elif field_type in abstract_type_parser:
+            deserializers[field_name] = abstract_type_parser[field_type]
         else:
-            deserializers[field_name] = parser(field_type, field_parser)
+            deserializers[field_name] = parser(field_type, field_parser, abstract_type_parser)
     return ObjectParser(clz, deserializers)
 
 
@@ -166,7 +168,7 @@ def _null_function(*args, **kwargs):
 from functools import partial
 
 
-def deserializer(clz:type, field_parser: typing.Dict[typing.Tuple[type, str], typing.Callable] = {}):
+def deserializer(clz:type, field_parser: typing.Dict[typing.Tuple[type, str], typing.Callable] = {}, abstract_type_parser: typing.Dict[typing.Tuple[type, str], typing.Callable] = {}):
     """
     创建指定类型的json字符串反序列化函数。
 
@@ -179,7 +181,7 @@ def deserializer(clz:type, field_parser: typing.Dict[typing.Tuple[type, str], ty
     """
     if clz is None:
         return _null_function
-    return partial(_deserialize, parser(clz, field_parser))
+    return partial(_deserialize, parser(clz, field_parser, abstract_type_parser))
 
 class ByFieldValueParserSwitcher:
     _field_name: str
