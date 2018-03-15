@@ -311,11 +311,26 @@ class TileSourceType(Enum):
     OTS = 'OTS'
     ZXY = 'ZXY'
 
+class TileSourceType(Enum):
+    SMTiles = 'SMTiles'
+    FastDFS = 'FastDFS'
+    Hazelcast = 'Hazelcast'
+    UTFGrid = 'UTFGrid'
+    SVTiles = 'SVTiles'
+    Remote = 'Remote'
+    UGCV5 = 'UGCV5'
+    MongoDB = 'MongoDB'
+    UserDefined = 'UserDefined'
+    GeoPackage = 'GeoPackage'
+    MBTiles = 'MBTiles'
+    GDP = 'GDP'
+    OTS = 'OTS'
+    ZXY = 'ZXY'
 
 class TileSourceInfo(DataStoreInfo):
     type: str
 
-    def __init__(self, type:str = None):
+    def __init__(self, type:TileSourceType = None):
         self.type = type
 
 
@@ -323,7 +338,34 @@ class SMTilesTileSourceInfo(TileSourceInfo):
     outputPath: str
 
     def __init__(self):
-        super().__init__('SMTiles')
+        super().__init__(TileSourceType.SMTiles)
+
+
+class MongoDBTilesourceInfo(TileSourceInfo):
+    serverAdresses: List[str]
+    database: str
+    username: str
+    password: str
+
+    def __init__(self):
+        super().__init__(TileSourceType.MongoDB)
+
+
+class FastDFSTileSourceInfo(TileSourceInfo):
+    fdfsTrackers: List[str]
+    fdhtGroups: List[str]
+
+    def __init__(self):
+        super().__init__(TileSourceType.FastDFS)
+
+
+class OTSTileSourceInfo(TileSourceInfo):
+    instanceName: str
+    nodeName: str
+    fromPublic: bool
+    accessKeyId: str
+    accessKeySecret: str
+
 
 
 class TileType(Enum):

@@ -3,7 +3,7 @@ import typing
 from enum import Enum
 
 __all__ = [
-    'from_json_str', 'to_json_str', 'deserializer', 'ByFieldValueParserSwitcher', 'parser'
+    'from_json_str', 'to_json_str', 'deserializer', 'ByFieldValueParserSwitcher', 'parser', 'AbstractTypeParserSwitcher'
 ]
 primitive_types = (int, str, bool, float)
 
@@ -197,3 +197,16 @@ class ByFieldValueParserSwitcher:
     def __call__(self, json_obj: dict, parent_json_obj: dict):
         parser = self._parsers.get(parent_json_obj.get(self._field_name, None), None)
         return None if parser is None else parser(json_obj, parent_json_obj)
+
+
+class AbstractTypeParserSwitcher:
+    _field_name: str
+    _parsers: {}
+
+    def __init__(self, field_name: str, parsers: dict):
+        self._field_name = field_name
+        self._parsers = parsers
+
+    def __call__(self, json_obj: dict, *args):
+        parser = self._parsers.get(json_obj.get(self._field_name, None), None)
+        return None if parser is None else parser(json_obj, *args)
