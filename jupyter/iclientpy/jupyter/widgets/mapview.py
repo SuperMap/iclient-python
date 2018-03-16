@@ -1,5 +1,5 @@
 from ipyleaflet import Map
-from traitlets import Unicode, List, Bool, Int, default
+from traitlets import Unicode, List, Bool, Int, default, Any
 from ipywidgets import Layout
 from iclientpy._version import EXTENSION_VERSION
 from .cloudtilelayer import CloudTileLayer
@@ -25,6 +25,7 @@ class MapView(Map):
     zoom = Int(15).tag(sync=True, o=True)  #:缩放级别
     crs = Unicode('EPSG3857').tag(sync=True, o=True)  #:投影类型
     prefer_canvas = Bool(False).tag(sync=True, o=True)  #:使用canvas渲染，默认使用svg渲染
+    fit_bounds = List([]).tag(sync=True)
 
     @default('default_tiles')
     def _default_tiles(self):

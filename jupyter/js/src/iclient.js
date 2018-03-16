@@ -2,6 +2,7 @@ var leaflet = require('jupyter-leaflet')
 var _ = require('underscore')
 var version = require('../package.json').version
 import L from 'leaflet'
+
 require('leaflet.heat')
 require('@supermap/iclient-leaflet')
 var mapv = require('mapv')
@@ -59,7 +60,7 @@ var SuperMapRankSymbolThemeLayerView = leaflet.LeafletLayerView.extend({
         var features = [];
         for (var i = 0, len = data.length; i < len; i++) {
             var geo = this.map_view.obj.options.crs.project(L.latLng(data[i][lat_key], data[i][lng_key]));
-            var attrs = { NAME: data[i][address_key] };
+            var attrs = {NAME: data[i][address_key]};
             attrs[themeField] = data[i][value_key]
             var feature = L.supermap.themeFeature(geo, attrs);
             features.push(feature);
@@ -141,7 +142,7 @@ var SuperMapMapVLayerView = leaflet.LeafletLayerView.extend({
         // mapvOptions.lineWidth = this.model.get('line_width');
         var dataSet = this.model.get('data_set');
         var mapvDataSet = new mapv.DataSet(dataSet);
-        this.obj.update({ data: mapvDataSet, options: mapvOptions })
+        this.obj.update({data: mapvDataSet, options: mapvOptions})
     },
 
     model_events: function () {
@@ -173,6 +174,12 @@ var SuperMapMapView = leaflet.LeafletMapView.extend({
         var options = this.get_options();
         options.crs = L.CRS[options.crs]
         that.obj = L.map(this.el, options);
+        var fit_bounds = that.model.get('fit_bounds')
+        if (fit_bounds.length === 2) {
+            that.obj.fitBounds(fit_bounds);
+            that.update_bounds();
+            this.model.set('zoom', that.obj.getZoom());
+        }
     }
 })
 

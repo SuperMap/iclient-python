@@ -129,9 +129,8 @@ class RankSymbolThemeLayer(Layer):
         self._codomainmax = int((cmaxmod + 1) * math.pow(10, cmaxlog10))
         return tempdata
 
-    def __init__(self, name, data, **kwargs):
+    def __init__(self, data, **kwargs):
         super(RankSymbolThemeLayer, self).__init__(**kwargs)
-        self.name = name
         self.data = data
 
     def interact(self):
