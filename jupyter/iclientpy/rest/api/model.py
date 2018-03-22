@@ -314,6 +314,7 @@ class TileSourceType(Enum):
     OTS = 'OTS'
     ZXY = 'ZXY'
 
+
 class TileSourceType(Enum):
     SMTiles = 'SMTiles'
     FastDFS = 'FastDFS'
@@ -330,10 +331,11 @@ class TileSourceType(Enum):
     OTS = 'OTS'
     ZXY = 'ZXY'
 
+
 class TileSourceInfo(DataStoreInfo):
     type: str
 
-    def __init__(self, type:TileSourceType = None):
+    def __init__(self, type: TileSourceType = None):
         super().__init__(DataStoreType.TILES)
         self.type = type
 
@@ -369,7 +371,6 @@ class OTSTileSourceInfo(TileSourceInfo):
     fromPublic: bool
     accessKeyId: str
     accessKeySecret: str
-
 
 
 class TileType(Enum):
@@ -696,10 +697,6 @@ class GetTileJobResultItem:
     targetTilesetInfo: CompletedTilesetInfo
 
 
-class MethodResult:
-    succeed: bool
-
-
 class PostTilesetUpdateJobs:
     sourceTileSourceInfo: TileSourceInfo
     sourceTilesetIdentifier: str
@@ -829,6 +826,7 @@ class GetTilesetExportJobResultItem:
     info: TilesetExportJobInfo
     state: TilesetExportJobState
 
+
 class DataStoreSetting:
     id: str
     dataStoreInfo: DataStoreInfo
@@ -841,3 +839,860 @@ class RestMngTileStorageInfo:
     totalCount: int
     currentCount: int
     connct: bool
+
+
+class ContextSetting:
+    driver_memory: str
+    executor_memory: str
+    executor_cores: int
+
+
+class TargetSericeType(Enum):
+    RESTDATA = 'RESTDATA'
+    RESTMAP = 'RESTMAP'
+    RESTSPATIALANALYST = 'RESTSPATIALANALYST'
+
+
+class TargetServiceInfo:
+    serviceAddress: str
+    serviceType: TargetSericeType
+
+
+class PublishServiceResult:
+    targetServiceInfos: List[TargetServiceInfo]
+    targetDataPath: str
+
+
+class OutputType(Enum):
+    INDEXEDHDFS = 'INDEXEDHDFS'
+    UDB = 'UDB'
+    MONGODB = 'MONGODB'
+    PG = 'PG'
+    RDD = 'RDD'
+
+
+class OutputSetting:
+    outputPath: str
+    datasetName: str
+    type: OutputType
+
+
+class EngineType(Enum):
+    IMAGEPLUGINS = 'IMAGEPLUGINS'
+    OGC = 'OGC'
+    ORACLEPLUS = 'ORACLEPLUS'
+    SDBPLUS = 'SDBPLUS'
+    SQLPLUS = 'SQLPLUS'
+    UDB = 'UDB'
+    ES = 'ES'
+    GOOGLEMAPS = 'GOOGLEMAPS'
+    SUPERMAPCLOUD = 'SUPERMAPCLOUD'
+    POSTGRESQL = 'POSTGRESQL'
+    KINGBASE = 'KINGBASE'
+    DB2 = 'DB2'
+    NetCDF = 'NetCDF'
+    ISERVERREST = 'ISERVERREST'
+    MAPWORLD = 'MAPWORLD'
+    ORACLESPATIAL = 'ORACLESPATIAL'
+    MYSQL = 'MYSQL'
+    MONGDB = 'MONGDB'
+
+
+class DatasourceConnectionInfo:
+    alias: str
+    dataBase: str
+    driver: str
+    engienType: EngineType
+    password: str
+    server: str
+    user: str
+    connect: bool
+    exclusive: bool
+    openLinkTable: bool
+    readOnly: bool
+
+
+class FileSystemOutputSetting(OutputSetting):
+    datasourcePath: str
+
+
+class DatabaseOutputSetting(OutputSetting):
+    datasourceInfo: DatasourceConnectionInfo
+
+
+class SparkJobSetting:
+    contextSetting: ContextSetting
+    appName: str
+    mainClass: str
+    args: List[str]
+    serviceInfo: PublishServiceResult
+
+
+class InputDataSetting:
+    pass
+
+
+class CSVInputDataSetting(InputDataSetting):
+    xIndex: int
+    yIndex: int
+    separator: str
+
+
+class FileCSVInputDataSetting(CSVInputDataSetting):
+    filePath: str
+
+
+class Named:
+    name: str
+
+
+class BigDataFileShareDatasetInfoType(Enum):
+    CSV = 'CSV'
+    UDB = 'UDB'
+    INDEXEDHDFS = 'INDEXEDHDFS'
+
+
+class BigDataFileShareDataSetInfo(Named):
+    avilable: bool
+    url: str
+    type: BigDataFileShareDatasetInfoType
+
+
+class CSVFieldType(Enum):
+    INT32 = 'INT32'
+    DOUBLE = 'DOUBLE'
+    DATETIME = 'DATETIME'
+    WTEXT = 'WTEXT'
+
+
+class CSVFieldInfo:
+    name: str
+    typ: CSVFieldType
+
+
+class CSVDatasetInfo(BigDataFileShareDataSetInfo):
+    xIndex: int
+    yIndex: int
+    separator: str
+    firstRowIsHead: bool
+    prjCoordsys: int
+    filedInfo: List[CSVFieldInfo]
+
+
+class IndexedHdfsDatasetInfo(BigDataFileShareDataSetInfo):
+    datasetType: str
+
+
+class FieldInfo:
+    name: str
+    caption: str
+    tpye: FieldType
+    defaultValue: str
+    maxLength: int
+    isRequired: bool
+    isZeroLengthAllowed: bool
+    isSystemField: bool
+
+
+class UDBDatasetInfo(BigDataFileShareDataSetInfo):
+    datsetType: str
+    datasetName: str
+    bounds: str
+    epsgCode: int
+    readOnly: bool
+    fieldInfos = List[FieldInfo]
+
+
+class EncodeType(Enum):
+    BYTE = 'BYTE'
+    DCT = 'DCT'
+    INT16 = 'INT16'
+    INT24 = 'INT24'
+    INT32 = 'INT32'
+    LZW = 'LZW'
+    NONE = 'NONE'
+    PNG = 'PNG'
+    SGL = 'SGL'
+
+
+class DatasetType(Enum):
+    UNDEFINED = 'UNDEFINED'
+    POINT = 'POINT'
+    LINE = 'LINE'
+    REGION = 'REGION'
+    TEXT = 'TEXT'
+    NETWORK = 'NETWORK'
+    GRID = 'GRID'
+    IMAGE = 'IMAGE'
+    CAD = 'CAD'
+    LINEM = 'LINEM'
+    TABULAR = 'TABULAR'
+    NETWORKPOINT = 'NETWORKPOINT'
+    LINKTABLE = 'LINKTABLE'
+    WCS = 'WCS'
+    WMS = 'WMS'
+    POINT3D = 'POINT3D'
+    LINE3D = 'LINE3D'
+    REGION3D = 'REGION3D'
+    NETWORK3D = 'NETWORK3D'
+    MODEL = 'MODEL'
+    POINTEPS = 'POINTEPS'
+    LINEEPS = 'LINEEPS'
+    REGIONEPS = 'REGIONEPS'
+    TEXTEPS = 'TEXTEPS'
+    VECTORCOLLECTION = 'VECTORCOLLECTION'
+
+
+class DatasetInfo(Named):
+    description: str
+    prjCoordSys: PrjCoordSys
+    isReadOnly: bool
+    tableName: str
+    encodeType: EncodeType
+    type: DatasetType
+    dataSourceName: str
+    bounds: Rectangle2D
+    datasourceConnectionInfo: DatasourceConnectionInfo
+
+
+class PixelFormat(Enum):
+    BIT8 = 'BIT8'
+    BIT16 = 'BIT16'
+    BIT32 = 'BIT32'
+    BIT64 = 'BIT64'
+    DOUBLE = 'DOUBLE'
+    SINGLE = 'SINGLE'
+    UBIT1 = 'UBIT1'
+    UBIT4 = 'UBIT4'
+    UBIT8 = 'UBIT8'
+    UBIT16 = 'UBIT16'
+    RGB = 'RGB'
+    RGBA = 'RGBA'
+    UBIT32 = 'UBIT32'
+    UNKNOWN = 'UNKNOWN'
+
+
+class DatasetGridInfo(DatasetInfo):
+    blockSize: int
+    height: int
+    weight: int
+    minValue: float
+    maxValue: float
+    noValue: float
+    pixelFormat: PixelFormat
+
+
+class Color:
+    red: int
+    green: int
+    blue: int
+    alpha: int
+
+
+class ColorSpaceType(Enum):
+    CMYK = 'CMYK'
+    RGB = 'RGB'
+
+
+class DatasetImageInfo(DatasetInfo):
+    blockSize: int
+    height: int
+    width: int
+    palettes: List[Color]
+    pixelFormat: PixelFormat
+    bandCount: int
+    bandNames: List[str]
+    colorSpace: ColorSpaceType
+
+
+class Charset(Enum):
+    ANSI = 'ANSI'
+    ARABIC = 'ARABIC'
+    BALTIC = 'BALTIC'
+    CHINESEBIG5 = 'CHINESEBIG5'
+    CYRILLIC = 'CYRILLIC'
+    DEFAULT = 'DEFAULT'
+    EASTEUPOPE = 'EASTEUPOPE'
+    GB18030 = 'GB18030'
+    GREEK = 'GREEK'
+    HEBREW = 'HEBREW'
+    JOHAB = 'JOHAB'
+    KOREAN = 'KPREAN'
+    MAC = 'MAC'
+    OEM = 'OEM'
+    RUSSIAN = 'RUSSIAN'
+    SHIFTJIS = 'SHIFTJIS'
+    SYMBOL = 'SYMBOL'
+    THAI = 'THAI'
+    TURKISH = 'TURKISH'
+    UNICODE = 'UNICODE'
+    UTF32 = 'UTF32'
+    UTF7 = 'UTF7'
+    URF8 = 'UTF8'
+    VIETNAMESE = 'VIETNAMESE'
+    WINDOWS1252 = 'WINDOWS1252'
+    XIA5 = 'XIA5'
+    XIA5GREMAN = 'XIA5GERMAN'
+    XIA5nORWEGIAN = 'XIA5NORWEGIAN'
+    XIA5SWEDISH = 'XIA5SWEDISH'
+
+
+class DatasetVectorInfo(DatasetInfo):
+    isFileCache: bool
+    charset: Charset
+    recordCount: int
+
+
+class ArcGISDatasetVectorInfo(DatasetVectorInfo):
+    id: int
+
+
+class WFSDatasetInfo(DatasetVectorInfo):
+    crsCode: str
+
+
+class SpatialDatasetInfo(DatasetInfo):
+    datasetName: str
+
+
+class DatasetInputSetting(InputDataSetting):
+    datasetInfo: Named
+    datasetName: str
+    numSlices: int
+    specField: str
+
+
+class DistributeAnalysisSetting(SparkJobSetting):
+    referServicesAddress: str
+    referToken: str
+    # input: InputDataSetting
+    output: OutputSetting
+
+
+class SummaryAnalystType(Enum):
+    SUMMARYMESH = 'SUMMARYMESH'
+    SUMMARYREGION = 'SUMMARYREGION'
+
+
+class AggregatePointsJobSetting(DistributeAnalysisSetting):
+    type: SummaryAnalystType
+
+
+class DistanceUnit(Enum):
+    Meter = 'Meter'
+    Kilometer = 'Kilometer'
+    Yard = 'Yard'
+    Foot = 'Foot'
+    Mile = 'Mile'
+
+
+class MappingParameters:
+    numericPrecision: int
+
+
+class SummaryAnalystSetting:
+    pass
+
+
+# TODO: SummaryAnalystSetting为标记类，实际不存在
+class SummaryMeshAnalystSetting(SummaryAnalystSetting):
+    query: str
+    resolution: str
+    fields: str
+    meshType: int
+    statisticModes: str
+    resultFieldNames: str
+    meshSizeUnit: DistanceUnit
+    mappingParameters: MappingParameters
+
+
+class SummaryMeshJobSetting(AggregatePointsJobSetting):
+    analyst: SummaryMeshAnalystSetting
+
+
+class SummaryRegionAnalystSettingBase:
+    regionDatasource: str
+    regionDataset: str
+    fields: str
+    statisticModes: str
+    resultFidleNames: str
+    mappingParameters: MappingParameters
+
+
+# TODO: SummaryAnalystSetting为标记类，实际不存在
+class SummaryRegionAnalystSetting(SummaryAnalystSetting, SummaryRegionAnalystSettingBase):
+    attributeFilter: str
+
+
+class SummaryRegionJobSetting(AggregatePointsJobSetting):
+    analyst: SummaryRegionAnalystSetting
+
+
+class BuffersAnalystSetting:
+    distance: str
+    distanceField: str
+    distanceUnit: DistanceUnit
+    bounds: str
+    dissolveField: str
+
+
+class BuffersAnalystJobSetting(DistributeAnalysisSetting):
+    analyst: BuffersAnalystSetting
+
+
+class ImageType(Enum):
+    basic = 'basic'
+    heatmap = 'heatmap'
+
+
+class BuildCacheDrawingSetting:
+    bounds: str
+    level: int
+    imageType: ImageType
+
+
+class BuildCacheJobSetting(DistributeAnalysisSetting):
+    drawing: BuildCacheDrawingSetting
+
+
+class BuildGridIndexAnalystSetting:
+    indexFile: str
+    isSer: bool
+    bounds: str
+    rows: str
+    cols: str
+    interval: str
+
+
+class BuidlGridIndexJobSetting(DistributeAnalysisSetting):
+    analyst: BuildGridIndexAnalystSetting
+
+
+class JoinOperation(Enum):
+    JOINONETOONE = 'JOINONETOONE'
+    JOINONETOMANY = 'JOINONETOMANY'
+
+
+class SpatialRelationShip(Enum):
+    CONTAIN = 'CONTAIN'
+    CROSS = 'CROSS'
+    DISJOINT = 'DISJOINT'
+    IDENTITY = 'IDENTITY'
+    INTERSECT = 'INTERSECT'
+    OVERLAP = 'OVERLAP'
+    TOUCH = 'TOUCH'
+    WITHIN = 'WITHIN'
+    NEAR = 'NEAR'
+
+
+class Unit(Enum):
+    METER = 'METER'
+    KILOMETER = 'KILOMETER'
+    MILE = 'MILE'
+    YARD = 'YARD'
+    DEGREE = 'DEGREE'
+    MILIMETER = 'MILIMETER'
+    CENTIMETER = 'CENTIMETER'
+    INCH = 'INCH'
+    DECIMETER = 'DECIMETER'
+    FOOT = 'FOOT'
+    SECOND = 'SECOND'
+    MINUTE = 'MINUTE'
+    RADIAN = 'RADIAN'
+
+
+class TemporalRelationShip(Enum):
+    AFTER = 'AFTER'
+    BEFORE = 'BEGPRE'
+    CONTAINS = 'CONTAINS'
+    DURING = 'DURING'
+    FINISHES = 'FINISHES'
+    MEETS = 'MEETS'
+    NEAR = 'NEAR'
+    FINISHEDBY = 'FINISHEDBY'
+    METBY = 'METBY'
+    OVERLAPS = 'OVERLAPS'
+    OVERLAPPEDBY = 'OVERLAPPEDBY'
+    STARTS = 'STARTS'
+    STARTEDBY = 'STARTEDBY'
+    EQUALS = 'EQUALS'
+
+
+class TemporalNearDistanceUnit(Enum):
+    MILLISECOND = 'MILLISECOND'
+    SECOND = 'SECOND'
+    MINUTE = 'MINUTE'
+    HOUR = 'HOUR'
+    DAY = 'DAY'
+    WEEK = 'WEEK'
+    MONTH = 'MONTH'
+    YEAR = 'YEAR'
+
+
+class AttributeStatisticalMode(Enum):
+    EQUAL = 'EQUAL'
+    NOTEQUAL = 'NOTEQUAL'
+
+
+class FeatureJoinAnalystSetting:
+    inputJoin: str
+    datasetFeatureJoin: str
+    joinOperation: JoinOperation
+    joinFields: str
+    spatialRelationship: SpatialRelationShip
+    spatialNearDistance: float
+    spatialNearDistanceUnit: Unit
+    tolerance: float
+    temporalRelationship: TemporalRelationShip
+    temporalNearDistance: int
+    temporalNearDistanceUnit: TemporalNearDistanceUnit
+    attributeRelationship: str
+    summaryFields: str
+    summaryMode: str
+    attributeMode: AttributeStatisticalMode
+    specFields: str
+    resultFieldNames: str
+    mappingParameters: MappingParameters
+
+
+class FeatureJoinJobSettting(DistributeAnalysisSetting):
+    analyst: FeatureJoinAnalystSetting
+
+
+class AreaUnit(Enum):
+    SquareMeter = 'SquareMeter'
+    SquareKileMeter = 'SquareKileMeter'
+    Hectare = 'Hectare'
+    Are = 'Are'
+    Acre = 'Acre'
+    SquareFoot = 'SquareFoot'
+    SquareYard = 'SquareYard'
+    SquareMile = 'SquareMile'
+
+
+class KernelDensityAnalystSetting:
+    query: str
+    resolution: str
+    radius: str
+    fields: str
+    method: int
+    meshType: int
+    meshSizeUnit: DistanceUnit
+    radiusUnit: DistanceUnit
+    areaUnit: AreaUnit
+
+
+class KernelDensityJobSetting(DistributeAnalysisSetting):
+    analyst: KernelDensityAnalystSetting
+
+
+class OverlayMode(Enum):
+    clip = 'clip'
+    erase = 'erase'
+    update = 'update'
+    union = 'union'
+    identity = 'identity'
+    xor = 'xor'
+    intersect = 'intersect'
+
+
+class BufferEndType(Enum):
+    FLAT = 'FLAT'
+    ROUND = 'ROUND'
+
+
+class BufferDistance:
+    value: float
+    exp: str
+
+
+class BufferRadiusUnit(Enum):
+    METER = 'METER'
+    KILOMETER = 'KILOMETER'
+    MILE = 'MILE'
+    YARD = 'YARD'
+    MILLIMETER = 'MILLIMETER'
+    CENTIMETER = 'CENTIMETER'
+    INCH = 'INCH'
+    DECIMETER = 'DECIMETER'
+    FOOT = 'FOOT'
+
+
+class BufferAnalystParameter:
+    endType: BufferEndType
+    leftDistance: BufferDistance
+    rightDistance: BufferDistance
+    semicircleLineSegment: int
+    radiusUnit: BufferRadiusUnit
+
+
+class OverlayAnalystGeoSetting:
+    inputVectorClip: str
+    datasetVectorClip: str
+    mode: OverlayMode
+    attributeFilter: str
+    geometryClip: Geometry
+    bufferAnalystParameter: BufferAnalystParameter
+
+
+class OverlayAnalystGeoJobSetting(DistributeAnalysisSetting):
+    analyst: OverlayAnalystGeoSetting
+
+
+class OverlayAanalystSetting:
+    inputOverlay: str
+    datasetOverlay: str
+    srcFields: str
+    overlayFields: str
+    mode: OverlayMode
+
+
+class OverlayAnalystJobSetting(DistributeAnalysisSetting):
+    analyst: OverlayAanalystSetting
+
+
+class SpatialQueryMode(Enum):
+    NONE = 'NONE'
+    IDENTITY = 'IDENTITY'
+    DISJOINT = 'DISJOINT'
+    INTERSECT = 'INTERSECT'
+    TOUCH = 'TOUCH'
+    OVERLAP = 'OVERLAP'
+    CROSS = 'CROSS'
+    WITHIN = 'WITHIN'
+    CONTAIN = 'CONTAIN'
+
+
+class SpatialQueryGeoAnalystSetting:
+    inputQuery: str
+    datasetQuery: str
+    mode: SpatialQueryMode
+    attributeFilter: str
+    geometryQuery: Geometry
+    bufferAnalystPatameter: BufferAnalystParameter
+
+
+class SpatialQueryGeoJobSetting(DistributeAnalysisSetting):
+    analyst: SpatialQueryGeoAnalystSetting
+
+
+class SummaryAttributesAnalystSetting:
+    groupField: str
+    attributeField: str
+    statisticModes: str
+    resultField: str
+
+
+class SummaryAttributesJobSetting(DistributeAnalysisSetting):
+    analyst: SummaryAttributesAnalystSetting
+
+
+class SummaryWithInJobSettingBase(DistributeAnalysisSetting):
+    type: SummaryAnalystType
+
+
+# 解决区域汇总分析analyst多个类型
+class SummaryWithInRegionAnalystBaseSetting:
+    pass
+
+
+class SummaryWithinMeshAnalystSetting(SummaryWithInRegionAnalystBaseSetting, SummaryMeshAnalystSetting):
+    standardSummaryFields: bool
+    weightedSummaryFields: bool
+    sumShape: bool
+    weightedFields: str
+    standardFields: str
+    standardStatisticModes: str
+    weightedStatisticModes: str
+
+
+class SummaryWithinMeshJobSetting(SummaryWithInJobSettingBase):
+    analyst: SummaryWithinMeshAnalystSetting
+
+
+class SummaryWithinRegionAnalystSettting(SummaryWithInRegionAnalystBaseSetting, SummaryRegionAnalystSettingBase):
+    standardSummaryFields: bool
+    weightedSummaryFields: bool
+    sumShape: bool
+    query: str
+    weightedFields: str
+    standardFields: str
+    standardStatisticModes: str
+    weightedStatisticModes: str
+
+
+class SummaryWithinRegionJobSetting(SummaryWithInJobSettingBase):
+    analyst: SummaryWithinRegionAnalystSettting
+
+
+class TopologyValidatorRuleType(Enum):
+    REGIONNOOVERLAP = 'REGIONNOOVERLAP'
+    REGIONNOOVERLAPWITH = 'REGIONNOOVERLAPWITH'
+    REGIONCONTAINEDBYREGION = 'REGIONCONTAINEDBYREGION'
+    REGIONCOVEREDBYREGION = 'REGIONCOVEREDBYREGION'
+    LINENOOVERLAP = 'LINENOOVERLAP'
+    LINENOOVERLAPWITH = 'LINENOOVERLAPWITH'
+    POINTNOIDENTICAL = 'POINTNOIDENTICAL'
+
+
+class TopologyvalidatorAnalystSetting:
+    inputValidating: str
+    datasetTopology: str
+    rule: TopologyValidatorRuleType
+    tolerance: str
+
+
+class TopologyValidatorJobSettting(DistributeAnalysisSetting):
+    analyst: TopologyvalidatorAnalystSetting
+
+
+class SparkRunState(Enum):
+    UNKNOWN = 'UNKNOWN'
+    CONNECTED = 'CONNECTED'
+    SUBMITTED = 'SUBMITTED'
+    WAITING = 'WAITING'
+    RUNNING = 'RUNNING'
+    FINISHED = 'FINISHED'
+    FAILED = 'FAILED'
+    KILLED = 'KILLED'
+    LOST = 'LOST'
+
+
+class SparkJobState:
+    runState: SparkRunState
+    endState: bool
+    errorMsg: str
+    startTime: int
+    endTime: int
+    elapsedTime: int
+    publisherelapsedTime: int
+
+
+class GetAggregatePointsResultItem:
+    id: str
+    state: SparkJobState
+    setting: AggregatePointsJobSetting
+
+
+class PostAgggregatePointsEntity:
+    input: InputDataSetting
+    analyst: SummaryAnalystSetting
+    type: SummaryAnalystType
+    output: OutputSetting
+
+
+class GetFeatureJoinResultItem:
+    id: str
+    state: SparkJobState
+    setting: FeatureJoinJobSettting
+
+
+class PostFeatureJoinEntity:
+    input: InputDataSetting
+    analyst: FeatureJoinAnalystSetting
+    output: OutputSetting
+
+
+class GetBuffersResultItem:
+    id: str
+    state: SparkJobState
+    setting: BuffersAnalystJobSetting
+
+
+class PostBuffersEntity:
+    input: InputDataSetting
+    analyst: BuffersAnalystSetting
+    output: OutputSetting
+
+
+class GetDensityResultItem:
+    id: str
+    state: SparkJobState
+    setting: KernelDensityJobSetting
+
+
+class PostDensityEntiy:
+    input: InputDataSetting
+    analyst: KernelDensityAnalystSetting
+    output: OutputSetting
+
+
+class GetOverlayResultItem:
+    id: str
+    state: SparkJobState
+    setting: OverlayAnalystJobSetting
+
+
+class OverlayAnalystSetting:
+    inputOverlay: str
+    datasetOverlay: str
+    srcFields: str
+    overFields: str
+    mode: OverlayMode
+
+
+class PostOverlayEntity:
+    input: InputDataSetting
+    analyst: OverlayAnalystSetting
+    output: OutputSetting
+
+
+class GetQueryResultItem:
+    id: str
+    state: SparkJobState
+    setting: SpatialQueryGeoJobSetting
+
+
+class PostQueryEntity:
+    input: InputDataSetting
+    analyst: SpatialQueryGeoAnalystSetting
+    output: OutputSetting
+
+
+class GetSummaryAttributesResultItem:
+    id: str
+    state: SparkJobState
+    setting: SummaryAttributesJobSetting
+
+
+class PostSummaryAttributesEntity:
+    input: InputDataSetting
+    analyst: SummaryAnalystSetting
+    output: OutputSetting
+
+
+class GetSummaryRegionResultItem:
+    id: str
+    state: SparkJobState
+    setting: SummaryWithInJobSettingBase
+
+
+class PostSummaryRegionEntity:
+    input: InputDataSetting
+    analyst: SummaryWithInRegionAnalystBaseSetting
+    type: SummaryAnalystType
+    output: OutputSetting
+
+
+class GetTopologyValidatorResultItem:
+    id: str
+    state: SparkJobState
+    setting: TopologyValidatorJobSettting
+
+
+class PostTopologyValidatorEntity:
+    input: InputDataSetting
+    analyst: TopologyvalidatorAnalystSetting
+    output: OutputSetting
+
+
+class GetVectorClipResultItem:
+    id: str
+    state: SparkJobState
+    setting: OverlayAnalystGeoJobSetting
+
+
+class PostVectorClipEntity:
+    input: InputDataSetting
+    analyst: OverlayAnalystGeoSetting
+    output: OutputSetting

@@ -9,6 +9,7 @@ from .api.management import Management
 from .api.restdata import DataService
 from .api.restmap import MapService
 from .api.securityservice import SecurityService
+from .api.distributedanalyst import DistributedAnalyst
 from .decorator import HttpMethod, REST
 from .proxyfactory import RestInvocationHandler
 from .proxyfactory import create
@@ -344,3 +345,18 @@ class APIFactory:
             返回iServer安全相关的api
         """
         return create(SecurityService, RestInvocationHandlerImpl(self._services_url, proxies=self._proxies))
+
+    def distributedanalyst_service(self, serveice_name: str = 'distributedanalyst/rest',
+                                   version: str = 'v1') -> DistributedAnalyst:
+        """
+        返回大数据分析服务的api
+        Args:
+            serveice_name:服务名称
+            version:版本
+
+        Returns:
+            返回iServer大数据分析相关api
+        """
+        return create(DistributedAnalyst,
+                      RestInvocationHandlerImpl(self._services_url + '/' + serveice_name + '/' + version + '/jobs',
+                                                proxies=self._proxies))
