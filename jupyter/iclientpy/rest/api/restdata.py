@@ -1,6 +1,6 @@
 from typing import List
 
-from .model import Feature, MethodResult, GeometryType, Point2D
+from .model import Feature, MethodResult, GeometryType
 from ..decorator import post, get
 
 

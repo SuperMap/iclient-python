@@ -1,6 +1,5 @@
 import httpretty
-
-from unittest import mock, skip
+from unittest import mock
 from iclientpy.rest.api.management import *
 from iclientpy.rest.decorator import HttpMethod
 from iclientpy.rest.api.management import PostTileJobsItem, TileSize, OutputFormat, TileType, TileSourceInfo
@@ -137,5 +136,3 @@ class ManagementTest(AbstractRESTTestCase):
         response = httpretty.Response(body=body, status=200)
         self.check_api(Management.get_datastores, self.baseuri + '/manager/datastores.json', HttpMethod.GET,
                        response)
-
-

@@ -1,11 +1,21 @@
 import json
 import typing
 from enum import Enum
+import importlib
 
 __all__ = [
-    'to_json_str', 'deserializer', 'ByFieldValueParserSwitcher', 'parser', 'AbstractTypeParserSwitcher'
+    'to_json_str', 'deserializer', 'ByFieldValueParserSwitcher', 'parser', 'AbstractTypeParserSwitcher', 'register'
 ]
 primitive_types = (int, str, bool, float)
+
+type_parser_map = {}
+
+
+def register(clz: type, parser_clz, force: bool = False):
+    if clz in type_parser_map and (not force):
+        raise Exception('已经存在')
+    else:
+        type_parser_map[clz] = parser_clz
 
 
 def is_primitive(o) -> bool:
@@ -24,7 +34,7 @@ def to_dict_or_list(obj):
     if isinstance(obj, Enum):
         return obj.name
     if isinstance(obj, dict):
-        tmp_dict = obj # type:dict
+        tmp_dict = obj  # type:dict
         result = {}
         for key, value in tmp_dict.items():
             result[key] = None if value is None else to_dict_or_list(value)
@@ -40,7 +50,6 @@ def to_dict_or_list(obj):
 
 
 def to_json_str(obj):
-
     """
     将json对象转为json字符串
 
@@ -57,15 +66,13 @@ def get_class(kls):
     try:
         parts = kls.split('.')
         module = ".".join(parts[:-1])
-        m = __import__(module)
-        for comp in parts[1:]:
-            m = getattr(m, comp)
-        return m
+        m = importlib.import_module(module)
+        return getattr(m, parts[-1])
     except Exception:
         return eval(kls)
 
 
-def _get_all_annotations(clz:type) -> dict:
+def _get_all_annotations(clz: type) -> dict:
     result = {}
     annos = clz.__dict__.get('__annotations__', None)  # type:dict
     if annos is not None:
@@ -113,8 +120,9 @@ _primitive_parser = _return_original_parser
 
 _dict_parser = _return_original_parser
 
+
 class ListParser:
-    _element_parser:typing.Callable
+    _element_parser: typing.Callable
 
     def __init__(self, element_parser):
         self._element_parser = element_parser
@@ -128,7 +136,8 @@ class ListParser:
         return result
 
 
-def parser(clz:type, field_parser: typing.Dict[typing.Tuple[type, str], typing.Callable] = {}, abstract_type_parser: typing.Dict[typing.Tuple[type, str], typing.Callable] = {}):
+def parser(clz: type, field_parser: typing.Dict[typing.Tuple[type, str], typing.Callable] = {},
+           abstract_type_parser: typing.Dict[typing.Tuple[type, str], typing.Callable] = {}):
     if clz in primitive_types:
         return _primitive_parser
     if issubclass(clz, Enum):
@@ -151,24 +160,30 @@ def parser(clz:type, field_parser: typing.Dict[typing.Tuple[type, str], typing.C
             deserializers[field_name] = field_parser[field]
         elif field_type in abstract_type_parser:
             deserializers[field_name] = abstract_type_parser[field_type]
+        elif field_type in type_parser_map:
+            deserializers[field_name] = type_parser_map[field_type]
         else:
             deserializers[field_name] = parser(field_type, field_parser, abstract_type_parser)
     return ObjectParser(clz, deserializers)
 
 
-def _deserialize(parser:typing.Callable, json_str):
+def _deserialize(parser: typing.Callable, json_str):
     try:
         json_obj = json.loads(json_str)
     except:
         return json_str
     return parser(json_obj)
 
+
 def _null_function(*args, **kwargs):
     return None
+
+
 from functools import partial
 
 
-def deserializer(clz:type, field_parser: typing.Dict[typing.Tuple[type, str], typing.Callable] = {}, abstract_type_parser: typing.Dict[typing.Tuple[type, str], typing.Callable] = {}):
+def deserializer(clz: type, field_parser: typing.Dict[typing.Tuple[type, str], typing.Callable] = {},
+                 abstract_type_parser: typing.Dict[typing.Tuple[type, str], typing.Callable] = {}):
     """
     创建指定类型的json字符串反序列化函数。
 
@@ -182,6 +197,7 @@ def deserializer(clz:type, field_parser: typing.Dict[typing.Tuple[type, str], ty
     if clz is None:
         return _null_function
     return partial(_deserialize, parser(clz, field_parser, abstract_type_parser))
+
 
 class ByFieldValueParserSwitcher:
     _field_name: str

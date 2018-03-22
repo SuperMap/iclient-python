@@ -1,7 +1,8 @@
 from ..decorator import post, get, put, delete, head
 from .model import *
-from .abstracttypefields import mng_service_info_deserializer, data_store_setting_array_deserializer
+from .abstracttypefields import mng_service_info_deserializer
 from io import FileIO
+
 
 class Management:
     @post('/manager/workspaces', 'param')
@@ -56,8 +57,7 @@ class Management:
     def get_tilesetupdatejob(self, id: str) -> GetTilesetExportJobResultItem:
         pass
 
-    @get('/manager/services/{service_name}',
-         json_deserializer=mng_service_info_deserializer)
+    @get('/manager/services/{service_name}', json_deserializer=mng_service_info_deserializer)
     def get_service(self, service_name: str) -> MngServiceInfo:
         pass
 
@@ -78,6 +78,6 @@ class Management:
     def get_fileuploadtask(self, id: str) -> GetFileUploadTaskResult:
         pass
 
-    @get('/manager/datastores', json_deserializer = data_store_setting_array_deserializer)
+    @get('/manager/datastores')
     def get_datastores(self) -> List[DataStoreSetting]:
         pass
