@@ -21,7 +21,6 @@
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 
-
 # -- General configuration ------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
@@ -90,13 +89,18 @@ pygments_style = 'sphinx'
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
 
-
 # -- Options for HTML output ----------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'alabaster'
+import sphinx_rtd_theme
+
+html_theme = 'sphinx_rtd_theme'
+html_theme_options = {
+    'logo_only': True
+}
+html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -119,18 +123,17 @@ html_sidebars = {
         'about.html',
         'navigation.html',
         'relations.html',  # needs 'show_related': True theme option to display
-        #'searchbox.html',
+        # 'searchbox.html',
         'donate.html',
     ]
 }
 
-html_logo="_static/supermap-logo.png"
+html_logo = "_static/supermap-logo.png"
 
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'iclientpydoc'
-
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -160,7 +163,6 @@ latex_documents = [
      'SuperMap', 'manual'),
 ]
 
-
 # -- Options for manual page output ---------------------------------------
 
 # One entry per manual page. List of tuples
@@ -169,7 +171,6 @@ man_pages = [
     (master_doc, 'iclientpy', 'iclientpy Documentation',
      [author], 1)
 ]
-
 
 # -- Options for Texinfo output -------------------------------------------
 
@@ -181,8 +182,6 @@ texinfo_documents = [
      author, 'iclientpy', 'One line description of project.',
      'Miscellaneous'),
 ]
-
-
 
 # -- Options for Epub output ----------------------------------------------
 
@@ -204,11 +203,8 @@ epub_copyright = copyright
 # A list of files that should not be packed into the epub file.
 epub_exclude_files = ['search.html']
 
-
-
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {'https://docs.python.org/': None}
-
 
 # Napoleon settings
 napoleon_google_docstring = True
@@ -222,4 +218,3 @@ napoleon_use_admonition_for_references = False
 napoleon_use_ivar = False
 napoleon_use_param = True
 napoleon_use_rtype = True
-

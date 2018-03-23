@@ -2,4 +2,5 @@ nbsphinx >= 0.3.0
 pandoc >= 1.0.2
 ipython >= 6.2.1
 nbsphinx_link >= 1.0.0
-sphinx >= 1.6.5
+sphinx >= 1.7.2
+sphinx_rtd_theme >= 0.2.4
