@@ -986,7 +986,7 @@ class IndexedHdfsDatasetInfo(BigDataFileShareDataSetInfo):
 class FieldInfo:
     name: str
     caption: str
-    tpye: FieldType
+    type: FieldType
     defaultValue: str
     maxLength: int
     isRequired: bool
@@ -1696,3 +1696,33 @@ class PostVectorClipEntity:
     input: InputDataSetting
     analyst: OverlayAnalystGeoSetting
     output: OutputSetting
+
+
+class DatasetsContent:
+    datasetNames: List[str]
+    datasetCount: int
+    childUriList: List[str]
+
+
+class DatasetContent:
+    childUriList: List[str]
+    supportAttachments: bool
+    supportFeatureMetadatas: bool
+
+
+class RelationShipDatasetContent(DatasetContent):
+    datasetInfo: DatasetInfo
+
+
+class BigDataFileShareDatasetContent(DatasetContent):
+    datasetInfo: BigDataFileShareDataSetInfo
+
+
+class FieldsContent:
+    fieldNames: List[str]
+    childUriList: List[str]
+
+
+class FieldContent:
+    fieldInfo: FieldInfo
+    childUriList: List[str]

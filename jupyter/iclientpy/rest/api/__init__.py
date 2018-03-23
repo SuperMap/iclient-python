@@ -33,3 +33,13 @@ _aggregate_point_job_setting_parser_switcher = AbstractTypeParserSwitcher('type'
 })
 
 register(AggregatePointsJobSetting, _aggregate_point_job_setting_parser_switcher)
+
+from .model import BigDataFileShareDataSetInfo, UDBDatasetInfo, CSVDatasetInfo, IndexedHdfsDatasetInfo, \
+    BigDataFileShareDatasetInfoType
+
+_bigdata_fileshare_dataset_info_parser_switcher = AbstractTypeParserSwitcher('type', {
+    BigDataFileShareDatasetInfoType.UDB.value: parser(UDBDatasetInfo),
+    BigDataFileShareDatasetInfoType.INDEXEDHDFS.value: parser(IndexedHdfsDatasetInfo),
+    BigDataFileShareDatasetInfoType.CSV.value: parser(CSVDatasetInfo)
+})
+register(BigDataFileShareDataSetInfo, _bigdata_fileshare_dataset_info_parser_switcher)

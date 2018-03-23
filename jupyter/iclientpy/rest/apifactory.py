@@ -14,6 +14,7 @@ from .decorator import HttpMethod, REST
 from .proxyfactory import RestInvocationHandler
 from .proxyfactory import create
 from ..dtojson import to_json_str
+from .api.datacatalog import Datacatalog
 
 default_session_cookie_name = 'JSESSIONID'
 
@@ -346,17 +347,29 @@ class APIFactory:
         """
         return create(SecurityService, RestInvocationHandlerImpl(self._services_url, proxies=self._proxies))
 
-    def distributedanalyst_service(self, serveice_name: str = 'distributedanalyst/rest',
+    def distributedanalyst_service(self, service_name: str = 'distributedanalyst/rest',
                                    version: str = 'v1') -> DistributedAnalyst:
         """
-        返回大数据分析服务的api
+        返回分布式分析服务的api
         Args:
-            serveice_name:服务名称
-            version:版本
+            service_name:服务名称，默认为distributedanalyst/rest
+            version:版本，默认为v1
 
         Returns:
-            返回iServer大数据分析相关api
+            返回iServer分布式分析相关api
         """
         return create(DistributedAnalyst,
-                      RestInvocationHandlerImpl(self._services_url + '/' + serveice_name + '/' + version + '/jobs',
+                      RestInvocationHandlerImpl(self._services_url + '/' + service_name + '/' + version + '/jobs',
                                                 proxies=self._proxies))
+
+    def datacatalog_service(self, service_name: str = 'datacatalog/rest') -> Datacatalog:
+        """
+        返回数据目录服务api
+        Args:
+            service_name:服务名称，默认为datacatalog/rest
+
+        Returns:
+            返回iServer数据目录服务api
+        """
+        return create(Datacatalog,
+                      RestInvocationHandlerImpl(self._services_url + '/' + service_name, proxies=self._proxies))
