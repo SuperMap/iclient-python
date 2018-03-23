@@ -81,3 +81,7 @@ class Management:
     @get('/manager/datastores')
     def get_datastores(self) -> List[DataStoreSetting]:
         pass
+
+    @get('/manager/datastores/{id}')
+    def get_datastore(self, id:str) -> RestMngTileStorageInfo:
+        pass

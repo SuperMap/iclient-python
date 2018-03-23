@@ -79,10 +79,16 @@ class MethodResult:
     succeed: bool
 
 
-class AbstractServiceSetting:
-    alias: str
-    config: object
+class Named:
     name: str
+
+
+class NamedSetting:
+    alias: str
+
+
+class AbstractServiceSetting(NamedSetting):
+    config: object
     type: str
 
 
@@ -106,10 +112,27 @@ class MngProvider:
     spsetSetting: List[ProviderSetting]
 
 
+class CommaJoinedStr(List[str]): #iServer管理里面有很多那种把字符串数组通过逗号分隔变成一个字符串的表达形式，反复split很烦。
+    pass
+
+
+class ComponentSetting(AbstractServiceSetting):
+    providers: CommaJoinedStr
+    enabled: bool
+    interfaceNames: CommaJoinedStr
+    disabledInterfaceNames: CommaJoinedStr
+    instanceCount: int
+
+class SCAndSCSetSetting:
+    isScSet: bool
+    scSetting: ComponentSetting
+    # todo scSetSetting
+
+
 class MngServiceInfo:
     alias: str
     clusterInterfaceNames: str
-    # todo component
+    component: SCAndSCSetSetting
     # todo instances
     interfaceNames: str
     interfaceTypes: str
@@ -1726,3 +1749,22 @@ class FieldsContent:
 class FieldContent:
     fieldInfo: FieldInfo
     childUriList: List[str]
+
+
+class CacheConfig:
+    mapName: str
+    scales: List[float]
+
+
+class MapConfig:
+    outputPath: str
+    outputSite: str
+    useCache: bool
+    tileCacheConfig: TileSourceInfo
+    utfGridCacheConfig: TileSourceInfo
+    vectorTileCacheConfig: TileSourceInfo
+    useUTFGridCache: bool
+    useVectorTileCache: bool
+    cacheConfigs: List[CacheConfig]
+    expired: int
+    cacheReadOnly: bool

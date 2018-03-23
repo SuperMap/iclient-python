@@ -69,7 +69,10 @@ def get_class(kls):
         m = importlib.import_module(module)
         return getattr(m, parts[-1])
     except Exception:
-        return eval(kls)
+        try:
+            return eval(kls)
+        except NameError as err:
+            raise Exception('get class ' + kls + ' exception')
 
 
 def _get_all_annotations(clz: type) -> dict:
@@ -137,7 +140,7 @@ class ListParser:
 
 
 def parser(clz: type, field_parser: typing.Dict[typing.Tuple[type, str], typing.Callable] = {},
-           abstract_type_parser: typing.Dict[typing.Tuple[type, str], typing.Callable] = {}):
+           type_parser: typing.Dict[type, typing.Callable] = {}):
     if clz in primitive_types:
         return _primitive_parser
     if issubclass(clz, Enum):
@@ -150,20 +153,25 @@ def parser(clz: type, field_parser: typing.Dict[typing.Tuple[type, str], typing.
         clzname = clz.__str__(clz)  # type:str
         start = clzname.find('[')
         end = clzname.rfind(']')
-        elementclz = get_class(clzname[start + 1: end])
-        return ListParser(parser(elementclz, field_parser, abstract_type_parser))
+        if start == -1 and end == -1:
+            elementclz = get_class(clzname)
+        elif start != -1 and end != -1 and end > start:
+            elementclz = get_class(clzname[start + 1: end])
+        else:
+            raise Exception('unknown ' + clz.__name__)
+        return ListParser(parser(elementclz, field_parser, type_parser))
     annos = _get_all_annotations(clz)
     deserializers = {}
     for field_name, field_type in annos.items():
         field = (clz, field_name)
         if field in field_parser:
             deserializers[field_name] = field_parser[field]
-        elif field_type in abstract_type_parser:
-            deserializers[field_name] = abstract_type_parser[field_type]
+        elif field_type in type_parser:
+            deserializers[field_name] = type_parser[field_type]
         elif field_type in type_parser_map:
             deserializers[field_name] = type_parser_map[field_type]
         else:
-            deserializers[field_name] = parser(field_type, field_parser, abstract_type_parser)
+            deserializers[field_name] = parser(field_type, field_parser, type_parser)
     return ObjectParser(clz, deserializers)
 
 
@@ -221,5 +229,7 @@ class AbstractTypeParserSwitcher:
         self._parsers = parsers
 
     def __call__(self, json_obj: dict, *args):
+        if json_obj is None:
+            return None
         parser = self._parsers.get(json_obj.get(self._field_name, None), None)
         return None if parser is None else parser(json_obj, *args)

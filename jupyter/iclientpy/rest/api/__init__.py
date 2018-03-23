@@ -2,6 +2,14 @@ from .model import SMTilesMapProviderSetting, FastDFSTileProviderSetting, MongoD
     OTSTileProviderSetting, UGCV5TileProviderSetting, GeoPackageMapProviderSetting, MngServiceInfo, ProviderSetting
 from iclientpy.dtojson import *
 
+
+def _comma_joined_str_parser(text:str, *args, **kwargs):
+    return text.split(',')
+
+
+from .model import CommaJoinedStr
+register(CommaJoinedStr, _comma_joined_str_parser)
+
 from .model import TileSourceType, MongoDBTilesourceInfo, FastDFSTileSourceInfo, OTSTileSourceInfo, DataStoreSetting, \
     TileSourceInfo, DataStoreInfo
 
@@ -11,6 +19,7 @@ _data_source_info_parser_switcher = AbstractTypeParserSwitcher('type', {
     TileSourceType.OTS.value: parser(OTSTileSourceInfo)
 })
 register(DataStoreInfo, _data_source_info_parser_switcher)
+register(TileSourceInfo, _data_source_info_parser_switcher)
 
 from .model import OutputSetting, DatabaseOutputSetting, FileSystemOutputSetting, OutputType
 
@@ -43,3 +52,13 @@ _bigdata_fileshare_dataset_info_parser_switcher = AbstractTypeParserSwitcher('ty
     BigDataFileShareDatasetInfoType.CSV.value: parser(CSVDatasetInfo)
 })
 register(BigDataFileShareDataSetInfo, _bigdata_fileshare_dataset_info_parser_switcher)
+
+
+from .model import MapConfig
+_component_config_parser = ByFieldValueParserSwitcher('type', {
+    'com.supermap.services.components.impl.MapImpl': parser(MapConfig)
+})
+from .model import ComponentSetting
+_component_setting_parser = parser(ComponentSetting, field_parser={(ComponentSetting, 'config'):_component_config_parser})
+register(ComponentSetting, _component_setting_parser)
+

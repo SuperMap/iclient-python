@@ -14,6 +14,7 @@ class ManagementTest(AbstractRESTTestCase):
         cls.init_api(cls, "management")
 
     def test_workspace(self):
+        {}.should
         param = PostWorkspaceParameter()
         param.workspaceConnectionInfo = 'World.sxwu'
         param.servicesTypes = [ServiceType.RESTMAP]
@@ -125,11 +126,22 @@ class ManagementTest(AbstractRESTTestCase):
                        self.baseuri + '/manager/filemanager/uploadtasks/38efbec5de2846d1bd499866637aec46_74d0dd27cf454fe1875f0b94490e7280.json',
                        HttpMethod.GET, httpretty.Response(body=get_fileuploadtask, status=200), id=taskid)
 
-    def test_get_service(self):
+    def test_get_service_mongodb_cache(self):
         get_mng_service_body = '{"isStreamingService":false,"interfaceTypes":"com.supermap.services.rest.RestServlet","isSet":false,"instances":[{"interfaceType":"com.supermap.services.rest.RestServlet","componentType":"com.supermap.services.components.impl.MapImpl","name":"cache-World/rest","componentSetName":null,"authorizeSetting":{"permittedRoles":[],"deniedRoles":[],"type":"PUBLIC"},"id":null,"componentName":"map-smtiles-World2","interfaceName":"rest","enabled":true,"status":"OK"}],"isClusterService":false,"type":"com.supermap.services.components.impl.MapImpl","interfaceNames":"rest","clusterInterfaceNames":"","isDataflowService":false,"component":{"isScSet":false,"scSetSetting":null,"scSetting":{"disabledInterfaceNames":"","instanceCount":0,"name":"map-smtiles-World2","alias":"","interfaceNames":"rest","type":"com.supermap.services.components.impl.MapImpl","config":{"cacheReadOnly":false,"cacheConfigs":null,"useVectorTileCache":false,"utfGridCacheConfig":null,"tileCacheConfig":null,"vectorTileCacheConfig":null,"expired":0,"logLevel":"info","outputPath":"","useCache":false,"outputSite":"","useUTFGridCache":false,"clip":false},"providers":"smtiles-World2","enabled":true}},"providerNames":"smtiles-World2","name":"cache-World","alias":"","providers":[{"spsetSetting":null,"isSPSet":false,"spSetting":{"name":"smtiles-World2","alias":null,"innerProviders":null,"type":"com.supermap.services.providers.SMTilesMapProvider","config":{"dataPrjCoordSysType":null,"watermark":null,"cacheVersion":"4.0","outputPath":"./output","filePath":"/etc/icloud/SuperMapiServer/bin/iserver/output/sqlite113/World_1881337416_256X256_PNG.smtiles","cacheMode":null,"name":null,"outputSite":"http://{ip}:{port}/iserver/output/"},"enabled":true}}]}'
         response = httpretty.Response(body=get_mng_service_body, status=200)
         self.check_api(Management.get_service, self.baseuri + '/manager/services/cache-World.json', HttpMethod.GET,
                        response, service_name='cache-World')
+
+    def test_get_service_mongodb_cache(self):
+        get_mng_service_body = '{"isStreamingService":false,"interfaceTypes":"com.supermap.services.wms.WMSServlet","isSet":false,"instances":[{"interfaceType":"com.supermap.services.wms.WMSServlet","componentType":"com.supermap.services.components.impl.MapImpl","name":"map-World/wms111","componentSetName":null,"authorizeSetting":{"permittedRoles":[],"deniedRoles":[],"type":"PUBLIC"},"id":null,"componentName":"map-World","interfaceName":"wms111","enabled":true,"status":"OK"}],"isClusterService":false,"type":"com.supermap.services.components.impl.MapImpl","interfaceNames":"wms111","clusterInterfaceNames":"","isDataflowService":false,"component":{"isScSet":false,"scSetSetting":null,"scSetting":{"disabledInterfaceNames":"","instanceCount":0,"name":"map-World","alias":"","interfaceNames":"wms111","type":"com.supermap.services.components.impl.MapImpl","config":{"cacheReadOnly":true,"cacheConfigs":null,"useVectorTileCache":false,"utfGridCacheConfig":{"outputPath":"C:/supermappackages/supermap-iserver-9.0.1-win64-deploy/webapps/iserver/output/sqlite","type":"UTFGrid","datastoreType":"TILES"},"tileCacheConfig":{"serverAdresses":["192.168.20.144:27017"],"database":"sampledb","password":"xyz123","type":"MongoDB","datastoreType":"TILES","username":"myTester"},"vectorTileCacheConfig":{"outputPath":"C:/supermappackages/supermap-iserver-9.0.1-win64-deploy/webapps/iserver/output/sqlite","type":"SVTiles","datastoreType":"TILES"},"expired":0,"logLevel":null,"outputPath":null,"useCache":true,"outputSite":null,"useUTFGridCache":false,"clip":false},"providers":"map-World","enabled":true}},"providerNames":"map-World","name":"map-World","alias":"","providers":[{"spsetSetting":null,"isSPSet":false,"spSetting":{"name":"map-World","alias":null,"innerProviders":null,"type":"com.supermap.services.providers.UGCMapProvider","config":{"extractCacheToFile":true,"workspacePath":"C:/supermappackages/data/World/World.sxwu","dataPrjCoordSysType":null,"watermark":null,"cacheVersion":"4.0","inflatDisabled":false,"maps":null,"useCompactCache":false,"excludedFieldsInMaps":null,"poolSize":0,"preferedPNGType":"PNG","datasourceInfos":null,"multiThread":true,"multiInstance":false,"layerCountPerDataType":0,"ignoreHashcodeWhenUseCache":false,"outputPath":null,"cacheMode":null,"name":null,"leftTopCorner":null,"outputSite":null,"cacheDisabled":false,"queryExpectCount":1000,"ugcMapSettings":[]},"enabled":true}}]}'
+        response = httpretty.Response(body=get_mng_service_body, status=200)
+        result = self.check_api(Management.get_service, self.baseuri + '/manager/services/cache-World.json', HttpMethod.GET,
+                       response, service_name='cache-World') #type: MngServiceInfo
+        config = result.component.scSetting.config #type: MapConfig
+        self.assertIsInstance(config, MapConfig)
+        cacheconfig = config.tileCacheConfig #type: MongoDBTilesourceInfo
+        self.assertIsInstance(cacheconfig, MongoDBTilesourceInfo)
+        self.assertEqual(cacheconfig.serverAdresses, ["192.168.20.144:27017"])
 
     def test_get_datastores(self):
         body = '[{"id":"mongodb","dataStoreInfo":{"serverAdresses":["127.0.0.1:88"],"database":"mongodb","password":"mongodb","type":"MongoDB","datastoreType":"TILES","username":"mongodb"}}]'

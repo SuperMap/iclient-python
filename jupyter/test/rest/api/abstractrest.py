@@ -58,6 +58,7 @@ class AbstractREST(object):
                 )
         else:
             expect(result).should.equal(response.status)
+        return result
 
 
 class AbstractRESTTestCase(TestCase, AbstractREST):
