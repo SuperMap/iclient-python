@@ -40,7 +40,7 @@ var rules = [
     }
 ]
 
-plugins = [
+var plugins = [
     new webpack.DllReferencePlugin({
         context: __dirname,
         manifest: require('./manifest.json')
