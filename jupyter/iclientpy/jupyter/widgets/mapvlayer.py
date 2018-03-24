@@ -16,7 +16,7 @@ class MapvOptions(BaseSetting):
     size = Int(5).tag(settings=True)  #:大小
 
     label_show = Bool(True).tag(label=True)  #:是否显示count值
-    label_fill_style = Unicode('True').tag(label=True)  #:count值填充样式
+    label_fill_style = Unicode('').tag(label=True)  #:count值填充样式
     label = Any({}, allow_none=True).tag(settings=True)  #:count值设置
 
     @default('label')
