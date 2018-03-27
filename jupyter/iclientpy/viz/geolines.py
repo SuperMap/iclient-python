@@ -100,7 +100,11 @@ class GeoLines(AbstractMap):
             "legend": {
                 "orient": 'vertical',
                 "left": 'right',
-                "data": self._layer_option["names"]
+                "data": self._layer_option["names"],
+                "selectedMode": self._layer_option["selected_mode"],
+                "selected": {
+                    k: "selected_legend" not in self._layer_option or k in self._layer_option["selected_legend"] for k
+                    in self._layer_option["names"]}
             },
             "series": series
         }

@@ -99,7 +99,8 @@ def honeycomb(*, data, address_key, value_key, fill_style: str = '', shadow_colo
 
 
 @init_map_decorator(GeoLines)
-def geolines(*, data, names: List[str], symbol_size: int = 15, symbol: str = 'plane', colors: List[str] = None):
+def geolines(*, data, names: List[str], selected_mode: str = 'multiple', selected_legend: List[str] = None,
+             symbol_size: int = 15, symbol: str = 'plane', colors: List[str] = None):
     """
     生成迁徙图
 
@@ -107,6 +108,8 @@ def geolines(*, data, names: List[str], symbol_size: int = 15, symbol: str = 'pl
         data: 数据
         names: 图例名称
         symbol_size: 标记大小
+        selected_mode: 选择类型，可以为multiple，single, true, false
+        selected_legend: 默认选择图例
         symbol: 标记类型，可以为：plane,circle,rect,roundRect,triangle,diamond,pin,arrow
         colors: 颜色
     """
