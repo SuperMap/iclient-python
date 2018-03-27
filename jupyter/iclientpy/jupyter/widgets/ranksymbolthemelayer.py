@@ -5,7 +5,7 @@ from ipywidgets import VBox, Layout, ColorPicker, IntRangeSlider
 from traitlets import Unicode, Any, Bool, Tuple, Int, Float, Dict, default, validate, link
 from iclientpy._version import EXTENSION_VERSION
 from .basesetting import BaseSetting
-from ..units import load_geojson_data, get_privince_geojson_data
+from ..units import load_geojson_data, get_geojson_data
 
 
 class SymbolSetting(BaseSetting):
@@ -104,15 +104,15 @@ class RankSymbolThemeLayer(Layer):
         tempdata = []
         if isinstance(proposal['value'], list):
             for d in proposal['value']:
-                feature = get_privince_geojson_data(geojson=self._privinces_geojson, name=d[self.address_key])
+                feature = get_geojson_data(geojson=self._privinces_geojson, name=d[self.address_key])
                 row = (d[self.address_key], d[self.value_key], feature["properties"]["cp"][0],
                        feature["properties"]["cp"][1])
                 tempdata.append(row)
 
         elif isinstance(proposal['value'], pd.DataFrame):
             for index, row in proposal['value'].iterrows():
-                feature = get_privince_geojson_data(geojson=self._privinces_geojson,
-                                                    name=proposal['value'][self.address_key][index])
+                feature = get_geojson_data(geojson=self._privinces_geojson,
+                                           name=proposal['value'][self.address_key][index])
                 trow = (proposal['value'][self.address_key][index], proposal['value'][self.value_key][index],
                         feature["properties"]["cp"][0],
                         feature["properties"]["cp"][1])

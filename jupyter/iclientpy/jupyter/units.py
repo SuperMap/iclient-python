@@ -15,9 +15,9 @@ def load_geojson_data():
         return geojson.load(geoJsonFile)
 
 
-def get_privince_geojson_data(geojson, name):
+def get_geojson_data(geojson, name):
     """
-    返回指定名称省份的geojson对象
+    返回指定名称的geojson对象
 
     Args:
         geojson: 所有省份的geojson对象

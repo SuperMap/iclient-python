@@ -1,6 +1,7 @@
 from .heatmap import *
 from .ranksymbolthememap import *
 from .mapvmap import *
+from .geolines import *
 from functools import wraps
 from typing import List
 from iclientpy import SymbolSetting, MapvOptions
@@ -77,8 +78,9 @@ def ranksymboltheme(*, data, address_key: str = '', value_key: str = '', is_over
                        fields=["shadow_color", "shadow_blur", "size", "label_show", "label_fill_style", "global_alpha",
                                "gradient"])
 @init_map_decorator(MapvMap)
-def honeycomb(*, data, fill_style: str = '', shadow_color: str = '', shadow_blur: int = 35, size: int = 5,
-              label_show: bool = True, label_fill_style: str = '', global_alpha: float = 1, gradient: dict = None):
+def honeycomb(*, data, address_key, value_key, fill_style: str = '', shadow_color: str = '', shadow_blur: int = 35,
+              size: int = 5, label_show: bool = True, label_fill_style: str = '', global_alpha: float = 1,
+              gradient: dict = None):
     """
     生成蜂巢图
 
@@ -93,4 +95,9 @@ def honeycomb(*, data, fill_style: str = '', shadow_color: str = '', shadow_blur
         global_alpha: 透明度
         gradient: 渐变颜色值设置
     """
+    pass
+
+
+@init_map_decorator(GeoLines)
+def geolines(*, data, names: List[str], symbol_size: int = 15, symbol: str = 'plane', colors: List[str] = None):
     pass

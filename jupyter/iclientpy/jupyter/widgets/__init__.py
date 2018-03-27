@@ -5,3 +5,4 @@ from .mapvlayer import *
 from .ranksymbolthemelayer import *
 from .tilemaplayer import *
 from .basesetting import *
+from .echartslayer import *

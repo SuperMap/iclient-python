@@ -168,6 +168,13 @@ var SuperMapMapVLayerView = leaflet.LeafletLayerView.extend({
 
 })
 
+var SuperMapEchartsLayerView = leaflet.LeafletLayerView.extend({
+    create_obj: function () {
+        var options = this.model.get('option');
+        this.obj = L.supermap.echartsLayer(options);
+    }
+})
+
 var SuperMapMapView = leaflet.LeafletMapView.extend({
     create_obj: function () {
         var that = this;
@@ -256,6 +263,18 @@ var SuperMapHeatLayerModel = leaflet.LeafletLayerModel.extend({
     })
 })
 
+var SuperMapEchartsLayerModel = leaflet.LeafletLayerModel.extend({
+    defaults: _.extend({}, leaflet.LeafletLayerModel.prototype.defaults, {
+        _view_name: 'SuperMapEchartsLayerView',
+        _model_name: 'SuperMapEchartsLayerModel',
+        _view_module: 'iclientpy',
+        _model_module: 'iclientpy',
+        _view_module_version: version,
+        _model_module_version: version,
+        option: {}
+    })
+})
+
 var SuperMapMapModel = leaflet.LeafletMapModel.extend({
     defaults: _.extend({}, leaflet.LeafletMapModel.prototype.defaults, {
         _view_name: 'SuperMapMapView',
@@ -274,6 +293,7 @@ module.exports = _.extend({}, leaflet, {
     SuperMapTileMapLayerView: SuperMapTileMapLayerView,
     SuperMapHeatLayerView: SuperMapHeatLayerView,
     SuperMapMapVLayerView: SuperMapMapVLayerView,
+    SuperMapEchartsLayerView: SuperMapEchartsLayerView,
     SuperMapMapView: SuperMapMapView,
 
     SuperMapRankSymbolThemeLayerModel: SuperMapRankSymbolThemeLayerModel,
@@ -281,6 +301,7 @@ module.exports = _.extend({}, leaflet, {
     SuperMapTileMapLayerModel: SuperMapTileMapLayerModel,
     SuperMapHeatLayerModel: SuperMapHeatLayerModel,
     SuperMapMapVLayerModel: SuperMapMapVLayerModel,
+    SuperMapEchartsLayerModel: SuperMapEchartsLayerModel,
     SuperMapMapModel: SuperMapMapModel
 })
 

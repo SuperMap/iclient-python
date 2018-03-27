@@ -1,5 +1,5 @@
 from unittest import TestCase
-from iclientpy import heat, ranksymboltheme, honeycomb, HeatMap, RankSymbolThemeMap, MapvMap
+from iclientpy import heat, ranksymboltheme, honeycomb, geolines, GeoLines, HeatMap, RankSymbolThemeMap, MapvMap
 
 
 class MapDecoratorTestCase(TestCase):
@@ -14,3 +14,7 @@ class MapDecoratorTestCase(TestCase):
     def test_honeycombmap(self):
         map = honeycomb([])
         self.assertIsInstance(map, MapvMap)
+
+    def test_geolines(self):
+        map = geolines([])
+        self.assertIsInstance(map, GeoLines)
