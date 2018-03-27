@@ -52,7 +52,7 @@ class GeoLines(AbstractMap):
                     "period": 6,
                     "trailLength": 0,
                     "symbol": self._layer_option["symbol"],
-                    "symbolSize": 15
+                    "symbolSize": self._layer_option["symbol_size"]
                 },
                 "lineStyle": {
                     "normal": {
