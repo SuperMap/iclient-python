@@ -6,7 +6,8 @@ ADD pip.conf /home/jovyan/.pip/pip.conf
 ADD ./sample /home/jovyan/work
 ADD *.whl /tmp/
 RUN pip install /tmp/*.whl \
-&& pip install lxml beautifulsoup4 \
+&& pip install lxml \
+&& pip install beautifulsoup4 \
 && jupyter nbextension install --py --symlink --sys-prefix iclientpy \
 && jupyter nbextension enable --py --sys-prefix iclientpy \
 && jupyter nbextension enable --py --sys-prefix widgetsnbextension
