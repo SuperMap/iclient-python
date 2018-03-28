@@ -4,7 +4,7 @@ MAINTAINER iclientpy@supermap.com
 ADD pip.conf /root/.pip/pip.conf
 RUN conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/ \
 && conda config --set show_channel_urls yes \
-&& conda install python=3.6 -y \
+&& conda install python=3.6 lxml beautifulsoup4 -y \
 && mkdir /iclientpy
 ADD ./sample /iclientpy/sample
 ADD *.whl /tmp/
