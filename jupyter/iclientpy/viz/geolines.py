@@ -40,19 +40,21 @@ class GeoLines(AbstractMap):
             data = self._data[i]
             coords = self.compute_coords(data)
             datas = self.compute_pos(data)
+            symbolsize = self._layer_option["symbol_size"](data) if callable(
+                self._layer_option["symbol_size"]) else self._layer_option["symbol_size"]
             line_series = {
                 "name": self._layer_option["names"][i],
                 "type": 'lines',
                 "coordinateSystem": 'leaflet',
                 "zlevel": 2,
                 "symbol": ['none', 'arrow'],
-                "symbolSize": self._layer_option["symbol_size"],
+                "symbolSize": 10,
                 "effect": {
                     "show": True,
                     "period": 6,
                     "trailLength": 0,
                     "symbol": self._layer_option["symbol"],
-                    "symbolSize": self._layer_option["symbol_size"]
+                    "symbolSize": symbolsize
                 },
                 "lineStyle": {
                     "normal": {
@@ -81,7 +83,7 @@ class GeoLines(AbstractMap):
                         'formatter': '{b}'
                     }
                 },
-                'symbolSize': self._layer_option["symbol_size"],
+                'symbolSize': 5,
                 'itemStyle': {
                     'normal': {
                         'color': self._layer_option["colors"][i] if "colors" in self._layer_option else ''
