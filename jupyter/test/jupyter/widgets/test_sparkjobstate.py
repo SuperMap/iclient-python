@@ -16,9 +16,22 @@ class SparkJobStateTest(TestCase):
         widget.update(state)
         self.assertEqual(widget.runstate_widget.value, 'RUNNING')
         self.assertEqual(widget.start_time_widget.value, '2018-03-28 14:08:41')
-        self.assertEqual(widget.elspsed_time_widget.value, '142')
-        self.assertEqual(widget.publisherelapsed_time_widget.value, '7')
+        self.assertEqual(widget.duration_widget.value, '150s')
         self.assertEqual(widget.end_time_widget.value, '2018-03-28 14:11:13')
+
+    def test_update_with_zero_value(self):
+        widget = SparkJobStateWidgets()
+        state = SparkJobState()
+        state.runState = SparkRunState.RUNNING
+        state.startTime = 1522217321932
+        state.elapsedTime = 0
+        state.publisherelapsedTime = 0
+        state.endTime = 0
+        widget.update(state)
+        self.assertEqual(widget.runstate_widget.value, 'RUNNING')
+        self.assertEqual(widget.start_time_widget.value, '2018-03-28 14:08:41')
+        self.assertEqual(widget.duration_widget.value, '***')
+        self.assertEqual(widget.end_time_widget.value, '***')
 
     def test_ipytion_display(self):
         widget = SparkJobStateWidgets()
