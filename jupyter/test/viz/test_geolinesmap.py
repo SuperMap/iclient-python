@@ -32,10 +32,11 @@ class GeoLinesTestCase(TestCase):
              [{'name': '广州'}, {'name': '北海', 'value': 20}], [{'name': '广州'}, {'name': '海口', 'value': 10}]]
         ]
         chart = GeoLines(data, address_key='name', value_key='value', names=['北京', '上海', '广州'], symbol_size=15,
-                         symbol='plane', selected_mode='multiple')
+                         symbol='plane', selected_mode='multiple', max_symbolsize=15, min_symbolsize=5)
         chart.compute_bounds = mock.Mock(return_value=[[1, 2], [3, 4]])
         chart.compute_pos = mock.Mock(return_value=[[1, 2], [3, 4]])
         chart.compute_coords = mock.Mock(return_value=[[1, 2], [3, 4]])
+        chart.compute_size = mock.Mock(return_value=10)
         chart._ipython_display_()
         self.assertEqual(mockout.getvalue(), 'python_display method\n')
         self.assertEqual(chart.map.fit_bounds, [[1, 2], [3, 4]])
@@ -44,12 +45,12 @@ class GeoLinesTestCase(TestCase):
 
     def test_compute_pos(self):
         chart = GeoLines([], address_key='name', value_key='value', names=['北京', '上海', '广州'], symbol_size=15,
-                         symbol='plane', selected_mode='multiple')
+                         symbol='plane', selected_mode='multiple', max_symbolsize=15, min_symbolsize=5)
         result = chart.compute_pos([[{'name': '北京'}, {'name': '上海', 'value': 95}]])
         self.assertEqual(result, [{"name": "上海", 'value': [121.47398, 31.230075, 95]}])
 
     def test_compute_coords(self):
         chart = GeoLines([], address_key='name', value_key='value', names=['北京', '上海', '广州'], symbol_size=15,
-                         symbol='plane', selected_mode='multiple')
+                         symbol='plane', selected_mode='multiple', max_symbolsize=15, min_symbolsize=5)
         result = chart.compute_coords([[{'name': '北京'}, {'name': '上海', 'value': 95}]])
         self.assertEqual(result, [{'coords': [[116.407283, 39.904557], [121.47398, 31.230075]]}])

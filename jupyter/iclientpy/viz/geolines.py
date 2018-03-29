@@ -33,15 +33,33 @@ class GeoLines(AbstractMap):
             })
         return result
 
+    def prepare_total(self, datas):
+        total_array = []
+        for data in datas:
+            sum = 0
+            for d in data:
+                sum = sum + float(d[1][self._layer_option["value_key"]])
+            total_array.append(sum)
+        self.total_array = total_array
+        self.max_size = self._layer_option["max_symbolsize"]
+        self.min_size = self._layer_option["min_symbolsize"]
+        self.size_sub = self.max_size - self.min_size
+        self.max_total = max(self.total_array)
+        self.min_total = min(self.total_array)
+
+    def compute_size(self, index):
+        val_div = (self.total_array[index] - self.min_total) / (
+        self.max_total - self.min_total if self.max_total - self.min_total > 0 else 1)
+        return int(self.size_sub * val_div + self.min_size)
+
     def _ipython_display_(self, **kwargs):
         series = []
         i = 0
+        self.prepare_total(self._data)
         while i < len(self._data):
             data = self._data[i]
             coords = self.compute_coords(data)
             datas = self.compute_pos(data)
-            symbolsize = self._layer_option["symbol_size"](data) if callable(
-                self._layer_option["symbol_size"]) else self._layer_option["symbol_size"]
             line_series = {
                 "name": self._layer_option["names"][i],
                 "type": 'lines',
@@ -54,7 +72,7 @@ class GeoLines(AbstractMap):
                     "period": 6,
                     "trailLength": 0,
                     "symbol": self._layer_option["symbol"],
-                    "symbolSize": symbolsize
+                    "symbolSize": self.compute_size(i)
                 },
                 "lineStyle": {
                     "normal": {
