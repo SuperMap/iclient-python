@@ -1,7 +1,7 @@
 概览
 ======================
 
-iClinetPy主要有几个模块组成：
+iClinetPy主要有以下几个模块：
 
 * viz模块是Jupyter Notebook中地图可视化部分，可直接在Jupyter Notebook将数据在地图进行展示
 
