@@ -14,6 +14,7 @@ class SymbolSetting(BaseSetting):
     """
 
     codomain = Tuple(default_value=(0, 100)).tag(settings=True)  #:显示阈值
+    rrange = Tuple(default_value=(10, 40)).tag(settings=True)  #:半径大小
     max_r = Int(default_value=100).tag(settings=True)  #:最大半径
     min_r = Int(default_value=10).tag(settings=True)  #:最小半径
     fill_color = Unicode(default_value='#FFA500').tag(settings=True)  #:填充颜色
@@ -72,10 +73,12 @@ class RankSymbolThemeLayer(Layer):
     address_key = Any(0)  #:地址字段key
     value_key = Any(1)  #:值字段key
     codomain = Tuple((0, 40000)).tag(sync=True)  #:显示阈值范围
-    rrange = Tuple((0, 100)).tag(sync=True)  #:半径大小范围
+    rrange = Tuple((0, 40)).tag(sync=True)  #:半径大小范围
     color = Unicode('#FFA500').tag(sync=True)  #:颜色
     _codomainmin = Int(0)  #:阈值最小值
     _codomainmax = Int(1)  #:阈值最大值
+    _min_r = Int(10)  #:半径最小值
+    _max_r = Int(100)  #:半径最大值
 
     _privinces_geojson = []
 
@@ -84,13 +87,17 @@ class RankSymbolThemeLayer(Layer):
         if isinstance(proposal['value'], SymbolSetting):
             symbol_setting = proposal['value'].get_settings()
             self.codomain = (proposal['value'].codomain[0], proposal['value'].codomain[1])
-            self.rrange = (proposal['value'].min_r, proposal['value'].max_r)
+            self.rrange = (proposal['value'].rrange[0], proposal['value'].rrange[1])
+            self._min_r = proposal['value'].min_r
+            self._max_r = proposal['value'].max_r
             self.color = proposal['value'].fill_color
         else:
             symbol_setting = proposal['value']
             self.codomain = (proposal['value']['codomain'][0], proposal['value']['codomain'][1])
-            self.rrange = (proposal['value']['minR'], proposal['value']['maxR'])
+            self.rrange = (proposal['value']['rrange'][0], proposal['value']['rrange'][1])
             self.color = proposal['value']['fillColor']
+            self._min_r = proposal['value']['minR']
+            self._max_r = proposal['value']['maxR']
         return symbol_setting
 
     @validate('data')
@@ -150,8 +157,8 @@ class RankSymbolThemeLayer(Layer):
                                         layout=Layout(width="350px"))
         link((codomainslider, 'value'), (self, 'codomain'))
         rslider = IntRangeSlider(value=[self.rrange[0], self.rrange[1]],
-                                 min=self.rrange[0],
-                                 max=self.rrange[1],
+                                 min=self._min_r,
+                                 max=self._max_r,
                                  step=1,
                                  description='半径范围:',
                                  disabled=False,

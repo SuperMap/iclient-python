@@ -51,11 +51,13 @@ def heat(*, data, radius: int = 100, min_opacity: float = 0.9, blur: int = 100, 
 
 
 @build_parameter_class(SymbolSetting, clz_field_name="symbol_setting",
-                       fields=["codomain", "max_r", "min_r", "fill_opacity", "circle_hover_style_fill_opacity"])
+                       fields=["codomain", "max_r", "min_r", "fill_opacity", "circle_hover_style_fill_opacity",
+                               "rrange"])
 @init_map_decorator(RankSymbolThemeMap)
 def ranksymboltheme(*, data, address_key: str = '', value_key: str = '', is_over_lay: bool = True,
-                    codomain: tuple = (0, 100), max_r: int = 100, min_r: int = 10, fill_color: str = '#FFA500',
-                    fill_opacity: float = 0.8, circle_hover_style_fill_opacity: float = 0.8):
+                    rrange: tuple = (0, 40), codomain: tuple = (0, 100), max_r: int = 100, min_r: int = 10,
+                    fill_color: str = '#FFA500', fill_opacity: float = 0.8,
+                    circle_hover_style_fill_opacity: float = 0.8):
     """
     生成等级符号专题图
 
@@ -65,6 +67,7 @@ def ranksymboltheme(*, data, address_key: str = '', value_key: str = '', is_over
         value_key: 显示字段key
         is_over_lay: 是否压盖
         codomain: 显示阈值范围
+        rrange: 半径大小范围
         max_r: 最大半径
         min_r: 最小半径
         fill_color: 填充颜色
