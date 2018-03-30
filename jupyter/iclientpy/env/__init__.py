@@ -44,6 +44,17 @@ class Profile:
         self.url = url
         self.authentication = authentication
 
+from iclientpy.rest.apifactory import APIFactory
+def create_apifactory_from_profile(profile:Profile, **kwargs):
+    if profile.authentication.type == AuthenticationType.Password:
+        authentication = profile.authentication #type: UsernamePasswdAuthentication
+        kwargs.update({'username': authentication.username, 'passwd': authentication.passwd})
+    else:
+        authentication = profile.authentication  # type: TokenAuthentication
+        kwargs.update({'token':authentication.token})
+    kwargs['base_url'] = profile.url
+    return APIFactory(**kwargs)
+
 
 _default_profile = None
 

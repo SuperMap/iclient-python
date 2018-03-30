@@ -4,10 +4,17 @@ from .model import Point2D
 from ..decorator import get
 
 
+class Rectangle2D:
+    leftBottom: Point2D
+    rightTop: Point2D
+
 class GetMapResult:
     name: str
     center: Point2D
     visibleScales: List[float]
+    bounds: Rectangle2D
+    viewBounds: Rectangle2D
+
 
 
 class MapService:
