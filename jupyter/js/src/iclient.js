@@ -28,58 +28,116 @@ var SuperMapTileMapLayerView = leaflet.LeafletTileLayerView.extend({
 })
 
 var SuperMapRankSymbolThemeLayerView = leaflet.LeafletLayerView.extend({
-    create_obj: function () {
-        var name = this.model.get('name');
-        var symbolType = this.model.get('symbol_type')
+        create_obj: function () {
+            var name = this.model.get('name');
+            var symbolType = this.model.get('symbol_type')
 
-        var options = this.get_options();
-        if (!options.attribution) {
-            delete options.attribution;
+            var options = this.get_options();
+            if (!options.attribution) {
+                delete options.attribution;
+            }
+            this.obj = L.supermap.rankSymbolThemeLayer(name, SuperMap.ChartType[symbolType], options);
+            this.obj.addTo(this.map_view.obj);
+            var showinfowinbind = _.bind(this.showInfoWin, this)
+            var closeinfowinbind = _.bind(this.closeInfoWin, this)
+            this.obj.on("mousemove", showinfowinbind);
+            this.obj.on("mouseout", closeinfowinbind);
+            var mouseoverbind = _.bind(this.mouseover, this)
+            this.map_view.obj.on("mousemove", mouseoverbind);
+            this.add_fetures()
+        },
+
+        mouseover: function (e) {
+            this.infowinPosition = e.layerPoint;
+        },
+
+
+        showInfoWin: function (e) {
+            if (e.target && e.target.refDataID && e.target.dataInfo) {
+                this.closeInfoWin()
+                // 获取图形对应的数据 (feature)
+                var fea = this.obj.getFeatureById(e.target.refDataID);
+                if (!fea) {
+                    return;
+                }
+                var info = e.target.dataInfo;
+                // 弹窗内容
+                var contentHTML = "<div style='color: #000; background-color: #fff'>";
+                contentHTML += "<br><strong>" + fea.attributes.NAME + "</strong>";
+                contentHTML += "<hr style='margin: 3px'>";
+                switch (info.field) {
+                    case this.model.get('theme_field'):
+                        contentHTML += "<br/><strong>" + info.value + "</strong>";
+                        break;
+                    default:
+                        contentHTML += "No Data";
+                }
+                contentHTML += "</div>";
+
+                var latLng = this.map_view.obj.layerPointToLatLng(this.infowinPosition);
+                if (!this.infowin) {
+                    this.infowin = L.popup();
+                }
+                this.infowin.setLatLng(latLng);
+                this.infowin.setContent(contentHTML);
+                this.infowin.openOn(this.map_view.obj);
+
+
+            }
+        },
+
+        closeInfoWin: function () {
+            if (this.infowin) {
+                try {
+                    this.infowin.remove();
+                } catch (e) {
+                    alert(e.message);
+                }
+            }
         }
-        this.obj = L.supermap.rankSymbolThemeLayer(name, SuperMap.ChartType[symbolType], options);
-        this.obj.addTo(this.map_view.obj);
-        this.add_fetures()
-    },
+        ,
 
-    add_fetures: function () {
-        var symbolSetting = this.model.get('symbol_setting');
-        var themeField = this.model.get('theme_field');
-        this.obj.themeField = themeField;
-        this.obj.symbolSetting = symbolSetting;
-        this.obj.symbolSetting.codomain = this.model.get('codomain');
-        var rrange = this.model.get('rrange');
-        this.obj.symbolSetting.minR = rrange[0]
-        this.obj.symbolSetting.maxR = rrange[1]
-        this.obj.symbolSetting.fillColor = this.model.get('color')
-        this.obj.clear();
-        var data = this.model.get('data');
-        var address_key = 0;
-        var value_key = 1;
-        var lng_key = 2;
-        var lat_key = 3;
-        var features = [];
-        for (var i = 0, len = data.length; i < len; i++) {
-            var geo = this.map_view.obj.options.crs.project(L.latLng(data[i][lat_key], data[i][lng_key]));
-            var attrs = {NAME: data[i][address_key]};
-            attrs[themeField] = data[i][value_key]
-            var feature = L.supermap.themeFeature(geo, attrs);
-            features.push(feature);
+        add_fetures: function () {
+            var symbolSetting = this.model.get('symbol_setting');
+            var themeField = this.model.get('theme_field');
+            this.obj.themeField = themeField;
+            this.obj.symbolSetting = symbolSetting;
+            this.obj.symbolSetting.codomain = this.model.get('codomain');
+            var rrange = this.model.get('rrange');
+            this.obj.symbolSetting.minR = rrange[0]
+            this.obj.symbolSetting.maxR = rrange[1]
+            this.obj.symbolSetting.fillColor = this.model.get('color')
+            this.obj.clear();
+            var data = this.model.get('data');
+            var address_key = 0;
+            var value_key = 1;
+            var lng_key = 2;
+            var lat_key = 3;
+            var features = [];
+            for (var i = 0, len = data.length; i < len; i++) {
+                var geo = this.map_view.obj.options.crs.project(L.latLng(data[i][lat_key], data[i][lng_key]));
+                var attrs = {NAME: data[i][address_key]};
+                attrs[themeField] = data[i][value_key]
+                var feature = L.supermap.themeFeature(geo, attrs);
+                features.push(feature);
+            }
+            this.obj.addFeatures(features);
         }
-        this.obj.addFeatures(features);
-    },
+        ,
 
-    model_events: function () {
-        this.listenTo(this.model, 'change:codomain', function () {
-            this.add_fetures();
-        }, this);
-        this.listenTo(this.model, 'change:rrange', function () {
-            this.add_fetures();
-        }, this);
-        this.listenTo(this.model, 'change:color', function () {
-            this.add_fetures();
-        }, this);
+        model_events: function () {
+            this.listenTo(this.model, 'change:codomain', function () {
+                this.add_fetures();
+            }, this);
+            this.listenTo(this.model, 'change:rrange', function () {
+                this.add_fetures();
+            }, this);
+            this.listenTo(this.model, 'change:color', function () {
+                this.add_fetures();
+            }, this);
+        }
     }
-})
+)
 
 var SuperMapHeatLayerView = leaflet.LeafletLayerView.extend({
     create_obj: function () {
