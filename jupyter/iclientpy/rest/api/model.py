@@ -112,7 +112,7 @@ class MngProvider:
     spsetSetting: List[ProviderSetting]
 
 
-class CommaJoinedStr(List[str]): #iServer管理里面有很多那种把字符串数组通过逗号分隔变成一个字符串的表达形式，反复split很烦。
+class CommaJoinedStr(List[str]):  # iServer管理里面有很多那种把字符串数组通过逗号分隔变成一个字符串的表达形式，反复split很烦。
     pass
 
 
@@ -122,6 +122,7 @@ class ComponentSetting(AbstractServiceSetting):
     interfaceNames: CommaJoinedStr
     disabledInterfaceNames: CommaJoinedStr
     instanceCount: int
+
 
 class SCAndSCSetSetting:
     isScSet: bool
@@ -382,7 +383,7 @@ class MongoDBTilesourceInfo(TileSourceInfo):
 
 class FastDFSTileSourceInfo(TileSourceInfo):
     fdfsTrackers: List[str]
-    fdhtGroups: List[str]
+    fdhtGroups: List[List[str]]
 
     def __init__(self):
         super().__init__(TileSourceType.FastDFS)
@@ -442,23 +443,52 @@ class VectorJobParameter:
     layers = List[VectorTileLayer]
 
 
+class Type(Enum):
+    NOTSET = 'NOTSET'
+    KMLFILE = 'KMLFILE'
+
+
+class CacheRegionsInfo:
+    type: Type
+
+
+class KMLFile(CacheRegionsInfo):
+    filePath: str
+
+
 class PostTileJobsItem:
     dataConnectionString: str
     mapName: str
+    scaleDenominators: List[float]
+    resolutions: List[float]
+    originalPoint: Point2D
+    cacheBounds: Rectangle2D
     tileSize: TileSize
     format: OutputFormat
+    compressionQuality: float
     transparent: bool
-    scaleDenominators: List[float]
-    originalPoint: Point2D
     epsgCode: int
-    cacheBounds: Rectangle2D
-    storageID: str
     storeConfig: TileSourceInfo
     createNewTileVersion: bool
+    tileVersionDescription: str
     parentTileVersion: str
+    actualTileVersion: str
+    refMapRestAdress: str
+    # taskAssignmentType: TaskAssignmentType
+    # cacheVersion: CacheVersion
+    # storageType: StorageType
+    vectorBounds: str
     tileType: TileType
     utfGridParameter: UTFGridJobParameter
     vectorParameter: VectorJobParameter
+    # realspaceParameter: RealspaceJobParameter
+    createStandardMBTiles: bool
+    # dataPreProcessInfo: DataPreProcessInfo
+    convertToPng8: bool
+    # fileVerificationMode: FileVerificationMode
+    autoAvoidEffectEnabled: bool
+    cacheRegions: CacheRegionsInfo
+    useLocal: bool
 
 
 class CacheVersion(Enum):
@@ -774,6 +804,7 @@ class MetaData:
     bounds: Rectangle2D
     tileRuleVersion: str
     tileType: TileType
+    tileFormat: OutputFormat
 
 
 class VersionUpdate:
