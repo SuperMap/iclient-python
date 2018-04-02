@@ -52,7 +52,7 @@ def get_datasets(profile_name:str = None, datacatalog_service_name:str = 'dataca
 
     class CSVDataset(Dataset):
         def density(self, resolution:int, radius:int, mesh_size_unit:DistanceUnit, radius_unit:DistanceUnit, area_unit:AreaUnit, mesh_type:int, method:int):
-            postentity = PostDensityEntiy()
+            postentity = PostDensityEntity()
             postentity.input = DatasetInputSetting()
             postentity.input.datasetName = self.name
             postentity.analyst = KernelDensityAnalystSetting()

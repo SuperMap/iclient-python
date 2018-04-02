@@ -9,6 +9,8 @@ Jupyter数据可视化
    可视化CSV数据 <./sample/sample-csv>
     热力图 <./sample/sample-heat>
     蜂巢图 <./sample/sample-honeycomb>
+    迁徙图 <./sample/sample-geolines>
+   人口迁徙图 <./sample/sample-geolines-stats>
 
 介绍
 ------
@@ -17,6 +19,7 @@ Jupyter数据可视化
 * 等级符号专题图_
 * 热点图_
 * 蜂巢图_
+* 迁徙图_
 
 示例
 ------
@@ -65,5 +68,15 @@ Jupyter数据可视化
 .. __ : http://jupyter.supermap.io/
 
 .. image:: _static/honeycomb.png
+
+迁徙图
+*********
+
+迁徙图示例__
+
+.. __ : http://jupyter.supermap.io/
+
+.. image:: _static/geolines.png
+
 
 

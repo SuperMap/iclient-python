@@ -9,6 +9,32 @@
 *****************
 icpy-cachetool
 
+recache
+----------------------------
+指定组件名称与地图名称，重新向存储id指明的存储位置增加新的切图
+
+-l ADDRESS, --uri ADDRESS    服务地址，如：http://localhost:8090/iserver
+-u USERNAME, --user USERNAME    用户名
+-p PASSWORD, --password PASSWORD    密码
+-t TOKEN, --token TOKEN    用于身份验证的token
+-c COMPONENT_NAME, --component-name COMPONENT_NAME    待更新缓存服务名称
+-m MAP_NAME, --map-name MAP_NAME    切图地图名称
+-s STORAGEID, --storageid STORAGEID    存储的id
+
+.. image:: _static/icpy-cachetool-recache.png
+
+示例：
+icpy-cachetool recache -l http://localhost:8090/iserver -t {tokenstr} -c map-World -m World -s {storageid}
+
+**注：** {tokenstr}为占位字符串，生成token字符串请参考：token工具_
+
+         {storageid}为占位字符串，根据实际填写存储位置的id
+
+
+cache
+----------------------
+指明切图参数进行切图
+
 -l ADDRESS, --uri ADDRESS   服务地址，如：http://localhost:8090/iserver
 -u USERNAME, --user USERNAME    用户名
 -p PASSWORD, --password PASSWORD    密码
@@ -29,7 +55,7 @@ icpy-cachetool
 --source-component SOURCE_COMPONENT_NAME    缓存更新数据来源服务
 --update    更新服务缓存
 
-.. image:: _static/icpy-cachetool.png
+.. image:: _static/icpy-cachetool-cache.png
 
 示例：
 icpy-cachetool -l http://localhost:8090/iserver -t {tokenstr} -c map-smtiles-World -w C:\World.zip -m World -o '-180,90' -b '-180,-90,0,90'

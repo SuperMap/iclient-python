@@ -138,7 +138,7 @@ class SpatialAnalystTestCase(AbstractRESTTestCase):
         self.check_api(DistributedAnalyst.get_density,
                        self.baseuri + "/services/distributedanalyst/rest/v1/jobs/spatialanalyst/density.json",
                        HttpMethod.GET, httpretty.Response(status=200, body=list_jsonstr))
-        entity = PostDensityEntiy()
+        entity = PostDensityEntity()
         entity.input = DatasetInputSetting()
         entity.input.datasetName = 'smtiles_processing_newyorkPoint_P'
         entity.analyst = KernelDensityAnalystSetting()

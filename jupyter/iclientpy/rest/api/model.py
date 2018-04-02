@@ -1665,7 +1665,7 @@ class GetDensityResultItem:
     setting: KernelDensityJobSetting
 
 
-class PostDensityEntiy:
+class PostDensityEntity:
     input: InputDataSetting
     analyst: KernelDensityAnalystSetting
     output: OutputSetting

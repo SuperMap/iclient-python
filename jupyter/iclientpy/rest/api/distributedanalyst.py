@@ -74,7 +74,7 @@ class DistributedAnalyst:
         pass
 
     @post('/spatialanalyst/density', entityKW='entity')
-    def post_density(self, entity: PostDensityEntiy) -> MethodResult:
+    def post_density(self, entity: PostDensityEntity) -> MethodResult:
         pass
 
     @head('/spatialanalyst/density/{job_id}')
