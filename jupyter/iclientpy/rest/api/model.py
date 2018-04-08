@@ -2,6 +2,26 @@ from enum import Enum
 from typing import List
 
 
+def default_init(cls: type):
+    def _get_all_annotations(clz):
+        result = {}
+        annos = clz.__dict__.get('__annotations__', None)  # type:dict
+        if annos is not None:
+            result.update(annos)
+        for base_clz in clz.__bases__:
+            result.update(_get_all_annotations(base_clz))
+        return result
+
+    fileds = _get_all_annotations(cls)
+
+    def init_method(self, *args, **kwargs):
+        for field_name, field_type in fileds.items():
+            setattr(self, field_name, None)
+
+    cls.__init__ = init_method
+    return cls
+
+
 class GeometryType(Enum):
     ARC = 'ARC'
     BSPLINE = 'BSPLINE'
@@ -33,16 +53,19 @@ class GeometryType(Enum):
     UNKNOWN = 'UNKNOWN'
 
 
+@default_init
 class Point2D:
     x: float
     y: float
 
 
+@default_init
 class Rectangle2D:
     leftBottom: Point2D
     rightTop: Point2D
 
 
+@default_init
 class Geometry:
     id: int
     parts: List[int]
@@ -52,12 +75,14 @@ class Geometry:
     # TODO prjCoordSys style
 
 
+@default_init
 class Feature:
     fieldNames: List[str]
     fieldValues: List[str]
     geometry: Geometry
 
 
+@default_init
 class HttpError:
     code: int
     errorMsg: str
@@ -70,6 +95,7 @@ class PostResultType(Enum):
     CreateChildAndReturnContent = 'CreateChildAndReturnContent'
 
 
+@default_init
 class MethodResult:
     customResult: dict
     error: HttpError
@@ -79,24 +105,29 @@ class MethodResult:
     succeed: bool
 
 
+@default_init
 class Named:
     name: str
 
 
+@default_init
 class NamedSetting:
     alias: str
 
 
+@default_init
 class AbstractServiceSetting(NamedSetting):
     config: object
     type: str
 
 
+@default_init
 class ProviderSetting(AbstractServiceSetting):
     enabled: bool
     innerProviders: List[str]
 
 
+@default_init
 class MapProviderSetting:
     cacheMode: str
     cacheVersion: str
@@ -106,16 +137,19 @@ class MapProviderSetting:
     # TODO watermarker
 
 
+@default_init
 class MngProvider:
     isSPSet: bool
     spSetting: ProviderSetting
     spsetSetting: List[ProviderSetting]
 
 
+@default_init
 class CommaJoinedStr(List[str]):  # iServer管理里面有很多那种把字符串数组通过逗号分隔变成一个字符串的表达形式，反复split很烦。
     pass
 
 
+@default_init
 class ComponentSetting(AbstractServiceSetting):
     providers: CommaJoinedStr
     enabled: bool
@@ -124,12 +158,14 @@ class ComponentSetting(AbstractServiceSetting):
     instanceCount: int
 
 
+@default_init
 class SCAndSCSetSetting:
     isScSet: bool
     scSetting: ComponentSetting
     # todo scSetSetting
 
 
+@default_init
 class MngServiceInfo:
     alias: str
     clusterInterfaceNames: str
@@ -147,35 +183,42 @@ class MngServiceInfo:
     type: str
 
 
+@default_init
 class SMTilesMapProviderSetting(MapProviderSetting):
     filePath: str
 
 
+@default_init
 class FastDFSTileProviderSetting(MapProviderSetting):
     # TODO
     pass
 
 
+@default_init
 class MongoDBTileProviderSetting(MapProviderSetting):
     # TODO
     pass
 
 
+@default_init
 class OTSTileProviderSetting(MapProviderSetting):
     # TODO
     pass
 
 
+@default_init
 class UGCV5TileProviderSetting(MapProviderSetting):
     # todo
     pass
 
 
+@default_init
 class GeoPackageMapProviderSetting(MapProviderSetting):
     # todo
     pass
 
 
+@default_init
 class PostFileUploadTaskResult:
     fileNames: str
     filePath: str
@@ -191,6 +234,7 @@ class FileUploadState(Enum):
     ERROR = 'ERROR'
 
 
+@default_init
 class GetFileUploadTaskResult:
     path: str
     progress: float
@@ -200,12 +244,14 @@ class GetFileUploadTaskResult:
     uploadedByteCount: int
 
 
+@default_init
 class PostFileUploadTasksParam:
     md5: str
     fileSize: int
     path: str
 
 
+@default_init
 class PostUploadTasksResult:
     newResourceID: str
     newResourceLocation: str
@@ -213,6 +259,7 @@ class PostUploadTasksResult:
     succeed: bool
 
 
+@default_init
 class GetFileUploadResult:
     path: str
     progress: float
@@ -226,6 +273,7 @@ class ClientType(Enum):
     NONE = 'NONE'
 
 
+@default_init
 class PostTokenParameter:
     userName: str
     password: str
@@ -262,17 +310,20 @@ class ServiceType(Enum):
     WPS100 = 'WPS100'
 
 
+@default_init
 class PostWorkspaceParameter:
     workspaceConnectionInfo: str
     servicesTypes: List[ServiceType] = []
     isDataEditable: bool = False
 
 
+@default_init
 class PostWorkspaceResultItem:
     serviceAddress: str
     serviceType: ServiceType
 
 
+@default_init
 class GetWorkspaceResultItem:
     address: str
     enabled: bool
@@ -369,6 +420,7 @@ class SMTilesTileSourceInfo(TileSourceInfo):
 
     def __init__(self):
         super().__init__(TileSourceType.SMTiles)
+        self.outputPath = None
 
 
 class MongoDBTilesourceInfo(TileSourceInfo):
@@ -379,6 +431,10 @@ class MongoDBTilesourceInfo(TileSourceInfo):
 
     def __init__(self):
         super().__init__(TileSourceType.MongoDB)
+        self.serverAdresses = None
+        self.database = None
+        self.username = None
+        self.password = None
 
 
 class FastDFSTileSourceInfo(TileSourceInfo):
@@ -387,8 +443,11 @@ class FastDFSTileSourceInfo(TileSourceInfo):
 
     def __init__(self):
         super().__init__(TileSourceType.FastDFS)
+        self.fdhtGroups = None
+        self.fdfsTrackers = None
 
 
+@default_init
 class OTSTileSourceInfo(TileSourceInfo):
     instanceName: str
     nodeName: str
@@ -406,6 +465,7 @@ class TileType(Enum):
     Vector = 'Vector'
 
 
+@default_init
 class UTFGridJobParameter:
     layerName: str
     pixCell: int
@@ -426,6 +486,7 @@ class FieldType(Enum):
     WTEXT = 'WTEXT'
 
 
+@default_init
 class VectorTileLayer:
     expandPixels: int
     fields: List[str]
@@ -436,6 +497,7 @@ class VectorTileLayer:
     searchFields: List[str]
 
 
+@default_init
 class VectorJobParameter:
     compressTolerance: int
     containAttributes: bool
@@ -448,14 +510,17 @@ class Type(Enum):
     KMLFILE = 'KMLFILE'
 
 
+@default_init
 class CacheRegionsInfo:
     type: Type
 
 
+@default_init
 class KMLFile(CacheRegionsInfo):
     filePath: str
 
 
+@default_init
 class PostTileJobsItem:
     dataConnectionString: str
     mapName: str
@@ -498,6 +563,7 @@ class CacheVersion(Enum):
     VERSION_50 = 'VERSION_50'
 
 
+@default_init
 class DataPreProcessInfo:
     columnCount: int
     rowCount: int
@@ -508,6 +574,7 @@ class FileVerificationMode(Enum):
     MD5 = 'MD5'
 
 
+@default_init
 class RealspaceJobParameter:
     isDataFloat: bool
     layerName: str
@@ -525,11 +592,13 @@ class TaskAssignmentType(Enum):
     GDP = 'GDP'
 
 
+@default_init
 class UTFGridJobParameter:
     layerName: str
     pixCell: int
 
 
+@default_init
 class JobInfo:
     actualTileVersion: str
     autoAvoidEffectEnabled: bool
@@ -565,15 +634,18 @@ class JobInfo:
     vectorParameter: VectorJobParameter
 
 
+@default_init
 class TileIndex:
     columnIndex: int
     rowIndex: int
 
 
+@default_init
 class BuildingScaleInfo:
     nextIndex: TileIndex
 
 
+@default_init
 class TileMatrix:
     columnCount: int
     novalueFlags: List[List[bool]]
@@ -581,11 +653,13 @@ class TileMatrix:
     startingIndex: TileIndex
 
 
+@default_init
 class WorkerBuildingInfo:
     completed: int
     lastTileRegion: Geometry
 
 
+@default_init
 class TileScaleInfo:
     completed: int
     completedBytes: int
@@ -598,6 +672,7 @@ class TileScaleInfo:
     workerBuildingInfos: List[WorkerBuildingInfo]
 
 
+@default_init
 class ScaleBuildConfig:
     cacheRegions: List[Geometry]
     excludeRegions: List[Geometry]
@@ -607,6 +682,7 @@ class ScaleBuildConfig:
     tileBoundsWidth: float
 
 
+@default_init
 class TileWorkerInfo:
     address: str
     controllable: bool
@@ -638,6 +714,7 @@ class ErrorStatus(Enum):
     WAITING_DEPLOYING_DATA = 'WAITING_DEPLOYING_DATA'
 
 
+@default_init
 class JobDeployingInfo:
     deployingStatus: DeployingStatus
     errorStatus: ErrorStatus
@@ -663,6 +740,7 @@ class RunState(Enum):
     STOPED = 'STOPED'
 
 
+@default_init
 class TileTaskState:
     completed: int
     lastIndex: TileIndex
@@ -675,6 +753,7 @@ class TaskType(Enum):
     TILETASK = 'TILETASK'
 
 
+@default_init
 class TileTask:
     dataPreProcessInfo: DataPreProcessInfo
     deployTime: int
@@ -690,6 +769,7 @@ class TileTask:
     totalTileCount: int
 
 
+@default_init
 class JobState:
     analystBlankPercentage: int
     buildingScale: BuildingScaleInfo
@@ -718,11 +798,13 @@ class JobState:
     total: int
 
 
+@default_init
 class TilesetDesc:
     name: str
     filePath: str
 
 
+@default_init
 class TileJob:
     id: str
     info: JobInfo
@@ -730,6 +812,7 @@ class TileJob:
     targetTilesetInfo: TilesetDesc
 
 
+@default_init
 class PostTileJobsResultItem:
     succeed: str
     newResourceID: str
@@ -738,11 +821,13 @@ class PostTileJobsResultItem:
     postResultType: str
 
 
+@default_init
 class CompletedTilesetInfo:
     name: str
     filePath: str
 
 
+@default_init
 class GetTileJobResultItem:
     id: str
     info: JobInfo
@@ -750,6 +835,7 @@ class GetTileJobResultItem:
     targetTilesetInfo: CompletedTilesetInfo
 
 
+@default_init
 class PostTilesetUpdateJobs:
     sourceTileSourceInfo: TileSourceInfo
     sourceTilesetIdentifier: str
@@ -762,6 +848,7 @@ class PostTilesetUpdateJobs:
     relatedObject: str
 
 
+@default_init
 class PostTilesetUpdateJobsResultItem:
     succeed: bool
     newResourceID: str
@@ -769,11 +856,13 @@ class PostTilesetUpdateJobsResultItem:
     postResultType: str
 
 
+@default_init
 class Projection:
     name: str
     type: str
 
 
+@default_init
 class CoordSys:
     # TODO
     unit: str
@@ -781,6 +870,7 @@ class CoordSys:
     name: str
 
 
+@default_init
 class PrjCoordSys:
     # TODO
     epsgCode: int
@@ -793,6 +883,7 @@ class PrjCoordSys:
     coordSystem: CoordSys
 
 
+@default_init
 class MetaData:
     mapName: str
     tileWidth: int
@@ -807,12 +898,14 @@ class MetaData:
     tileFormat: OutputFormat
 
 
+@default_init
 class VersionUpdate:
     bounds: Rectangle2D
     scaleDenominators: List[float]
     resolutions: List[float]
 
 
+@default_init
 class TileVersion:
     name: str
     desc: str
@@ -821,12 +914,14 @@ class TileVersion:
     timestamp: int
 
 
+@default_init
 class TilesetInfo:
     name: str
     metaData: MetaData
     tileVersions: List[TileVersion]
 
 
+@default_init
 class TilesetExportJobInfo:
     sourceTilesetInfo: TilesetInfo
     targetTilesetInfo: TilesetInfo
@@ -849,6 +944,7 @@ class TilesetExportJobRunState(Enum):
     COMPLETED = 'COMPLETED'
 
 
+@default_init
 class TilesetExportScaleState:
     total: int
     completed: int
@@ -857,10 +953,12 @@ class TilesetExportScaleState:
     tileMatrix: TileMatrix
 
 
+@default_init
 class ExporttingScaleState(TilesetExportScaleState):
     nextIndex: TileIndex
 
 
+@default_init
 class TilesetExportJobState:
     runState: TilesetExportJobRunState
     total: int
@@ -875,17 +973,20 @@ class TilesetExportJobState:
     completedScales: List[TilesetExportScaleState]
 
 
+@default_init
 class GetTilesetExportJobResultItem:
     id: str
     info: TilesetExportJobInfo
     state: TilesetExportJobState
 
 
+@default_init
 class DataStoreSetting:
     id: str
     dataStoreInfo: DataStoreInfo
 
 
+@default_init
 class RestMngTileStorageInfo:
     id: str
     tileSourceInfo: TileSourceInfo
@@ -895,6 +996,7 @@ class RestMngTileStorageInfo:
     connct: bool
 
 
+@default_init
 class ContextSetting:
     driver_memory: str
     executor_memory: str
@@ -907,11 +1009,13 @@ class TargetSericeType(Enum):
     RESTSPATIALANALYST = 'RESTSPATIALANALYST'
 
 
+@default_init
 class TargetServiceInfo:
     serviceAddress: str
     serviceType: TargetSericeType
 
 
+@default_init
 class PublishServiceResult:
     targetServiceInfos: List[TargetServiceInfo]
     targetDataPath: str
@@ -925,6 +1029,7 @@ class OutputType(Enum):
     RDD = 'RDD'
 
 
+@default_init
 class OutputSetting:
     outputPath: str
     datasetName: str
@@ -952,6 +1057,7 @@ class EngineType(Enum):
     MONGDB = 'MONGDB'
 
 
+@default_init
 class DatasourceConnectionInfo:
     alias: str
     dataBase: str
@@ -966,14 +1072,17 @@ class DatasourceConnectionInfo:
     readOnly: bool
 
 
+@default_init
 class FileSystemOutputSetting(OutputSetting):
     datasourcePath: str
 
 
+@default_init
 class DatabaseOutputSetting(OutputSetting):
     datasourceInfo: DatasourceConnectionInfo
 
 
+@default_init
 class SparkJobSetting:
     contextSetting: ContextSetting
     appName: str
@@ -982,20 +1091,24 @@ class SparkJobSetting:
     serviceInfo: PublishServiceResult
 
 
+@default_init
 class InputDataSetting:
     pass
 
 
+@default_init
 class CSVInputDataSetting(InputDataSetting):
     xIndex: int
     yIndex: int
     separator: str
 
 
+@default_init
 class FileCSVInputDataSetting(CSVInputDataSetting):
     filePath: str
 
 
+@default_init
 class Named:
     name: str
 
@@ -1006,6 +1119,7 @@ class BigDataFileShareDatasetInfoType(Enum):
     INDEXEDHDFS = 'INDEXEDHDFS'
 
 
+@default_init
 class BigDataFileShareDataSetInfo(Named):
     avilable: bool
     url: str
@@ -1019,11 +1133,13 @@ class CSVFieldType(Enum):
     WTEXT = 'WTEXT'
 
 
+@default_init
 class CSVFieldInfo:
     name: str
     typ: CSVFieldType
 
 
+@default_init
 class CSVDatasetInfo(BigDataFileShareDataSetInfo):
     xIndex: int
     yIndex: int
@@ -1033,10 +1149,12 @@ class CSVDatasetInfo(BigDataFileShareDataSetInfo):
     filedInfo: List[CSVFieldInfo]
 
 
+@default_init
 class IndexedHdfsDatasetInfo(BigDataFileShareDataSetInfo):
     datasetType: str
 
 
+@default_init
 class FieldInfo:
     name: str
     caption: str
@@ -1048,6 +1166,7 @@ class FieldInfo:
     isSystemField: bool
 
 
+@default_init
 class UDBDatasetInfo(BigDataFileShareDataSetInfo):
     datsetType: str
     datasetName: str
@@ -1097,6 +1216,7 @@ class DatasetType(Enum):
     VECTORCOLLECTION = 'VECTORCOLLECTION'
 
 
+@default_init
 class DatasetInfo(Named):
     description: str
     prjCoordSys: PrjCoordSys
@@ -1126,6 +1246,7 @@ class PixelFormat(Enum):
     UNKNOWN = 'UNKNOWN'
 
 
+@default_init
 class DatasetGridInfo(DatasetInfo):
     blockSize: int
     height: int
@@ -1136,6 +1257,7 @@ class DatasetGridInfo(DatasetInfo):
     pixelFormat: PixelFormat
 
 
+@default_init
 class Color:
     red: int
     green: int
@@ -1148,6 +1270,7 @@ class ColorSpaceType(Enum):
     RGB = 'RGB'
 
 
+@default_init
 class DatasetImageInfo(DatasetInfo):
     blockSize: int
     height: int
@@ -1191,24 +1314,29 @@ class Charset(Enum):
     XIA5SWEDISH = 'XIA5SWEDISH'
 
 
+@default_init
 class DatasetVectorInfo(DatasetInfo):
     isFileCache: bool
     charset: Charset
     recordCount: int
 
 
+@default_init
 class ArcGISDatasetVectorInfo(DatasetVectorInfo):
     id: int
 
 
+@default_init
 class WFSDatasetInfo(DatasetVectorInfo):
     crsCode: str
 
 
+@default_init
 class SpatialDatasetInfo(DatasetInfo):
     datasetName: str
 
 
+@default_init
 class DatasetInputSetting(InputDataSetting):
     datasetInfo: Named
     datasetName: str
@@ -1216,6 +1344,7 @@ class DatasetInputSetting(InputDataSetting):
     specField: str
 
 
+@default_init
 class DistributeAnalysisSetting(SparkJobSetting):
     referServicesAddress: str
     referToken: str
@@ -1228,6 +1357,7 @@ class SummaryAnalystType(Enum):
     SUMMARYREGION = 'SUMMARYREGION'
 
 
+@default_init
 class AggregatePointsJobSetting(DistributeAnalysisSetting):
     type: SummaryAnalystType
 
@@ -1240,14 +1370,17 @@ class DistanceUnit(Enum):
     Mile = 'Mile'
 
 
+@default_init
 class MappingParameters:
     numericPrecision: int
 
 
+@default_init
 class SummaryAnalystSetting:
     pass
 
 
+@default_init
 # TODO: SummaryAnalystSetting为标记类，实际不存在
 class SummaryMeshAnalystSetting(SummaryAnalystSetting):
     query: str
@@ -1260,10 +1393,12 @@ class SummaryMeshAnalystSetting(SummaryAnalystSetting):
     mappingParameters: MappingParameters
 
 
+@default_init
 class SummaryMeshJobSetting(AggregatePointsJobSetting):
     analyst: SummaryMeshAnalystSetting
 
 
+@default_init
 class SummaryRegionAnalystSettingBase:
     regionDatasource: str
     regionDataset: str
@@ -1273,15 +1408,18 @@ class SummaryRegionAnalystSettingBase:
     mappingParameters: MappingParameters
 
 
+@default_init
 # TODO: SummaryAnalystSetting为标记类，实际不存在
 class SummaryRegionAnalystSetting(SummaryAnalystSetting, SummaryRegionAnalystSettingBase):
     attributeFilter: str
 
 
+@default_init
 class SummaryRegionJobSetting(AggregatePointsJobSetting):
     analyst: SummaryRegionAnalystSetting
 
 
+@default_init
 class BuffersAnalystSetting:
     distance: str
     distanceField: str
@@ -1290,6 +1428,7 @@ class BuffersAnalystSetting:
     dissolveField: str
 
 
+@default_init
 class BuffersAnalystJobSetting(DistributeAnalysisSetting):
     analyst: BuffersAnalystSetting
 
@@ -1299,16 +1438,19 @@ class ImageType(Enum):
     heatmap = 'heatmap'
 
 
+@default_init
 class BuildCacheDrawingSetting:
     bounds: str
     level: int
     imageType: ImageType
 
 
+@default_init
 class BuildCacheJobSetting(DistributeAnalysisSetting):
     drawing: BuildCacheDrawingSetting
 
 
+@default_init
 class BuildGridIndexAnalystSetting:
     indexFile: str
     isSer: bool
@@ -1318,6 +1460,7 @@ class BuildGridIndexAnalystSetting:
     interval: str
 
 
+@default_init
 class BuidlGridIndexJobSetting(DistributeAnalysisSetting):
     analyst: BuildGridIndexAnalystSetting
 
@@ -1388,6 +1531,7 @@ class AttributeStatisticalMode(Enum):
     NOTEQUAL = 'NOTEQUAL'
 
 
+@default_init
 class FeatureJoinAnalystSetting:
     inputJoin: str
     datasetFeatureJoin: str
@@ -1409,6 +1553,7 @@ class FeatureJoinAnalystSetting:
     mappingParameters: MappingParameters
 
 
+@default_init
 class FeatureJoinJobSettting(DistributeAnalysisSetting):
     analyst: FeatureJoinAnalystSetting
 
@@ -1424,6 +1569,7 @@ class AreaUnit(Enum):
     SquareMile = 'SquareMile'
 
 
+@default_init
 class KernelDensityAnalystSetting:
     query: str
     resolution: str
@@ -1436,6 +1582,7 @@ class KernelDensityAnalystSetting:
     areaUnit: AreaUnit
 
 
+@default_init
 class KernelDensityJobSetting(DistributeAnalysisSetting):
     analyst: KernelDensityAnalystSetting
 
@@ -1455,6 +1602,7 @@ class BufferEndType(Enum):
     ROUND = 'ROUND'
 
 
+@default_init
 class BufferDistance:
     value: float
     exp: str
@@ -1472,6 +1620,7 @@ class BufferRadiusUnit(Enum):
     FOOT = 'FOOT'
 
 
+@default_init
 class BufferAnalystParameter:
     endType: BufferEndType
     leftDistance: BufferDistance
@@ -1480,6 +1629,7 @@ class BufferAnalystParameter:
     radiusUnit: BufferRadiusUnit
 
 
+@default_init
 class OverlayAnalystGeoSetting:
     inputVectorClip: str
     datasetVectorClip: str
@@ -1489,10 +1639,12 @@ class OverlayAnalystGeoSetting:
     bufferAnalystParameter: BufferAnalystParameter
 
 
+@default_init
 class OverlayAnalystGeoJobSetting(DistributeAnalysisSetting):
     analyst: OverlayAnalystGeoSetting
 
 
+@default_init
 class OverlayAanalystSetting:
     inputOverlay: str
     datasetOverlay: str
@@ -1501,6 +1653,7 @@ class OverlayAanalystSetting:
     mode: OverlayMode
 
 
+@default_init
 class OverlayAnalystJobSetting(DistributeAnalysisSetting):
     analyst: OverlayAanalystSetting
 
@@ -1517,6 +1670,7 @@ class SpatialQueryMode(Enum):
     CONTAIN = 'CONTAIN'
 
 
+@default_init
 class SpatialQueryGeoAnalystSetting:
     inputQuery: str
     datasetQuery: str
@@ -1526,10 +1680,12 @@ class SpatialQueryGeoAnalystSetting:
     bufferAnalystPatameter: BufferAnalystParameter
 
 
+@default_init
 class SpatialQueryGeoJobSetting(DistributeAnalysisSetting):
     analyst: SpatialQueryGeoAnalystSetting
 
 
+@default_init
 class SummaryAttributesAnalystSetting:
     groupField: str
     attributeField: str
@@ -1537,19 +1693,23 @@ class SummaryAttributesAnalystSetting:
     resultField: str
 
 
+@default_init
 class SummaryAttributesJobSetting(DistributeAnalysisSetting):
     analyst: SummaryAttributesAnalystSetting
 
 
+@default_init
 class SummaryWithInJobSettingBase(DistributeAnalysisSetting):
     type: SummaryAnalystType
 
 
+@default_init
 # 解决区域汇总分析analyst多个类型
 class SummaryWithInRegionAnalystBaseSetting:
     pass
 
 
+@default_init
 class SummaryWithinMeshAnalystSetting(SummaryWithInRegionAnalystBaseSetting, SummaryMeshAnalystSetting):
     standardSummaryFields: bool
     weightedSummaryFields: bool
@@ -1560,10 +1720,12 @@ class SummaryWithinMeshAnalystSetting(SummaryWithInRegionAnalystBaseSetting, Sum
     weightedStatisticModes: str
 
 
+@default_init
 class SummaryWithinMeshJobSetting(SummaryWithInJobSettingBase):
     analyst: SummaryWithinMeshAnalystSetting
 
 
+@default_init
 class SummaryWithinRegionAnalystSettting(SummaryWithInRegionAnalystBaseSetting, SummaryRegionAnalystSettingBase):
     standardSummaryFields: bool
     weightedSummaryFields: bool
@@ -1575,6 +1737,7 @@ class SummaryWithinRegionAnalystSettting(SummaryWithInRegionAnalystBaseSetting, 
     weightedStatisticModes: str
 
 
+@default_init
 class SummaryWithinRegionJobSetting(SummaryWithInJobSettingBase):
     analyst: SummaryWithinRegionAnalystSettting
 
@@ -1589,6 +1752,7 @@ class TopologyValidatorRuleType(Enum):
     POINTNOIDENTICAL = 'POINTNOIDENTICAL'
 
 
+@default_init
 class TopologyvalidatorAnalystSetting:
     inputValidating: str
     datasetTopology: str
@@ -1596,6 +1760,7 @@ class TopologyvalidatorAnalystSetting:
     tolerance: str
 
 
+@default_init
 class TopologyValidatorJobSettting(DistributeAnalysisSetting):
     analyst: TopologyvalidatorAnalystSetting
 
@@ -1612,6 +1777,7 @@ class SparkRunState(Enum):
     LOST = 'LOST'
 
 
+@default_init
 class SparkJobState:
     runState: SparkRunState
     endState: bool
@@ -1622,12 +1788,14 @@ class SparkJobState:
     publisherelapsedTime: int
 
 
+@default_init
 class GetAggregatePointsResultItem:
     id: str
     state: SparkJobState
     setting: AggregatePointsJobSetting
 
 
+@default_init
 class PostAgggregatePointsEntity:
     input: InputDataSetting
     analyst: SummaryAnalystSetting
@@ -1635,48 +1803,56 @@ class PostAgggregatePointsEntity:
     output: OutputSetting
 
 
+@default_init
 class GetFeatureJoinResultItem:
     id: str
     state: SparkJobState
     setting: FeatureJoinJobSettting
 
 
+@default_init
 class PostFeatureJoinEntity:
     input: InputDataSetting
     analyst: FeatureJoinAnalystSetting
     output: OutputSetting
 
 
+@default_init
 class GetBuffersResultItem:
     id: str
     state: SparkJobState
     setting: BuffersAnalystJobSetting
 
 
+@default_init
 class PostBuffersEntity:
     input: InputDataSetting
     analyst: BuffersAnalystSetting
     output: OutputSetting
 
 
+@default_init
 class GetDensityResultItem:
     id: str
     state: SparkJobState
     setting: KernelDensityJobSetting
 
 
+@default_init
 class PostDensityEntity:
     input: InputDataSetting
     analyst: KernelDensityAnalystSetting
     output: OutputSetting
 
 
+@default_init
 class GetOverlayResultItem:
     id: str
     state: SparkJobState
     setting: OverlayAnalystJobSetting
 
 
+@default_init
 class OverlayAnalystSetting:
     inputOverlay: str
     datasetOverlay: str
@@ -1685,42 +1861,49 @@ class OverlayAnalystSetting:
     mode: OverlayMode
 
 
+@default_init
 class PostOverlayEntity:
     input: InputDataSetting
     analyst: OverlayAnalystSetting
     output: OutputSetting
 
 
+@default_init
 class GetQueryResultItem:
     id: str
     state: SparkJobState
     setting: SpatialQueryGeoJobSetting
 
 
+@default_init
 class PostQueryEntity:
     input: InputDataSetting
     analyst: SpatialQueryGeoAnalystSetting
     output: OutputSetting
 
 
+@default_init
 class GetSummaryAttributesResultItem:
     id: str
     state: SparkJobState
     setting: SummaryAttributesJobSetting
 
 
+@default_init
 class PostSummaryAttributesEntity:
     input: InputDataSetting
     analyst: SummaryAnalystSetting
     output: OutputSetting
 
 
+@default_init
 class GetSummaryRegionResultItem:
     id: str
     state: SparkJobState
     setting: SummaryWithInJobSettingBase
 
 
+@default_init
 class PostSummaryRegionEntity:
     input: InputDataSetting
     analyst: SummaryWithInRegionAnalystBaseSetting
@@ -1728,65 +1911,77 @@ class PostSummaryRegionEntity:
     output: OutputSetting
 
 
+@default_init
 class GetTopologyValidatorResultItem:
     id: str
     state: SparkJobState
     setting: TopologyValidatorJobSettting
 
 
+@default_init
 class PostTopologyValidatorEntity:
     input: InputDataSetting
     analyst: TopologyvalidatorAnalystSetting
     output: OutputSetting
 
 
+@default_init
 class GetVectorClipResultItem:
     id: str
     state: SparkJobState
     setting: OverlayAnalystGeoJobSetting
 
 
+@default_init
 class PostVectorClipEntity:
     input: InputDataSetting
     analyst: OverlayAnalystGeoSetting
     output: OutputSetting
 
 
+@default_init
 class DatasetsContent:
     datasetNames: List[str]
     datasetCount: int
     childUriList: List[str]
 
 
+@default_init
 class DatasetContent:
     childUriList: List[str]
     supportAttachments: bool
     supportFeatureMetadatas: bool
 
 
+@default_init
 class RelationShipDatasetContent(DatasetContent):
     datasetInfo: DatasetInfo
 
 
+@default_init
 class BigDataFileShareDatasetContent(DatasetContent):
     datasetInfo: BigDataFileShareDataSetInfo
 
 
+@default_init
 class FieldsContent:
     fieldNames: List[str]
     childUriList: List[str]
 
 
+@default_init
 class FieldContent:
     fieldInfo: FieldInfo
     childUriList: List[str]
 
 
+@default_init
 class CacheConfig:
     mapName: str
     scales: List[float]
 
 
+@default_init
 class MapConfig:
     outputPath: str
     outputSite: str
