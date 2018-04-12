@@ -91,7 +91,6 @@ var SuperMapRankSymbolThemeLayerView = leaflet.LeafletLayerView.extend({
                 try {
                     this.infowin.remove();
                 } catch (e) {
-                    alert(e.message);
                 }
             }
         }
