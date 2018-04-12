@@ -66,13 +66,40 @@ class Rectangle2D:
 
 
 @default_init
+class Projection:
+    name: str
+    type: str
+
+
+@default_init
+class CoordSys:
+    # TODO
+    unit: str
+    # datum:Datum
+    name: str
+
+
+@default_init
+class PrjCoordSys:
+    # TODO
+    epsgCode: int
+    # enum
+    distanceUnit: str
+    type: str
+    projection: Projection
+    coordUnit: str
+    name: str
+    coordSystem: CoordSys
+
+
+@default_init
 class Geometry:
     id: int
     parts: List[int]
     partTopo: List[int]
     points: List[Point2D]
     type: GeometryType
-    # TODO prjCoordSys style
+    prjCoordSys: PrjCoordSys
 
 
 @default_init
@@ -854,33 +881,6 @@ class PostTilesetUpdateJobsResultItem:
     newResourceID: str
     newResourceLocation: str
     postResultType: str
-
-
-@default_init
-class Projection:
-    name: str
-    type: str
-
-
-@default_init
-class CoordSys:
-    # TODO
-    unit: str
-    # datum:Datum
-    name: str
-
-
-@default_init
-class PrjCoordSys:
-    # TODO
-    epsgCode: int
-    # enum
-    distanceUnit: str
-    type: str
-    projection: Projection
-    coordUnit: str
-    name: str
-    coordSystem: CoordSys
 
 
 @default_init
@@ -1994,3 +1994,371 @@ class MapConfig:
     cacheConfigs: List[CacheConfig]
     expired: int
     cacheReadOnly: bool
+
+
+@default_init
+class GetDataSourcesResult:
+    childUriList: List[str]
+    datasourceCount: int
+    datasourceNames: List[str]
+
+
+@default_init
+class DatasourceInfo:
+    coordUnit: Unit
+    description: str
+    distanceUnit: Unit
+    engineType: EngineType
+    name: str
+    prjCoordSys: PrjCoordSys
+
+
+@default_init
+class GetDataSourceResult:
+    datasourceInfo: DatasourceInfo
+    childUriList: List[str]
+
+
+@default_init
+class PutDatasourceItem:
+    description: str
+    coordUnit: Unit
+    distanceUnit: Unit
+
+
+@default_init
+class GetDatasetsResult:
+    datasetCount: int
+    datasetNames: List[str]
+    childUriList: List[str]
+
+
+# @default_init
+# class PostDatasetsCreateItem:
+#     datasetName: str
+#     datasetType: DatasetType
+
+
+@default_init
+class CopyDatasetItem:
+    srcDatasourceName: str
+    srcDatasetName: str
+    destDatasetName: str
+
+
+@default_init
+class RestDatasetInfo:
+    @default_init
+    class DatasetInfo(Named):
+        name: str
+        description: str
+        type: DatasetType
+        bounds: Rectangle2D
+        dataSourceName: str
+        encodeType: EncodeType
+        isReadOnly: bool
+        prjCoordSys: PrjCoordSys
+        tableName: str
+        charset: Charset
+        isFileCache: bool
+        recordCount: int
+        blockSize: int
+        height: int
+        width: int
+        pixelFormat: PixelFormat
+        isMultiBand: bool
+        # palette: List[str]
+
+
+@default_init
+class GetDatasetResult:
+    datasetInfo: RestDatasetInfo
+    childUriList: List[str]
+
+
+@default_init
+class CreateDatasetItem:
+    datasetName: str
+    datasetType: DatasetType
+    isFileCache: bool
+
+
+@default_init
+class PutDatasetItem:
+    description: str
+    prjCoordSys: PrjCoordSys
+    charset: str
+    palette: List[Color]
+    noValue: float
+
+
+@default_init
+class GetFeatureResult:
+    ID: int
+    fieldNames: List[str]
+    fieldValues: List[str]
+    geometry: Geometry
+
+
+@default_init
+class PutFeatureItem:
+    fieldNames: List[str]
+    fieldValues: List[str]
+    geometry: Geometry
+
+
+@default_init
+class GetAttachmentsResult:
+    name: str
+    size: int
+    id: int
+    contentType: str
+
+
+@default_init
+class GetMetadataResult:
+    createTime: int
+    createUser: str
+    lastEditTime: int
+    lastEditUser: str
+
+
+@default_init
+class GetFieldResult:
+    childUriList: List[str]
+    fieldInfo: FieldInfo
+
+
+class StatisticMode(Enum):
+    AVERAGE = 'AVERAGE'
+    MAX = 'MAX'
+    MIN = 'MIN'
+    STDDEVIATION = 'STDDEVIATION'
+    SUM = 'SUM'
+    VARIANCE = 'VARIANCE'
+
+
+@default_init
+class GetStatisticResult:
+    mode: StatisticMode
+    result: float
+
+
+@default_init
+class CodeInfo:
+    value: str
+    valueType: FieldType
+
+
+class RangeType(Enum):
+    CLOSE_CLOSE = 'CLOSE_CLOSE'
+    CLOSE_OPEN = 'CLOSE_OPEN'
+    OPEN_CLOSE = 'OPEN_CLOSE'
+    OPEN_OPEN = 'OPEN_OPEN'
+
+
+class DomainType(Enum):
+    CODE = 'CODE'
+    CODE_NOT = 'CODE_NOT'
+    RANGE = 'RANGE'
+    RANGE_NOT = 'RANGE_NOT'
+
+
+@default_init
+class RangeInfo:
+    max: str
+    min: str
+    type: RangeType
+    valueType: FieldType
+
+
+@default_init
+class GetDomainResult:
+    description: str
+    name: str
+    fieldName: str
+    type: DomainType
+    valueType: FieldType
+    codeCount: int
+    codeInfos: List[CodeInfo]
+    rangeCount: int
+    rangeInfos: List[RangeInfo]
+
+
+@default_init
+class GridValue:
+    column: int
+    row: int
+    value: float
+    centerPoint: Point2D
+
+
+@default_init
+class GetGridValuesResult:
+    cloumnCount: int
+    rowCount: int
+    values: List[List[GridValue]]
+    valuesCount: int
+
+
+@default_init
+class PostGridValuesResult:
+    customResult: List[GetGridValuesResult]
+    error: HttpError
+    newResourceID: str
+    newResourceLocation: str
+    postResultType: PostResultType
+    succeed: bool
+
+
+class Circle:
+    centerPoint: Point2D
+    radius: float
+
+
+@default_init
+class DefaultValuesItem:
+    leftBottom: Point2D
+    rightTop: Point2D
+    points: List[Point2D]
+    circle: Circle
+    point: Point2D
+
+
+@default_init
+class GetGridValueResult:
+    column: int
+    row: int
+    value: float
+
+
+@default_init
+class ImageValue:
+    bounds: List[int]
+    centerPoint: Point2D
+    color: Color
+    column: int
+    row: int
+    value: int
+
+
+@default_init
+class GetImageValuesResult:
+    cloumnCount: int
+    rowCount: int
+    values: List[List[ImageValue]]
+    valuesCount: int
+
+
+@default_init
+class PostImageValuesResult:
+    customResult: List[GetImageValuesResult]
+    error: HttpError
+    newResourceID: str
+    newResourceLocation: str
+    postResultType: PostResultType
+    succeed: bool
+
+
+@default_init
+class GetImageValueResult:
+    bounds: List[int]
+    color: Color
+    column: int
+    row: int
+    value: int
+
+
+@default_init
+class GetFeatureResults:
+    name: str
+    path: str
+    resourceConfigID: str
+    resouceType: str
+    supportedMediaTypes: List[str]
+
+
+@default_init
+class PostFeatureResultsResult:
+    featureCount: int
+    totalCount: int
+    featureUriList: List[str]
+    features: List[Feature]
+
+
+class GetFeatureMode(Enum):
+    BOUNDS = 'BOUNDS'
+    BOUNDS_ATTRIBUTEFILTER = 'BOUNDS_ATTRIBUTEFILTER'
+    BUFFER = 'BUFFER'
+    BUFFER_ATTRIBUTEFILTER = 'BUGGER_ATTRIBUTEFILTER'
+    ID = 'ID'
+    SPATIAL = 'SPATIAL'
+    SPATIAL_ATTRIBUTEFILTER = 'SPATIAL_ATTRIBUTEFILTER'
+    SQL = 'SQL'
+
+
+class JoinType(Enum):
+    INNERJOIN = 'INNERJOIN'
+    LEFTJOIN = 'LEFTJOIN'
+
+
+@default_init
+class JoinItem:
+    foreignTableName: str
+    joinFilterName: str
+    joinType: JoinType
+
+
+@default_init
+class LinkItem:
+    datasourceConnectionInfo: DatasourceConnectionInfo
+    foreighKeys: List[str]
+    foreighTable: str
+    linkFields: List[str]
+    linkFilter: str
+    name: str
+    primaryKeys: List[str]
+
+
+@default_init
+class QueryParameter:
+    attributeFilter: str
+    fields: List[str]
+    groupBy: str
+    ids: List[int]
+    joinItems: List[JoinItem]
+    linkItems: List[LinkItem]
+    name: str
+    orderBy: str
+
+
+@default_init
+class PostFeatureResultsItem:
+    getFeatureMode: GetFeatureMode
+    datasetNames: List[str]
+    ids: List[int]
+    bounds: Rectangle2D
+    geometry: Geometry
+    bufferDistance: float
+    attributeFilter: str
+    spatialQueryMode: SpatialQueryMode
+    maxFeatures: int
+    queryParameter: QueryParameter
+    targetPrj: PrjCoordSys
+    targetEpsgCode: int
+
+
+@default_init
+class GetFeatureResultResult:
+    featureCount: int
+    featureUriList: List[str]
+
+
+@default_init
+class PostCoordtransferItem:
+    sourcePoints: List[Point2D]
+    sourceGeometries: List[Geometry]
+    sourceEpsgCode: int
+    sourcePrj: PrjCoordSys
+    targetPrj: PrjCoordSys
+    targetEpsgCode: int

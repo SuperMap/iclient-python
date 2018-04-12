@@ -46,6 +46,9 @@ def to_dict_or_list(obj):
         # TODO enum
         if value is not None:
             result[key] = to_dict_or_list(value)
+        else:
+            if key in result:
+                del result[key]
     return result
 
 
@@ -62,6 +65,17 @@ def to_json_str(obj):
     return obj.name if isinstance(obj, Enum) else json.dumps(to_dict_or_list(obj))
 
 
+def import_module(kls):
+    start = kls.find('[')
+    end = kls.rfind(']')
+    if start != -1 and end != -1 and end > start:
+        return import_module(kls[start + 1: end])
+    else:
+        parts = kls.split('.')
+        module = ".".join(parts[:-1])
+        return module
+
+
 def get_class(kls):
     try:
         parts = kls.split('.')
@@ -70,6 +84,9 @@ def get_class(kls):
         return getattr(m, parts[-1])
     except Exception:
         try:
+            module = import_module(kls)
+            if module is not None and module != '':
+                exec('import ' + module)
             return eval(kls)
         except NameError as err:
             raise Exception('get class ' + kls + ' exception')

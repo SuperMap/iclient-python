@@ -20,7 +20,7 @@ class REST:
     """
 
     def __init__(self, func, method, uri: str, entityKW: str = None, queryKWs: List[str] = None,
-                 json_deserializer = None, fileKW: str = None):
+                 fixed_queryKWs: dict = {}, splice_url: bool = True, json_deserializer=None, fileKW: str = None):
         """
         初始化REST类，存放实际调用的rest请求的相关信息
 
@@ -37,11 +37,14 @@ class REST:
             # TODO 处理多个装饰器并且装饰器中有类实例装饰器的情况
             self._original = self._original.__wrapped__
         self._method = method
-        self._uri = uri if uri.startswith('/') else ('/' + uri)
+        self._uri = uri if uri.startswith('/') or (not splice_url) else ('/' + uri)
         self._entityKW = entityKW
         self._queryKWs = queryKWs
         self._fileKW = fileKW
-        self._json_deserializer = json_deserializer if json_deserializer is not None else deserializer(inspect.getfullargspec(self._original).annotations.get('return', None))
+        self._splice_url = splice_url
+        self._fixed_querKWs = fixed_queryKWs
+        self._json_deserializer = json_deserializer if json_deserializer is not None else deserializer(
+            inspect.getfullargspec(self._original).annotations.get('return', None))
 
     def __call__(self, *args, **kwargs):
         return self.__wrapped__(*args, **kwargs)
@@ -108,8 +111,26 @@ class REST:
         """
         return self._fileKW
 
+    def get_splice_url(self) -> bool:
+        """
+        获取url是否拼接标识
+        Returns:
+            返回url是否拼接标识
+        """
+        return self._splice_url
 
-def rest(method: HttpMethod, uri, entityKW: str = None, queryKWs: List[str] = None, json_deserializer = None, fileKW: str = None):
+    def get_fixed_queryKWs(self):
+
+        """
+        获取固定的查询参数
+        Returns:
+            返回固定查询参数
+        """
+        return self._fixed_querKWs
+
+
+def rest(method: HttpMethod, uri, entityKW: str = None, queryKWs: List[str] = None, splice_url: bool = True,
+         fixed_queryKWs: dict = {}, json_deserializer=None, fileKW: str = None):
     """
     rest请求的封装方法
 
@@ -125,12 +146,14 @@ def rest(method: HttpMethod, uri, entityKW: str = None, queryKWs: List[str] = No
 
     class RESTWrapper(REST):
         def __init__(self, func):
-            super().__init__(func, method, uri, entityKW, queryKWs, json_deserializer, fileKW);
+            super().__init__(func, method, uri, entityKW=entityKW, queryKWs=queryKWs, fixed_queryKWs=fixed_queryKWs,
+                             splice_url=splice_url, json_deserializer=json_deserializer, fileKW=fileKW);
 
     return RESTWrapper
 
 
-def head(uri: str, entityKW: str = None, queryKWs: List[str] = None):
+def head(uri: str, entityKW: str = None, queryKWs: List[str] = None, splice_url: bool = True,
+         fixed_queryKWs: dict = {}):
     """
     head请求的装饰器，可以在方法上直接通过@head方式使用
 
@@ -142,10 +165,12 @@ def head(uri: str, entityKW: str = None, queryKWs: List[str] = None):
     Returns:
         封装了请求的REST类
     """
-    return rest(HttpMethod.HEAD, uri, entityKW, queryKWs)
+    return rest(HttpMethod.HEAD, uri, entityKW=entityKW, queryKWs=queryKWs, splice_url=splice_url,
+                fixed_queryKWs=fixed_queryKWs)
 
 
-def post(uri: str, entityKW: str = None, queryKWs: List[str] = None, fileKW: str = None):
+def post(uri: str, entityKW: str = None, queryKWs: List[str] = None, fileKW: str = None, splice_url: bool = True,
+         fixed_queryKWs: dict = {}):
     """
     post请求的装饰器，可以在方法上直接通过@post方式使用
 
@@ -158,10 +183,12 @@ def post(uri: str, entityKW: str = None, queryKWs: List[str] = None, fileKW: str
     Returns:
         封装了请求的REST类
     """
-    return rest(HttpMethod.POST, uri, entityKW, queryKWs, fileKW=fileKW)
+    return rest(HttpMethod.POST, uri, entityKW=entityKW, queryKWs=queryKWs, splice_url=splice_url,
+                fixed_queryKWs=fixed_queryKWs, fileKW=fileKW)
 
 
-def get(uri: str, entityKW: str = None, queryKWs: List[str] = None, *args, **kwargs):
+def get(uri: str, entityKW: str = None, queryKWs: List[str] = None, fixed_queryKWs: dict = {}, splice_url: bool = True,
+        *args, **kwargs):
     """
     get请求的装饰器，可以在方法上直接通过@get方式使用
 
@@ -173,10 +200,11 @@ def get(uri: str, entityKW: str = None, queryKWs: List[str] = None, *args, **kwa
     Returns:
         封装了请求的REST类
     """
-    return rest(HttpMethod.GET, uri, entityKW, queryKWs, *args, **kwargs)
+    return rest(HttpMethod.GET, uri, entityKW=entityKW, queryKWs=queryKWs, splice_url=splice_url,
+                fixed_queryKWs=fixed_queryKWs, *args, **kwargs)
 
 
-def put(uri: str, entityKW: str = None, queryKWs: List[str] = None):
+def put(uri: str, entityKW: str = None, queryKWs: List[str] = None, fixed_queryKWs: dict = {}, splice_url: bool = True):
     """
     put请求的装饰器，可以在方法上直接通过@put方式使用
 
@@ -188,10 +216,12 @@ def put(uri: str, entityKW: str = None, queryKWs: List[str] = None):
     Returns:
         封装了请求的REST类
     """
-    return rest(HttpMethod.PUT, uri, entityKW, queryKWs)
+    return rest(HttpMethod.PUT, uri, entityKW=entityKW, queryKWs=queryKWs, splice_url=splice_url,
+                fixed_queryKWs=fixed_queryKWs)
 
 
-def delete(uri: str, entityKW: str = None, queryKWs: List[str] = None):
+def delete(uri: str, entityKW: str = None, queryKWs: List[str] = None, fixed_queryKWs: dict = {},
+           splice_url: bool = True):
     """
     delete请求的装饰器，可以在方法上直接通过@delete方式使用
 
@@ -203,4 +233,5 @@ def delete(uri: str, entityKW: str = None, queryKWs: List[str] = None):
     Returns:
         封装了请求的REST类
     """
-    return rest(HttpMethod.DELETE, uri, entityKW, queryKWs)
+    return rest(HttpMethod.DELETE, uri, entityKW=entityKW, queryKWs=queryKWs, splice_url=splice_url,
+                fixed_queryKWs=fixed_queryKWs)

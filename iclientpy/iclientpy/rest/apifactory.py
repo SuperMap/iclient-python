@@ -1,7 +1,7 @@
 import argparse
 import inspect
 import sys
-
+from enum import Enum
 import requests
 from requests.auth import AuthBase
 
@@ -96,6 +96,8 @@ class RestInvocationHandlerImpl(RestInvocationHandler):
                 if name in kwages:
                     if type(kwages[name]) in (int, str, bool, float):
                         query_params[name] = kwages[name]
+                    elif isinstance(kwages[name], Enum):
+                        query_params[name] = kwages[name].value
                     else:
                         query_params[name] = to_json_str(kwages[name])
         return query_params
@@ -136,8 +138,10 @@ class RestInvocationHandlerImpl(RestInvocationHandler):
         Returns:
             根据实际方法的返回类型，将get请求的响应体转换为对应的Python对象
         """
-        return self._send_request(rest, self._base_url + uri + '.json',
-                                  auth=self._auth)
+        url = self._base_url + uri + '.json' if rest.get_splice_url() else uri + '.json'
+        params = self._get_query_params(kwargs, rest.get_queryKWs())
+        params.update(rest.get_fixed_queryKWs())
+        return self._send_request(rest, url, params=params, proxies=self._proxies, auth=self._auth)
 
     def post(self, rest, uri, args, kwargs):
         """
@@ -152,11 +156,13 @@ class RestInvocationHandlerImpl(RestInvocationHandler):
         Returns:
               根据实际方法的返回类型，将post请求的响应体转换为对应的Python对象
         """
+        url = self._base_url + uri + '.json' if rest.get_splice_url() else uri + '.json'
         files = {rest.get_fileKW(): kwargs[rest.get_fileKW()]} if rest.get_fileKW() is not None else {}
         data = to_json_str(kwargs[rest.get_entityKW()]) if rest.get_entityKW() is not None else {}
-        result = self._send_request(rest, self._base_url + uri + '.json', data=data,
-                                    params=self._get_query_params(kwargs, rest.get_queryKWs()), proxies=self._proxies,
-                                    auth=self._auth, files=files)
+        params = self._get_query_params(kwargs, rest.get_queryKWs())
+        params.update(rest.get_fixed_queryKWs())
+        result = self._send_request(rest, url, data=data, params=params, proxies=self._proxies, auth=self._auth,
+                                    files=files)
         return result
 
     def put(self, rest, uri, args, kwargs):
@@ -173,9 +179,11 @@ class RestInvocationHandlerImpl(RestInvocationHandler):
        Returns:
              根据实际方法的返回类型，将put请求的响应体转换为对应的Python对象
         """
-        return self._send_request(rest, self._base_url + uri + '.json', data=to_json_str(kwargs[rest.get_entityKW()]),
-                                  params=self._get_query_params(kwargs, rest.get_queryKWs()), proxies=self._proxies,
-                                  auth=self._auth)
+        url = self._base_url + uri + '.json' if rest.get_splice_url() else uri + '.json'
+        params = self._get_query_params(kwargs, rest.get_queryKWs())
+        params.update(rest.get_fixed_queryKWs())
+        return self._send_request(rest, url, data=to_json_str(kwargs[rest.get_entityKW()]), params=params,
+                                  proxies=self._proxies, auth=self._auth)
 
     def delete(self, rest, uri, args, kwargs):
         """
@@ -190,9 +198,10 @@ class RestInvocationHandlerImpl(RestInvocationHandler):
        Returns:
              根据实际方法的返回类型，将delete请求的响应体转换为对应的Python对象
         """
-        return self._send_request(rest, self._base_url + uri + '.json',
-                                  params=self._get_query_params(kwargs, rest.get_queryKWs()),
-                                  proxies=self._proxies, auth=self._auth)
+        url = self._base_url + uri + '.json' if rest.get_splice_url() else uri + '.json'
+        params = self._get_query_params(kwargs, rest.get_queryKWs())
+        params.update(rest.get_fixed_queryKWs())
+        return self._send_request(rest, url, params=params, proxies=self._proxies, auth=self._auth)
 
     def head(self, rest, uri, args, kwargs):
         """
@@ -207,9 +216,10 @@ class RestInvocationHandlerImpl(RestInvocationHandler):
        Returns:
             返回head请求的状态码
         """
-        response = requests.head(self._base_url + uri + '.json',
-                                 params=self._get_query_params(kwargs, rest.get_queryKWs()),
-                                 proxies=self._proxies, auth=self._auth)
+        url = self._base_url + uri + '.json' if rest.get_splice_url() else uri + '.json'
+        params = self._get_query_params(kwargs, rest.get_queryKWs())
+        params.update(rest.get_fixed_queryKWs())
+        response = requests.head(url, params=params, proxies=self._proxies, auth=self._auth)
         response.raise_for_status()
         return response.status_code
 
