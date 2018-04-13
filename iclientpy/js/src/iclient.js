@@ -93,8 +93,7 @@ var SuperMapRankSymbolThemeLayerView = leaflet.LeafletLayerView.extend({
                 } catch (e) {
                 }
             }
-        }
-        ,
+        },
 
         add_fetures: function () {
             var symbolSetting = this.model.get('symbol_setting');
