@@ -104,3 +104,14 @@ class TestDTOJson(TestCase):
         self.assertSetEqual(set(json_dict.keys()), set(['base1', 'base2', 'kls']))
         parse_result = deserializer(Kls)(jsonstr)
         self.assertDictEqual(vars(kls), vars(parse_result))
+
+    def test_get_class(self):
+        from iclientpy.dtojson import get_class
+        get_class('iclientpy.rest.api.model.TargetServiceInfo')
+        get_class('str')
+
+    def test_2d_list(self):
+        from iclientpy.rest.api.model import GeometryType as alias
+        class Kls:
+            my_list: typing.List[typing.List[alias]]
+        deserializer(Kls) #不抛出异常就算过

@@ -65,31 +65,42 @@ def to_json_str(obj):
     return obj.name if isinstance(obj, Enum) else json.dumps(to_dict_or_list(obj))
 
 
-def import_module(kls):
-    start = kls.find('[')
-    end = kls.rfind(']')
-    if start != -1 and end != -1 and end > start:
-        return import_module(kls[start + 1: end])
-    else:
-        parts = kls.split('.')
-        module = ".".join(parts[:-1])
-        return module
+def import_root_module_to_local(kls, local_dict = {}):
+    generic_start = kls.find('[')
+    generic_end = kls.rfind(']')
+    kls_no_generic = kls
+    if generic_start != -1 and generic_end != -1 and generic_end > generic_start:
+        import_root_module_to_local(kls[generic_start + 1: generic_end], local_dict)
+        kls_no_generic = kls[generic_start]
+    last_dot = kls_no_generic.rfind('.')
+    if last_dot == -1:
+        return local_dict
+    pkg_name_end = last_dot if generic_start == -1 else min(last_dot, generic_start)
+    pkg_name = kls[:pkg_name_end] #type:str
+    parts = pkg_name.split('.')
+    cur_module_name = parts[0]
+    cur_module = importlib.import_module(parts[0])
+    local_dict[parts[0]] = cur_module
+    for name in parts[1:]:
+        cur_module_name = cur_module_name + '.' + name
+        imported = importlib.import_module(cur_module_name)
+        setattr(cur_module, name, imported)
+        cur_module = imported
+    return local_dict
 
 
 def get_class(kls):
     try:
-        parts = kls.split('.')
-        module = ".".join(parts[:-1])
-        m = importlib.import_module(module)
-        return getattr(m, parts[-1])
-    except Exception:
-        try:
-            module = import_module(kls)
-            if module is not None and module != '':
-                exec('import ' + module)
-            return eval(kls)
-        except NameError as err:
-            raise Exception('get class ' + kls + ' exception')
+        if kls.find('[') == -1:
+            last_dot = kls.rfind('.')
+            if last_dot == -1:
+                return eval(kls, globals())
+            pkg_name = kls[:last_dot]
+            return getattr(importlib.import_module(pkg_name), kls[last_dot + 1:])
+        local_dict = import_root_module_to_local(kls)
+        return eval(kls, globals(), local_dict)
+    except Exception as err:
+        raise Exception('get class ' + kls + ' exception')
 
 
 def _get_all_annotations(clz: type) -> dict:
