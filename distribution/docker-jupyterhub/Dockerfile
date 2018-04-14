@@ -13,6 +13,8 @@ RUN pip install /tmp/*.whl \
 && jupyter nbextension install --py --symlink --sys-prefix iclientpy \
 && jupyter nbextension enable --py --sys-prefix iclientpy \
 && jupyter nbextension enable --py --sys-prefix widgetsnbextension \
+&& rm /usr/lib/x86_64-linux-gnu/libstdc++.so.6* \
+&& ln -s /opt/conda/lib/libstdc++.so.6.0.21 /usr/lib/x86_64-linux-gnu/libstdc++.so.6 \
 && conda update --all
 ADD jupyterhub_config.py /srv/jupyterhub/
 ADD supermap_logo.png /opt/conda/share/jupyter/hub/static/images/jupyter.png
