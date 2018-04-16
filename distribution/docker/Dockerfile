@@ -6,7 +6,8 @@ ADD pip.conf /home/jovyan/.pip/pip.conf
 RUN conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/ \
 && conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/ \
 && conda config --set show_channel_urls yes \
-&& conda install geopandas lxml beautifulsoup4 -y
+&& conda install geopandas lxml beautifulsoup4 -y\
+&& conda clean -yt
 ADD ./sample /home/jovyan/work
 ADD *.whl /tmp/
 RUN pip install /tmp/*.whl \

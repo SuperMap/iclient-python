@@ -7,6 +7,7 @@ RUN conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pk
 && conda config --set show_channel_urls yes \
 && conda install python=3.6 lxml beautifulsoup4 geopandas fiona -y \
 && conda update --all \
+&& conda clean -yt \
 && mkdir /iclientpy
 ADD jupyterhub_config.py /srv/jupyterhub/
 ADD supermap_logo.png /opt/conda/share/jupyter/hub/static/images/jupyter.png
