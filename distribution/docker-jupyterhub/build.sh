@@ -7,4 +7,4 @@ cp ../../iclientpy/sample ./sample -r
 docker build --cache-from registry.cn-beijing.aliyuncs.com/iclientpy/jupyterhub -t iclientpy/jupyterhub .
 docker tag iclientpy/jupyterhub:latest registry.cn-beijing.aliyuncs.com/iclientpy/jupyterhub:latest
 docker push registry.cn-beijing.aliyuncs.com/iclientpy/jupyterhub:latest
-docker image ls | grep iclientpy/jupyterhub | grep none | awk '{ print $3}' | xargs docker image rm
+docker image ls | grep iclientpy/jupyterhub | grep none | awk '{ print $3}' | xargs docker image rm || true

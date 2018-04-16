@@ -7,4 +7,4 @@ cp ../../iclientpy/dist/iclientpy-*.whl ./
 docker build --cache-from registry.cn-beijing.aliyuncs.com/iclientpy/iclientpy-jupyter-notebook -t iclientpy/iclientpy-jupyter-notebook .
 docker tag iclientpy/iclientpy-jupyter-notebook:latest registry.cn-beijing.aliyuncs.com/iclientpy/iclientpy-jupyter-notebook:latest
 docker push registry.cn-beijing.aliyuncs.com/iclientpy/iclientpy-jupyter-notebook:latest
-docker image ls | grep iclientpy/iclientpy-jupyter-notebook | grep none | awk '{ print $3}' | xargs docker image rm
+docker image ls | grep iclientpy/iclientpy-jupyter-notebook | grep none | awk '{ print $3}' | xargs docker image rm || true
