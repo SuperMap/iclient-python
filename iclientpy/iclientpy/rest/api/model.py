@@ -2362,3 +2362,543 @@ class PostCoordtransferItem:
     sourcePrj: PrjCoordSys
     targetPrj: PrjCoordSys
     targetEpsgCode: int
+
+
+class DataItemType(Enum):
+    AUDIO = 'AUDIO'
+    COLOR = 'COLOR'
+    COLORSCHEME = 'COLORSCHEME'
+    CSV = 'CSV'
+    EXCEL = 'EXCEL'
+    FILLSYMBOL = 'FILLSYMBOL'
+    IMAGE = 'IMAGE'
+    JSON = 'JSON'
+    LAYERTEMPLATE = 'LAYERTEMPLATE'
+    LAYOUTTEMPALTE = 'LAYOUTTEMPLATE'
+    LINESYMBOL = 'LINESYMBOL'
+    MAPTEMPLATE = 'MAPTEMPLATE'
+    MARKERSYMBOL = 'MARKERSYMBOL'
+    MBTILES = 'MBTILES'
+    PHOTOS = 'PHOTOS'
+    SHP = 'SHP'
+    SMTILES = 'SMTILES'
+    SVTILES = 'SVTILES'
+    THEMETEMPLATE = 'THEMETEMPLATE'
+    TPK = 'TPK'
+    UDB = 'UDB'
+    UGCV5 = 'UGCV5'
+    UNKNOWN = 'UNKNOWN'
+    WORKENVIRONMENT = 'WORKENVIRONMENT'
+    WORKSPACE = 'WORKSPACE'
+
+
+class ServiceStatus(Enum):
+    DISENGAGED = 'DISEGAGED'
+    DOES_NOT_INVOLVE = 'DOES_NOT_INVOLVE'
+    PUBLISH_FAILED = 'PUBLISH_FAILED'
+    PUBLISHING = 'PUBLISHING'
+    UNPUBLISHED = 'UNPUBLISHED'
+    UNPUBLISHED_FAILED = 'UNPUBLISHED_FAILED'
+
+
+class DataItemOrderBy(Enum):
+    CREATETIME = 'CREATETIME'
+    DOWNLOADCOUNT = 'DOWNLOADCOUNT'
+    FILENAME = 'FILENAME'
+    ID = 'ID'
+    LASTMODIFIEDTIME = 'LASTMODIFIEDTIME'
+    NICKNAME = 'NICKNAME'
+    SERVICESTATUS = 'SERVICESTATUS'
+    SIZE = 'SIZE'
+    STATUS = 'STATUS'
+    TYPE = 'TYPE'
+    UPDATETIME = 'UPDATETIME'
+    USERNAME = 'USERNAME'
+
+
+class OrderType(Enum):
+    ASC = 'ASC'
+    DESC = 'DESC'
+
+
+class FilterField(Enum):
+    LINKPAGE = 'LINKPAGE'
+    MAPTITLE = 'MAPTITLE'
+    NICKNAME = 'NICKNAME'
+    PROXIEDURL = 'PROXIEDURL'
+    RESTITLE = 'RESTITLE'
+    USERNAME = 'USERNAME'
+
+
+class EntityType(Enum):
+    USER = 'USER'
+    ROLE = 'ROLE'
+    GROUP = 'GROUP'
+    IPORTALGROUP = 'IPORTALGROUP'
+    DEPARTMENT = 'DEPARTMENT'
+
+
+@default_init
+class IportalAuthorizeEntityBase:
+    entityType: EntityType
+    entityName: str
+    aliasName: str
+    entityId: int
+    entityRoles: List[str]
+
+
+class DataPermissionType(Enum):
+    DOWNLOAD = 'DOWNLOAD'
+    DELETE = 'DELETE'
+
+
+@default_init
+class IportalDataAuthorizeEntity(IportalAuthorizeEntityBase):
+    dataPermissionType: DataPermissionType
+
+
+class DataCoordType(Enum):
+    BD09 = 'BD09'
+    BD09_MACTOR = 'BD09_MACTOR'
+    CGCS2000 = 'CGCS2000'
+    GCJ02 = 'GCJ02'
+    GCJ02_MACTOR = 'GCJ02_MACTOR'
+    MACTOR = 'MACTOR'
+    NONE = 'NONE'
+    OTHER = 'OTHER'
+    WGS84 = 'WGS84'
+
+
+class DataCheckStatus(Enum):
+    CHECKING = 'CHECKING'
+    FAILED = 'FAILED'
+    FATALERROR = 'FATALERROR'
+    SUCCESS = 'SUCCESS'
+    UNCHECKED = 'UNCHECKED'
+
+
+@default_init
+class DataItemCheckInfo:
+    checkMsg: str
+    checkStatus: DataCheckStatus
+    dataType: DataItemType
+    id: int
+    MD5: str
+
+
+class DataServiceType(Enum):
+    REST_NETWORKANALYST3D = 'REST_NETWORKANALYST3D'
+    RESTDATA = 'RESTDATA'
+    RESTMAP = 'RESTMAP'
+    RESTREALSPACE = 'RESTREALSPACE'
+    RESTSPATIALANALYST = 'RESTSPATIALANALYST'
+    RESTTRAFFICTRANSFERANALYST = 'RESTTRAFFICTRANSFERANALYST'
+    RESTTRANSPORTATIONANALYST = 'RESTTRANSPORTATIONANALYST'
+    WCS111 = 'WCS111'
+    WCS112 = 'WCS112'
+    WFS100 = 'WFS100'
+    WFS200 = 'WFS200'
+    WMS111 = 'WMS111'
+    WMS130 = 'WMS130'
+    WMTS100 = 'WMTS100'
+    WMTSCHINA = 'WMTSCHINA'
+    WPS100 = 'WPS100'
+
+
+@default_init
+class DataItemServiceCheckInfo:
+    checkMsg: str
+    checkStatus: DataCheckStatus
+    dataType: DataItemType
+    id: int
+    MD5: str
+    serviceType: DataServiceType
+
+
+@default_init
+class DataServiceInfo:
+    accessCount: int
+    address: str
+    createTime: int
+    dataID: int
+    serviceId: str
+    serviceName: str
+    serviceNode: str
+    serviceStatus: ServiceStatus
+    serviceType: DataServiceType
+    updateTime: int
+
+
+class SourceType(Enum):
+    SUPERMAP_REST = 'SUPERMAP_REST'
+    MAPVIEWER = 'MAPVIEWER'
+    SUPERMAP_REST_VECTOR = 'SUPERMAP_REST_VECTOR'
+    WMS = 'WMS'
+    WMTS = 'WMTS'
+    WFS = 'WFS'
+    WCS = 'WCS'
+    WPS = 'WPS'
+    DATA = 'DATA'
+    MAP = 'MAP'
+    LOCATION = 'LOCATION'
+    LOCALSEARCH = 'LOCALSEARCH'
+    NAVIGATION = 'NAVIGATION'
+    ICLOUDTRAFFICTRANSFERANALYST = 'ICLOUDTRAFFICTRANSFERANALYST'
+    COORDINATE = 'COORDINATE'
+    SPATIALANALYST = 'SPATIALANALYST'
+    TRAFFICTRANSFERANALYST = 'TRAFFICTRANSFERANALYST'
+    TRANSPORTATIONANALYST = 'TRANSPORTATIONANALYST'
+    COMPONENTSET = 'COMPONENTSET'
+    CLOUD = 'CLOUD'
+    TIANDITU_VEC = 'TIANDITU_VEC'
+    TIANDITU_IMG = 'TIANDITU_IMG'
+    TIANDITU_TER = 'TIANDITU_TER'
+    BAIDU = 'BAIDU'
+    SIWEI = 'SIWEI'
+    OSM = 'OSM'
+    GOOGLE = 'GOOGLE'
+    TENCENT = 'TENCENT'
+    BING = 'BING'
+    ARGIS_REST = 'ARCGIS_REST'
+    OTHERS = 'OTHERS'
+    NETWORKANALYST3D = 'NETWORKANALYST3D'
+    PLOT = 'PLOT'
+    ADDRESSMATCH = 'ADDRESSMATCH'
+    BIGDATACATALOG = 'BIGDATACATALOG'
+    SPATIALPROCESSING = 'SPATIALPROCESSING'
+    GEOMETRY = 'GEOMETRY'
+
+
+class RealspaceType(Enum):
+    MODEL = 'MODEL'
+    IMAGE = 'IMAGE'
+
+
+@default_init
+class DataMetaInfo:
+    releaseTimeMilli: int
+    providers: str
+    epsgCode: int
+    bounds: str
+    proxiedServiceUrl: str
+    proxiedServiceType: SourceType
+    realspaceType: RealspaceType
+    fileEncoding: str
+    xField: str
+    yField: str
+    previewURL: str
+
+
+@default_init
+class DataCheckResult:
+    dataCheckInfo: DataItemCheckInfo
+    serviceCheckInfos: List[DataItemServiceCheckInfo]
+
+
+class Status(Enum):
+    CREATED = 'CREATED'
+    DOEST_NOT_COMPLETE = 'DOEST_NOT_COMPLETE'
+    DOEST_NOT_EXIST = 'DOEST_NOT_EXIST'
+    MODIFYING = 'MODIFYING'
+    OK = 'OK'
+
+
+@default_init
+class DataItem:
+    authorizeSetting: List[IportalDataAuthorizeEntity]
+    coordType: DataCoordType
+    createTime: int
+    dataCheckResult: DataCheckResult
+    dataItemService: List[DataServiceInfo]
+    dataMetaInfo: DataMetaInfo
+    description: str
+    downloadCount: int
+    fileName: str
+    id: int
+    lastModfiedTime: int
+    MD5: str
+    nickname: str
+    size: int
+    status: Status
+    storageId: str
+    tags: List[str]
+    thumbnail: str
+    type: DataItemType
+    userName: str
+
+
+@default_init
+class SearchParameter:
+    currentPage: int
+    keywords: List[str]
+    orderType: OrderType
+    pageSize: int
+
+
+@default_init
+class GetMyDatasResult:
+    content: List[DataItem]
+    currentPage: int
+    pageSize: int
+    searchParameter: SearchParameter
+    total: int
+    totalPage: int
+
+
+@default_init
+class PostMyDatasItem:
+    type: DataItemType
+    fileName: str
+    tags: List[str]
+    description: str
+    authorizeSetting: List[IportalDataAuthorizeEntity]
+
+
+@default_init
+class MyDatasMethodResult:
+    childID: str
+    childContent: dict
+    childUrl: str
+    customResult: dict
+    isAsynchronizedReturn: bool
+
+
+@default_init
+class PutMyDataItem:
+    fileName: str
+    type: DataItemType
+    tags: List[str]
+    description: str
+
+
+@default_init
+class MyDataUploadProcess:
+    id: str
+    read: int
+    total: int
+
+
+@default_init
+class PermissionType(Enum):
+    DELETE = 'DELETE'
+    READ = 'READ'
+    READWRITE = 'READWRITE'
+
+
+@default_init
+class IportalAuthorizeEntity(IportalAuthorizeEntityBase):
+    permissionType: PermissionType
+
+
+class CheckStatus(Enum):
+    FAILED = 'FAILED'
+    SUCCESSFUL = 'SUCCESSFUL'
+    UNCHECKED = 'UNCHECKED'
+
+
+class LayerType(Enum):
+    BASE_LAYER = 'BASE_LAYER'
+    FEATURE_LAYER = 'FEATURE_LAYER'
+    GRAPHIC_LAYER = 'GRAPHIC_LAYER'
+    HEATMAP_LAYER = 'HEATMAP_LAYER'
+    MARKER_LAYER = 'MARKER_LAYER'
+    OVERLAY_LAYER = 'OVERLAY_LAYER'
+
+
+@default_init
+class FeatureAttribute:
+    title: str
+    description: str
+    updated: bool
+
+
+@default_init
+class IportalGeometry:
+    type: str
+    points: List[Point2D]
+
+
+@default_init
+class Marker:
+    id: str
+    attributes: FeatureAttribute
+    geometry: IportalGeometry
+    icon: str
+    width: int
+    height: int
+
+
+@default_init
+class PointStyle:
+    pointRadius: float
+    fillColor: str
+    fillOpacity: float
+    strokeColor: str
+    strokeOpacity: float
+    strokeWidth: float
+    strokeLinecap: str
+    strokeDashstyle: str
+    externalGraphic: str
+    graphicWidth: float
+    graphicHeight: float
+    graphicOpacity: float
+    graphicXOffset: float
+    graphicYOffset: float
+    fill: bool
+    stroke: bool
+    unicode: bool
+    labelSelect: bool
+    fontSize: str
+    fontColor: str
+    labelAlign: str
+    fontOpacity: float
+    fontWeight: str
+    fontFamily: str
+    label: str
+    labelXOffset: float
+    labelYOffset: float
+
+
+@default_init
+class LineStyle:
+    fillOpacity: float
+    strokeColor: str
+    strokeOpacity: float
+    strokeWidth: float
+    strokeLinecap: str
+    strokeDashstyle: str
+
+
+@default_init
+class PolygonStyle:
+    fillColor: str
+    fillOpacity: float
+    strokeColor: str
+    strokeOpacity: float
+    strokeWidth: float
+    strokeLinecap: str
+    strokeDashstyle: str
+
+
+@default_init
+class LayerStyle:
+    pointStyle: PointStyle
+    lineStyle: LineStyle
+    polygonStyle: PolygonStyle
+
+
+@default_init
+class WMTSOption:
+    requestEncoding: str
+
+
+@default_init
+class Layer:
+    bounds: Rectangle2D
+    cartoCSS: str
+    datasourceName: str
+    features: List[Feature]
+    id: int
+    identifier: str
+    isVisible: bool
+    layerType: LayerType
+    mapId: int
+    markers: List[Marker]
+    name: str
+    opacity: float
+    prjCoordSys: PrjCoordSys
+    scales: List[float]
+    style: LayerStyle
+    subLayers: List[str]
+    themeSettings: str
+    title: str
+    type: SourceType
+    url: str
+    wmtsOption: WMTSOption
+    zindex: int
+
+
+class MapUnits(Enum):
+    degrees = 'degrees'
+    ft = 'ft'
+    inches = 'inches'
+    km = 'km'
+    m = 'm'
+    mi = 'mi'
+
+
+@default_init
+class ViewerMap:
+    authorizeSetting: List[IportalAuthorizeEntity]
+    center: Point2D
+    checkStatus: CheckStatus
+    checkTime: int
+    checkUser: str
+    checkUserNick: str
+    controls: List[str]
+    createTime: int
+    description: str
+    epsgCode: int
+    extend: Rectangle2D
+    id: int
+    isDefaultBottomMap: bool
+    layers: List[Layer]
+    level: int
+    nickName: str
+    resolution: float
+    searchSetting: str
+    sourceType: SourceType
+    tags: List[str]
+    thumbnail: str
+    title: str
+    units: MapUnits
+    updateTime: int
+    userName: str
+    verifyReasion: str
+    visitCount: int
+
+
+@default_init
+class GetMapsResult:
+    content: List[ViewerMap]
+    currentPage: int
+    pageSize: int
+    searchParameter: SearchParameter
+    total: int
+    totalPage: int
+
+
+@default_init
+class MapOrderBy(Enum):
+    USERNAME = 'USERNAME'
+    TITLE = 'TITLE'
+    VISITCOUNT = 'VISITCOUNT'
+    CREATETIME = 'CREATETIME'
+    UPDATETIME = 'UPDATETIME'
+    SOURCETYPE = 'SOURCETYPE'
+    STATUS = 'STATUS'
+    NICKNAME = 'NICKNAME'
+
+
+@default_init
+class OrderBy:
+    orderField: MapOrderBy
+    orderType: OrderType
+
+
+@default_init
+class PostMapsItem:
+    units: MapUnits
+    level: int
+    center: Point2D
+    controls: List[str]
+    description: str
+    epsgCode: int
+    extent: Rectangle2D
+    tags: List[str]
+    layers: List[Layer]
+    title: str
+    thumbnail: str
+    isDefaultBottomMap: bool
+    authorizeSetting: List[IportalAuthorizeEntity]
+    searchSetting: str

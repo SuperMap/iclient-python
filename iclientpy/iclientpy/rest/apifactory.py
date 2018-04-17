@@ -15,6 +15,8 @@ from .proxyfactory import RestInvocationHandler
 from .proxyfactory import create
 from ..dtojson import to_json_str
 from .api.datacatalog import Datacatalog
+from .api.mydatas import MyDatas
+from .api.mapsservice import MapsService
 
 default_session_cookie_name = 'JSESSIONID'
 
@@ -251,12 +253,12 @@ class RestInvocationHandlerImpl(RestInvocationHandler):
         return methods[rest.get_method()](rest, uri, args, kwargs)
 
 
-def create_auth(base_url: str, username: str, passwd: str, token: str, proxies=None) -> AuthBase:
+def create_auth(login_url: str, username: str, passwd: str, token: str, proxies=None) -> AuthBase:
     """
     登录服务，并将记录登录信息的CookieAuth/TokenAuth返回，用于授权需要访问权限的api
 
     Args:
-        base_url: 服务地址
+        login_url: 服务地址
         username: 登录的用户名
         passwd: 登录的密码
         token: 登录的token
@@ -268,8 +270,7 @@ def create_auth(base_url: str, username: str, passwd: str, token: str, proxies=N
     if username is not None and passwd is not None:
         # TODO iPortal和online，iServer CAS登录后续考虑
         # TODO session超时处理，定时刷新保证不超时，以及超时检测重新登录
-        response = requests.post(base_url + '/services/security/login.json',
-                                 json={'username': username, 'password': passwd}, proxies=proxies)
+        response = requests.post(login_url, json={'username': username, 'password': passwd}, proxies=proxies)
         response.raise_for_status()
         value = response.cookies[default_session_cookie_name]
         return CookieAuth(value)
@@ -310,7 +311,8 @@ class APIFactory:
         self._base_url = base_url if not base_url.endswith('/') else base_url[:-1]
         self._services_url = self._base_url + '/services'
         self._proxies = proxies if proxies is not None else _get_proxy_from_arguments()
-        auth = create_auth(self._base_url, username, passwd, token, proxies=self._proxies)
+        auth = create_auth(self._base_url + '/services/security/login.json', username, passwd, token,
+                           proxies=self._proxies)
         self._handler = RestInvocationHandlerImpl(self._base_url, auth, proxies=self._proxies)
 
     def management(self) -> Management:
@@ -383,3 +385,31 @@ class APIFactory:
         """
         return create(Datacatalog,
                       RestInvocationHandlerImpl(self._services_url + '/' + service_name, proxies=self._proxies))
+
+
+class iPortalAPIAfactory:
+    def __init__(self, base_url: str, username: str = None, passwd: str = None, token: str = None, proxies=None):
+        """
+
+        Args:
+            base_url: 服务的地址
+            username: 服务需要登录的用户名
+            passwd: 服务需要登录的密码
+            token: 服务可以访问的token
+            proxies: 设置代理服务器地址
+        """
+        self._base_url = base_url + 'web' if base_url.endswith('/') else base_url + '/web'
+        self._proxies = proxies if proxies is not None else _get_proxy_from_arguments()
+        auth = create_auth(self._base_url + '/login.json', username, passwd, token, proxies=self._proxies)
+        self._handler = RestInvocationHandlerImpl(self._base_url, auth, proxies=self._proxies)
+
+    def mydatas_service(self) -> MyDatas:
+        """
+        获取iPortal web
+        Returns:
+
+        """
+        return create(MyDatas, self._handler)
+
+    def maps_service(self) -> MapsService:
+        return create(MapsService, self._handler)
