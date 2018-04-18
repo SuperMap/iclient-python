@@ -1391,6 +1391,7 @@ class SummaryMeshAnalystSetting(SummaryAnalystSetting):
     resultFieldNames: str
     meshSizeUnit: DistanceUnit
     mappingParameters: MappingParameters
+    regionDataset: str
 
 
 @default_init
