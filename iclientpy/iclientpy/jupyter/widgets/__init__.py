@@ -7,3 +7,4 @@ from .tilemaplayer import *
 from .basesetting import *
 from .echartslayer import *
 from .sparkjobstate import *
+from .portalthumbnail import *

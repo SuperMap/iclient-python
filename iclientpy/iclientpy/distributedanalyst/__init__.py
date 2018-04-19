@@ -1,6 +1,4 @@
-from iclientpy.rest.apifactory import APIFactory
 from iclientpy.rest.api.model import *
-from iclientpy.rest.api.datacatalog import Datacatalog
 from iclientpy import env
 import iclientpy as icp
 from typing import List,Callable

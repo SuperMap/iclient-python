@@ -5,7 +5,7 @@ from sure import expect
 from unittest import TestCase
 from iclientpy.dtojson import to_json_str
 from iclientpy.rest.decorator import HttpMethod
-from iclientpy.rest.apifactory import APIFactory, iPortalAPIAfactory
+from iclientpy.rest.apifactory import APIFactory, iPortalAPIFactory
 
 
 class AbstractREST(object):
@@ -22,7 +22,7 @@ class AbstractREST(object):
             loginuri = self.loginuri if hasattr(self, 'loginuri') else self.baseuri + '/web/login.json'
             httpretty.register_uri(httpretty.POST, loginuri, status=201,
                                    set_cookie='JSESSIONID=958322873908FF9CA99B5CB443ADDD5C')
-            self.factory = iPortalAPIAfactory(self.baseuri, self.username, self.password)
+            self.factory = iPortalAPIFactory(self.baseuri, self.username, self.password)
 
     @httpretty.activate
     def init_apifactory(self):

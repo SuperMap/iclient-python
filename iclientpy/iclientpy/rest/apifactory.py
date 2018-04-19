@@ -387,7 +387,7 @@ class APIFactory:
                       RestInvocationHandlerImpl(self._services_url + '/' + service_name, proxies=self._proxies))
 
 
-class iPortalAPIAfactory:
+class iPortalAPIFactory:
     def __init__(self, base_url: str, username: str = None, passwd: str = None, token: str = None, proxies=None):
         """
 
@@ -402,6 +402,9 @@ class iPortalAPIAfactory:
         self._proxies = proxies if proxies is not None else _get_proxy_from_arguments()
         auth = create_auth(self._base_url + '/login.json', username, passwd, token, proxies=self._proxies)
         self._handler = RestInvocationHandlerImpl(self._base_url, auth, proxies=self._proxies)
+
+    def get_base_url(self):
+        return self._base_url
 
     def mydatas_service(self) -> MyDatas:
         """
