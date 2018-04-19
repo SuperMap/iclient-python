@@ -185,7 +185,7 @@ setup_args = {
     },
     'author': 'SuperMap',
     'author_email': 'guyongquan@supermap.com',
-    'url': 'https://gitee.com/isupermap/iClientPython',
+    'url': 'https://github.com/SuperMap/iclient-python',
     'keywords': [
         'ipython',
         'jupyter',
