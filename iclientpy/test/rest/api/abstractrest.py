@@ -1,11 +1,11 @@
 import inspect
 import httpretty
-import json
+import requests_mock
 from sure import expect
 from unittest import TestCase
 from iclientpy.dtojson import to_json_str
 from iclientpy.rest.decorator import HttpMethod
-from iclientpy.rest.apifactory import APIFactory, iPortalAPIFactory
+from iclientpy.rest.apifactory import APIFactory, OnlineAPIFactory
 
 
 class AbstractREST(object):
@@ -16,18 +16,23 @@ class AbstractREST(object):
         for k, v in kwargs.items():
             setattr(self, k, v)
 
-    @httpretty.activate
-    def init_iportal_apifactory(self):
+    @requests_mock.Mocker()
+    def init_online_apifactory(self, m: requests_mock.Mocker):
         if not hasattr(self, 'factory'):
-            loginuri = self.loginuri if hasattr(self, 'loginuri') else self.baseuri + '/web/login.json'
-            httpretty.register_uri(httpretty.POST, loginuri, status=201,
-                                   set_cookie='JSESSIONID=958322873908FF9CA99B5CB443ADDD5C')
-            self.factory = iPortalAPIFactory(self.baseuri, self.username, self.password)
+            m.register_uri('GET', 'https://sso.supermap.com/login',
+                           text='{"lt":"LT-11506-wDwBEJsE2dWoVoKOfIDBZyRt0qk35k-sso.supermap.com","execution":"e1s1","_eventId":"submit"}',
+                           cookies={'JSESSIONID': '958322873908FF9CA99B5CB443ADDD5C'})
+            m.register_uri('POST', 'https://sso.supermap.com/login',
+                           headers={'location': 'https://www.supermapol.com/shiro-cas'}, status_code=302)
+            m.register_uri('GET', 'https://www.supermapol.com/shiro-cas',
+                           cookies={'JSESSIONID': '958322873908FF9CA99B5CB443ADDD5C'})
+            self.factory = OnlineAPIFactory(self.baseuri, self.username, self.password)
 
     @httpretty.activate
     def init_apifactory(self):
         if not hasattr(self, 'factory'):
-            loginuri = self.loginuri if hasattr(self, 'loginuri') else self.baseuri + '/services/security/login.json'
+            loginuri = self.loginuri if hasattr(self,
+                                                'loginuri') else self.baseuri + '/services/security/login.json'
             httpretty.register_uri(httpretty.POST, loginuri, status=201,
                                    set_cookie='JSESSIONID=958322873908FF9CA99B5CB443ADDD5C')
             self.factory = APIFactory(self.baseuri, self.username, self.password)

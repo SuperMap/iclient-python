@@ -8,8 +8,8 @@ from iclientpy.rest.api.model import *
 class MapsServiceTestCase(AbstractRESTTestCase):
     @classmethod
     def setUpClass(cls):
-        cls.init_rest(cls, 'http://localhost:8090/iportal', 'admin', 'Supermap123')
-        cls.init_iportal_apifactory(cls)
+        cls.init_rest(cls, 'http://www.supermapol.com', 'test', 'test')
+        cls.init_online_apifactory(cls)
         cls.init_api(cls, "maps_service")
 
     def test_maps(self):

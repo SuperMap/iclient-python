@@ -7,11 +7,11 @@ from iclientpy.rest.api.model import GetMyDatasResult, PostMyDatasItem, MyDatasM
 
 class MyDatas:
     @get('/mycontent/datas',
-         queryKWs=['userName', 'userNames', 'type', 'types', 'fileName', 'serviceStatus', 'serviceId', 'ids',
-                   'keywords', 'orderBy', 'orderType', 'tags', 'filterFields'])
-    def get_my_datas(self, userName: str, userNames: List[str], type: str, types: List[str], fileName: str,
-                     serviceStatus: List[str], serviceId: str, ids: List[int], keywords: List[str], orderBy: str,
-                     orderType: str, tags: List[str], filterFields: List[str]) -> GetMyDatasResult:
+         queryKWs=['userNames', 'types', 'fileName', 'serviceStatus', 'serviceId', 'ids', 'keywords', 'orderBy',
+                   'orderType', 'tags', 'filterFields'])
+    def get_my_datas(self, userNames: List[str], types: List[str], fileName: str, serviceStatus: List[str],
+                     serviceId: str, ids: List[int], keywords: List[str], orderBy: str, orderType: str, tags: List[str],
+                     filterFields: List[str]) -> GetMyDatasResult:
         pass
 
     @post('/mycontent/datas', entityKW='entity')

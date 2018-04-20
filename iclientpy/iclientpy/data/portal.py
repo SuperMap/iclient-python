@@ -2,7 +2,7 @@ from io import StringIO, FileIO
 from geopandas import GeoDataFrame
 from IPython.display import display
 from ipywidgets import IntProgress
-from iclientpy.rest.apifactory import iPortalAPIFactory
+from iclientpy.rest.apifactory import OnlineAPIFactory
 from iclientpy.rest.api.mydatas import MyDatas
 from iclientpy.rest.api.mapsservice import MapsService
 from iclientpy.jupyter import PortalThumbnail
@@ -85,7 +85,7 @@ def __create_map_on_portal(maps: MapsService, map_title: str, layer_name: str, d
     return maps.post_maps(entity)
 
 
-def from_geodataframe_pubilsh(api: iPortalAPIFactory, geodataframe: GeoDataFrame, data_name: str, map_title: str,
+def from_geodataframe_pubilsh(api: OnlineAPIFactory, geodataframe: GeoDataFrame, data_name: str, map_title: str,
                               layer_name: str, layer_style: LayerStyle = None):
     mds = api.mydatas_service()
     maps = api.maps_service()

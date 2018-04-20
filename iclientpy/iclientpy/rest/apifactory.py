@@ -4,6 +4,7 @@ import sys
 from enum import Enum
 import requests
 from requests.auth import AuthBase
+import json
 
 from .api.management import Management
 from .api.restdata import DataService
@@ -387,7 +388,23 @@ class APIFactory:
                       RestInvocationHandlerImpl(self._services_url + '/' + service_name, proxies=self._proxies))
 
 
-class iPortalAPIFactory:
+def create_sso_auth(url: str, username: str, passwd: str, token: str, proxies=None) -> AuthBase:
+    SSO_URL = 'https://sso.supermap.com/login'
+    params = {'format': 'json'}
+    params.update({'service': url})
+    lt_res = requests.get(SSO_URL, params=params, proxies=proxies, allow_redirects=False)
+    sso_jsessionid = lt_res.cookies[default_session_cookie_name]
+    params.update(json.loads(lt_res.content))
+    params.update({"username": username, "password": passwd})
+    ticket_res = requests.post(SSO_URL, params=params, cookies={default_session_cookie_name: sso_jsessionid},
+                               proxies=proxies, allow_redirects=False)
+    url = ticket_res.headers["location"]
+    online_res = requests.get(url, proxies=proxies, allow_redirects=False)
+    online_jsessionid = online_res.cookies[default_session_cookie_name]
+    return CookieAuth(online_jsessionid)
+
+
+class OnlineAPIFactory:
     def __init__(self, base_url: str, username: str = None, passwd: str = None, token: str = None, proxies=None):
         """
 
@@ -400,7 +417,8 @@ class iPortalAPIFactory:
         """
         self._base_url = base_url + 'web' if base_url.endswith('/') else base_url + '/web'
         self._proxies = proxies if proxies is not None else _get_proxy_from_arguments()
-        auth = create_auth(self._base_url + '/login.json', username, passwd, token, proxies=self._proxies)
+        auth = create_sso_auth(self._base_url + 'shiro-cas' if base_url.endswith('/') else base_url + '/shiro-cas',
+                               username, passwd, token, proxies=self._proxies)
         self._handler = RestInvocationHandlerImpl(self._base_url, auth, proxies=self._proxies)
 
     def get_base_url(self):

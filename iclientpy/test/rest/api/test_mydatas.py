@@ -9,8 +9,8 @@ from unittest import mock
 class MyDatasTestCase(AbstractRESTTestCase):
     @classmethod
     def setUpClass(cls):
-        cls.init_rest(cls, 'http://localhost:8090/iportal', 'admin', 'Supermap123')
-        cls.init_iportal_apifactory(cls)
+        cls.init_rest(cls, 'http://www.supermapol.com', 'test', 'test')
+        cls.init_online_apifactory(cls)
         cls.init_api(cls, "mydatas_service")
 
     def test_datas(self):
