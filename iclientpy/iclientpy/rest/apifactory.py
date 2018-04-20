@@ -392,14 +392,13 @@ def create_sso_auth(url: str, username: str, passwd: str, token: str, proxies=No
     SSO_URL = 'https://sso.supermap.com/login'
     params = {'format': 'json'}
     params.update({'service': url})
-    lt_res = requests.get(SSO_URL, params=params, proxies=proxies, allow_redirects=False)
-    sso_jsessionid = lt_res.cookies[default_session_cookie_name]
+    session = requests.session()
+    lt_res = session.get(SSO_URL, params=params, proxies=proxies, allow_redirects=False)
     params.update(json.loads(lt_res.content))
     params.update({"username": username, "password": passwd})
-    ticket_res = requests.post(SSO_URL, params=params, cookies={default_session_cookie_name: sso_jsessionid},
-                               proxies=proxies, allow_redirects=False)
+    ticket_res = session.post(SSO_URL, params=params, proxies=proxies, allow_redirects=False)
     url = ticket_res.headers["location"]
-    online_res = requests.get(url, proxies=proxies, allow_redirects=False)
+    online_res = session.get(url, proxies=proxies, allow_redirects=False)
     online_jsessionid = online_res.cookies[default_session_cookie_name]
     return CookieAuth(online_jsessionid)
 
