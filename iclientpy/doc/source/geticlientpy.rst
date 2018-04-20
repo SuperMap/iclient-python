@@ -5,7 +5,7 @@ iClientPy正在开发中，如果你有意试用，可以通过两个途径获�
 
     * 检出源代码本地安装： **需要确保本地的python环境为3.6.x**
 
-        1. 从https://gitee.com/isupermap/iClientPython下载代码或者复制git地址，通过git客户端复制代码到本地
+        1. 从https://github.com/SuperMap/iclient-python下载代码或者复制git地址，通过git客户端复制代码到本地
         2. 打开命令行，进入到代码文件夹内
         3. 执行命令pip install -r requirements.txt安装依赖
         4. 执行命令python setup.py install进行安装
