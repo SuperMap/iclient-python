@@ -1,9 +1,11 @@
 # -*- mode: python -*-
+import sys
+sys.setrecursionlimit(5000)
 
 block_cipher = None
 
 
-cachetool_a = Analysis(['iclientpy\\rest\\cmd\\updatecache.py'],
+cachetool_a = Analysis(['iclientpy/rest/cmd/updatecache.py'],
              pathex=['.'],
              binaries=[],
              datas=[],
@@ -14,7 +16,7 @@ cachetool_a = Analysis(['iclientpy\\rest\\cmd\\updatecache.py'],
              win_no_prefer_redirects=False,
              win_private_assemblies=False,
              cipher=block_cipher)
-tokentool_a = Analysis(['iclientpy\\rest\\cmd\\obaintoken.py'],
+tokentool_a = Analysis(['iclientpy/rest/cmd/obaintoken.py'],
              pathex=['.'],
              binaries=[],
              datas=[],
