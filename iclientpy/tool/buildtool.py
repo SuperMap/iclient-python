@@ -25,15 +25,18 @@ def linux_task(tool_file, dir):
     tarf.close()
 
 
+def delete_dirs(dirs):
+    for dir in dirs:
+        if os.path.exists(dir):
+            shutil.rmtree(dir)
+
+
 def main():
     rootdir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
+    icpy_dir = os.path.join(rootdir, 'build', 'icpy')
     tokentool_dir = os.path.join(rootdir, 'dist', 'tokentool')
     cachetool_dir = os.path.join(rootdir, 'dist', 'cachetool')
-    if os.path.exists(tokentool_dir):
-        shutil.rmtree(tokentool_dir)
-    if os.path.exists(cachetool_dir):
-        shutil.rmtree(cachetool_dir)
-
+    delete_dirs([icpy_dir, tokentool_dir, cachetool_dir])
     pyinstaller_cmd = [
         'pyinstaller',
         '-c',

@@ -7,32 +7,8 @@ from iclientpy.rest.api.mydatas import MyDatas
 from iclientpy.rest.api.mapsservice import MapsService
 from iclientpy.jupyter import PortalThumbnail
 from iclientpy.rest.api.model import PostMyDatasItem, DataItemType, PostMapsItem, Point2D, Layer, LayerType, SourceType, \
-    PrjCoordSys, LayerStyle, Status, PointStyle
+    PrjCoordSys, LayerStyle, Status
 import threading
-
-
-# __default_layer_style = LayerStyle()
-# __default_layer_style.pointStyle = PointStyle()
-# __default_layer_style.pointStyle.fill = True
-# __default_layer_style.pointStyle.fillColor = '#f5222d'
-# __default_layer_style.pointStyle.fillOpacity = 0.5
-# __default_layer_style.pointStyle.fontOpacity = 0
-# __default_layer_style.pointStyle.graphicHeight = 0
-# __default_layer_style.pointStyle.graphicOpacity = 0
-# __default_layer_style.pointStyle.graphicWidth = 0
-# __default_layer_style.pointStyle.graphicXOffset = 0
-# __default_layer_style.pointStyle.graphicYOffset = 0
-# __default_layer_style.pointStyle.isUnicode = False
-# __default_layer_style.pointStyle.labelSelect = False
-# __default_layer_style.pointStyle.labelXOffset = 0
-# __default_layer_style.pointStyle.labelYOffset = 0
-# __default_layer_style.pointStyle.pointRadius = 6
-# __default_layer_style.pointStyle.stroke = True
-# __default_layer_style.pointStyle.strokeColor = '#3498db'
-# __default_layer_style.pointStyle.strokeDashstyle = 'solid'
-# __default_layer_style.pointStyle.strokeLinecap = 'round'
-# __default_layer_style.pointStyle.strokeOpacity = 1
-# __default_layer_style.pointStyle.strokeWidth = 1
 
 
 def __upload_data_to_portal(ds: MyDatas, data: FileIO, data_id: str):
@@ -92,10 +68,11 @@ def __prepare_layer(layer_name: str, data_url: str, layer_style: LayerStyle):
     layer.isVisible = True
     layer.title = layer_name
     layer.style = layer_style
-    # layer.identifier = 'THEME'
+    layer.identifier = 'THEME'
+    layer.datasourceName = 'true'
     layer.cartoCSS = '{"isAddFile":true,"needTransform":"needTransform"}'
     layer.url = data_url + '/content.json'
-    # layer.themeSettings = '{"type":"VECTOR","filter":"","settings":null,"vectorType":"REGION","colors":null,"heatUnit":"","labelField":null,"labelFont":"仿宋","labelColor":"#000000","titleArray":["地区","2015年","2014年","2013年","2012年","2011年","2010年","2009年","2008年","2007年","2006年"],"themeLength":6,"rangeMethod":""}'
+    layer.themeSettings = '{"filter" : "", "vectorType": "REGION", "type" : "VECTOR"}'
     return [layer]
 
 
