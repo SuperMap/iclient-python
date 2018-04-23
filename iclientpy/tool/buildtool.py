@@ -1,4 +1,5 @@
 import os
+import sys
 import platform
 import shutil
 import subprocess
@@ -37,11 +38,7 @@ def main():
     tokentool_dir = os.path.join(rootdir, 'dist', 'tokentool')
     cachetool_dir = os.path.join(rootdir, 'dist', 'cachetool')
     delete_dirs([icpy_dir, tokentool_dir, cachetool_dir])
-    pyinstaller_cmd = [
-        'pyinstaller',
-        '-c',
-        'icpy.spec'
-    ]
+    pyinstaller_cmd = [sys.executable, '-m', 'pyinstaller', '-c', 'icpy.spec']
     subprocess.check_call(pyinstaller_cmd, cwd=rootdir)
     for root, dirs, files in os.walk(tokentool_dir):
         for file in files:
