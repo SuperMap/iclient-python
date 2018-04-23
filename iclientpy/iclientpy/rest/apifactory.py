@@ -388,6 +388,42 @@ class APIFactory:
                       RestInvocationHandlerImpl(self._services_url + '/' + service_name, proxies=self._proxies))
 
 
+class iPortalAPIFactory:
+    def __init__(self, base_url: str, username: str = None, passwd: str = None, token: str = None, proxies=None):
+        """
+
+        Args:
+            base_url: 服务的地址
+            username: 服务需要登录的用户名
+            passwd: 服务需要登录的密码
+            token: 服务可以访问的token
+            proxies: 设置代理服务器地址
+        """
+        self._base_url = base_url + 'web' if base_url.endswith('/') else base_url + '/web'
+        self._proxies = proxies if proxies is not None else _get_proxy_from_arguments()
+        auth = create_auth(self._base_url + '/login.json', username, passwd, token, proxies=self._proxies)
+        self._handler = RestInvocationHandlerImpl(self._base_url, auth, proxies=self._proxies)
+
+    def get_base_url(self):
+        return self._base_url
+
+    def mydatas_service(self) -> MyDatas:
+        """
+        获取iPortal MyDatas服务
+        Returns:
+            iPortal MyDatas服务
+        """
+        return create(MyDatas, self._handler)
+
+    def maps_service(self) -> MapsService:
+        """
+        获取iPortal Maps服务
+        Returns:
+            iPortal Maps服务
+        """
+        return create(MapsService, self._handler)
+
+
 def create_sso_auth(url: str, username: str, passwd: str, token: str, proxies=None) -> AuthBase:
     SSO_URL = 'https://sso.supermap.com/login'
     params = {'format': 'json'}
@@ -403,12 +439,11 @@ def create_sso_auth(url: str, username: str, passwd: str, token: str, proxies=No
     return CookieAuth(online_jsessionid)
 
 
-class OnlineAPIFactory:
-    def __init__(self, base_url: str, username: str = None, passwd: str = None, token: str = None, proxies=None):
+class OnlineAPIFactory(iPortalAPIFactory):
+    def __init__(self, base_url: str = None, username: str = None, passwd: str = None, token: str = None, proxies=None):
         """
 
         Args:
-            base_url: 服务的地址
             username: 服务需要登录的用户名
             passwd: 服务需要登录的密码
             token: 服务可以访问的token
@@ -419,17 +454,3 @@ class OnlineAPIFactory:
         auth = create_sso_auth(self._base_url + 'shiro-cas' if base_url.endswith('/') else base_url + '/shiro-cas',
                                username, passwd, token, proxies=self._proxies)
         self._handler = RestInvocationHandlerImpl(self._base_url, auth, proxies=self._proxies)
-
-    def get_base_url(self):
-        return self._base_url
-
-    def mydatas_service(self) -> MyDatas:
-        """
-        获取iPortal web
-        Returns:
-
-        """
-        return create(MyDatas, self._handler)
-
-    def maps_service(self) -> MapsService:
-        return create(MapsService, self._handler)

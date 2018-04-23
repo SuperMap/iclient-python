@@ -2758,6 +2758,7 @@ class PointStyle:
     label: str
     labelXOffset: float
     labelYOffset: float
+    isUnicode: bool
 
 
 @default_init

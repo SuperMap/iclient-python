@@ -5,7 +5,7 @@ from sure import expect
 from unittest import TestCase
 from iclientpy.dtojson import to_json_str
 from iclientpy.rest.decorator import HttpMethod
-from iclientpy.rest.apifactory import APIFactory, OnlineAPIFactory
+from iclientpy.rest.apifactory import APIFactory, OnlineAPIFactory, iPortalAPIFactory
 
 
 class AbstractREST(object):
@@ -15,6 +15,14 @@ class AbstractREST(object):
         self.password = password
         for k, v in kwargs.items():
             setattr(self, k, v)
+
+    @httpretty.activate
+    def init_iportal_apifactory(self):
+        if not hasattr(self, 'factory'):
+            loginuri = self.loginuri if hasattr(self, 'loginuri') else self.baseuri + '/web/login.json'
+            httpretty.register_uri(httpretty.POST, loginuri, status=201,
+                                   set_cookie='JSESSIONID=958322873908FF9CA99B5CB443ADDD5C')
+            self.factory = iPortalAPIFactory(self.baseuri, self.username, self.password)
 
     @requests_mock.Mocker()
     def init_online_apifactory(self, m: requests_mock.Mocker):
