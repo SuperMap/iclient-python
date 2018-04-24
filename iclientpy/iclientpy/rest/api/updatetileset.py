@@ -2,7 +2,6 @@ import re
 import time
 import uuid
 import os
-import datetime as dt
 from typing import List
 import progressbar
 from iclientpy.rest.api.model import Rectangle2D, Point2D

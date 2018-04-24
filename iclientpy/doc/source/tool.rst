@@ -2,8 +2,31 @@
 ======================
 这部分主要介绍iclientpy中所默认提供的命令行工具
 
-* 缓存工具_
 * token工具_
+* 缓存工具_
+
+token工具
+******************
+icpy-tokentool
+生成token
+
+示例：
+
+对服务http://localhost:8090/iserver生成一个不做任何验证的60分钟的token
+
+icpy-tokentool -l http://localhost:8090/iserver -u admin -p iserver -c NONE -e 60
+
+详细参数：
+
+-l ADDRESS, --uri ADDRESS          服务地址，如：http://localhost:8090/iserver
+-u USERNAME, --user USERNAME       用户名
+-p PASSWORD, --password PASSWORD   密码
+-c CLIENT_TYPE, --client_type CLIENT_TYPE        发放令牌的方式。支持以下四个取值，分别对应四种发放令牌的方式：IP，即指定的 IP地址；Referer，即指定的 URL；RequestIP，即发送申请令牌请求的客户端IP；NONE，即不做任何验证。
+-e EXPIRATION, --expiration EXPIRATION    申请令牌的有效期，默认单位为分钟，支持单位m(分)，h(小时)，d(天)，w(周)，M(月)，y(年)
+--ip IP    clientType=IP 时，必选。 如果按照指定 IP 的方式申请令牌，则传递相应的 IP 地址。
+--referer REFERER    clientType=Referer 时，必选。如果按照指定 URL 的方式申请令牌，则传递相应的 URL。
+-h, --help    查看帮助
+
 
 缓存工具
 *****************
@@ -13,6 +36,16 @@ recache
 ----------------------------
 指定组件名称与地图名称，重新向存储id指明的存储位置增加新的切图
 
+示例：
+
+对服务map-World的World地图进行切图，且新的缓存存储在id是m的存储位置
+
+icpy-cachetool recache -l http://localhost:8090/iserver -t {tokenstr} -c map-World -m World -s m
+
+**注：** {tokenstr}为占位字符串，生成token字符串请参考：token工具_
+
+详细参数：
+
 -l ADDRESS, --uri ADDRESS    服务地址，如：http://localhost:8090/iserver
 -u USERNAME, --user USERNAME    用户名
 -p PASSWORD, --password PASSWORD    密码
@@ -20,20 +53,25 @@ recache
 -c COMPONENT_NAME, --component-name COMPONENT_NAME    待更新缓存服务名称
 -m MAP_NAME, --map-name MAP_NAME    切图地图名称
 -s STORAGEID, --storageid STORAGEID    存储的id
-
-.. image:: _static/icpy-cachetool-recache.png
-
-示例：
-icpy-cachetool recache -l http://localhost:8090/iserver -t {tokenstr} -c map-World -m World -s {storageid}
-
-**注：** {tokenstr}为占位字符串，生成token字符串请参考：token工具_
-
-         {storageid}为占位字符串，根据实际填写存储位置的id
-
+-h, --help    查看帮助
 
 cache
 ----------------------
 指明切图参数进行切图
+
+示例：
+
+从本地的工作空间zip压缩包对map-smtiles-World服务的World地图进行全图缓存更新
+
+icpy-cachetool cache -l http://localhost:8090/iserver -t {tokenstr} -c map-smtiles-World -w C:\World.zip -m World -o '-180,90' -b '-180,-90,180,90'
+
+从map-World服务对对map-smtiles-World服务的World地图进行全图缓存更新
+
+icpy-cachetool cache -l http://localhost:8090/iserver -t {tokenstr} -c map-smtiles-World -m World -o '-180,90' -b '-180,-90,180,90' --source-component map-World --update
+
+**注：** {tokenstr}为占位字符串，生成token字符串请参考：token工具_
+
+详细参数：
 
 -l ADDRESS, --uri ADDRESS   服务地址，如：http://localhost:8090/iserver
 -u USERNAME, --user USERNAME    用户名
@@ -53,33 +91,12 @@ cache
 -rw     输入的工作空间地址是远程iServer所在服务器上的地址，不需要上传工作空间。
 --quite     不需要确认，直接运行
 --source-component SOURCE_COMPONENT_NAME    缓存更新数据来源服务
---update    更新服务缓存
+--update    更新服务缓存，与--source-component搭配使用
+-h, --help    查看帮助
 
-.. image:: _static/icpy-cachetool-cache.png
 
-示例：
-icpy-cachetool -l http://localhost:8090/iserver -t {tokenstr} -c map-smtiles-World -w C:\World.zip -m World -o '-180,90' -b '-180,-90,0,90'
 
-icpy-cachetool -l http://localhost:8090/iserver -t {tokenstr} -c map-smtiles-World -m World -o '-180,90' -b '-180,-90,0,90' --source-component map-World --update
 
-**注：** {tokenstr}为占位字符串，生成token字符串请参考：token工具_
-
-token工具
-******************
-icpy-tokentool
-
--l ADDRESS, --uri ADDRESS          服务地址，如：http://localhost:8090/iserver
--u USERNAME, --user USERNAME       用户名
--p PASSWORD, --password PASSWORD   密码
--c CLIENT_TYPE, --client_type CLIENT_TYPE        发放令牌的方式。支持以下四个取值，分别对应四种发放令牌的方式：IP，即指定的 IP地址；Referer，即指定的 URL；RequestIP，即发送申请令牌请求的客户端IP；NONE，即不做任何验证。
--e EXPIRATION, --expiration EXPIRATION    申请令牌的有效期，默认单位为分钟，支持单位m(分)，h(小时)，d(天)，w(周)，M(月)，y(年)
---ip IP    clientType=IP 时，必选。 如果按照指定 IP 的方式申请令牌，则传递相应的 IP 地址。
---referer REFERER    clientType=Referer 时，必选。如果按照指定 URL 的方式申请令牌，则传递相应的 URL。
-
-.. image:: _static/icpy-tokentool.png
-
-示例：
- icpy-tokentool -l http://localhost:8090/iserver -u admin -p iserver -c NONE -e 60
 
 
 
