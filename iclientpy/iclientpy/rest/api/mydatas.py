@@ -2,7 +2,7 @@ from ..decorator import get, post, put, delete
 from typing import List
 from io import FileIO
 from iclientpy.rest.api.model import GetMyDatasResult, PostMyDatasItem, MyDatasMethodResult, DataItem, MethodResult, \
-    PutMyDataItem, MyDataUploadProcess
+    PutMyDataItem, MyDataUploadProcess, IportalDataAuthorizeEntity
 
 
 class MyDatas:
@@ -36,4 +36,12 @@ class MyDatas:
 
     @get('/mycontent/datas/{data_id}/progress')
     def get_upload_process(self, data_id: str) -> MyDataUploadProcess:
+        pass
+
+    @get('/mycontent/datas/{data_id}/sharesetting')
+    def get_my_data_sharesetting(self, data_id: str) -> List[IportalDataAuthorizeEntity]:
+        pass
+
+    @put('/mycontent/datas/{data_id}/sharesetting', entityKW='entity')
+    def put_my_data_sharesetting(self, data_id: str, entity: List[IportalDataAuthorizeEntity]) -> MethodResult:
         pass

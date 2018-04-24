@@ -48,3 +48,20 @@ class MyDatasTestCase(AbstractRESTTestCase):
         self.check_api(MyDatas.get_upload_process, self.baseuri + "/web/mycontent/datas/18220636/progress.json",
                        HttpMethod.GET,
                        httpretty.Response(body='{"id":"null","read":94,"total":100}', status=201), data_id=data_id)
+
+    def test_data_sharesetting(self):
+        data_id = '629565098'
+        self.check_api(MyDatas.get_my_data_sharesetting,
+                       self.baseuri + "/web/mycontent/datas/629565098/sharesetting.json",
+                       HttpMethod.GET,
+                       httpretty.Response(
+                           body='[{"aliasName":"admin","dataPermissionType":"DELETE","entityId":null,"entityName":"admin","entityType":"USER"},{"aliasName":"GUEST","dataPermissionType":"DOWNLOAD","entityId":null,"entityName":"GUEST","entityType":"USER"}]',
+                           status=201), data_id=data_id)
+        entity = IportalDataAuthorizeEntity()
+        entity.dataPermissionType = DataPermissionType.DOWNLOAD
+        entity.entityType = EntityType.USER
+        entity.entityName = 'GUEST'
+        entity.aliasName = 'GUEST'
+        self.check_api(MyDatas.put_my_data_sharesetting,
+                       self.baseuri + "/web/mycontent/datas/629565098/sharesetting.json", HttpMethod.PUT,
+                       httpretty.Response(body='{"succeed": true}', status=201), data_id=data_id, entity=[entity])

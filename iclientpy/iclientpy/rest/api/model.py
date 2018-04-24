@@ -2904,3 +2904,14 @@ class PostMapsItem:
     isDefaultBottomMap: bool
     authorizeSetting: List[IportalAuthorizeEntity]
     searchSetting: str
+
+
+@default_init
+class MapShareSetting:
+    entityName: str
+    entityType: EntityType
+    permissionType: PermissionType
+    entityId: int
+    aliasName: str
+
+

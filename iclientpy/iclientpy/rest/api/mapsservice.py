@@ -1,6 +1,6 @@
 from typing import List
 from ..decorator import get, post, put, delete
-from iclientpy.rest.api.model import GetMapsResult, PostMapsItem, MethodResult, ViewerMap
+from iclientpy.rest.api.model import GetMapsResult, PostMapsItem, MethodResult, ViewerMap, MapShareSetting
 
 
 class MapsService:
@@ -24,4 +24,12 @@ class MapsService:
 
     @get('/maps/{map_id}')
     def get_map(self, map_id: str) -> ViewerMap:
+        pass
+
+    @get('/maps/{map_id}/sharesetting')
+    def get_map_sharesetting(self, map_id: str) -> List[MapShareSetting]:
+        pass
+
+    @put('/maps/{map_id}/sharesetting', entityKW='entity')
+    def put_map_sharesetting(self, map_id: str, entity: List[MapShareSetting]) -> MethodResult:
         pass
