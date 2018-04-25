@@ -2915,3 +2915,65 @@ class MapShareSetting:
     aliasName: str
 
 
+class GroupRole(Enum):
+    CREATOR = 'CREATOR'
+    GROUPMANAGER = 'GROUPMANAGER'
+    MEMBER = 'MEMBER'
+
+
+@default_init
+class GroupBasicInfo:
+    createTime: int
+    creator: str
+    description: str
+    groupName: str
+    icon: str
+    id: int
+    isEnabled: bool
+    isNeedCheck: bool
+    isPublic: bool
+    nickname: str
+    resourceSharer: GroupRole
+    tag: List[str]
+    updateTime: int
+
+
+@default_init
+class GetGroupsResult:
+    content: List[GroupBasicInfo]
+    currentPage: int
+    pageSize: int
+    searchParameter: SearchParameter
+    total: int
+    totalPage: int
+
+
+class GroupOrderBy(Enum):
+    CREATETIME = 'CREATETIME'
+    CREATOR = 'CREATOR'
+    GROUPNAME = 'GROUPNAME'
+    ISPUBLIC = 'ISPUBLIC'
+    NICKNAME = 'NICKNAME'
+    UPDATETIME = 'UPDATETIME'
+
+
+class JoinType(Enum):
+    CANJOIN = 'CANJOIN'
+    CREATE = 'CREATE'
+    JOINED = 'JOINED'
+
+
+@default_init
+class GetMyDepartmentsResult:
+    createTime: int
+    id: int
+    name: str
+    upperDepartmentNames: List[str]
+
+
+@default_init
+class GetMyDepartmentsMembersResult:
+    departmentId: int
+    id: int
+    nickName: str
+    userName: str

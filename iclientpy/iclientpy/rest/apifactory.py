@@ -18,6 +18,8 @@ from ..dtojson import to_json_str
 from .api.datacatalog import Datacatalog
 from .api.mydatas import MyDatas
 from .api.mapsservice import MapsService
+from .api.groupsservice import GroupsService
+from .api.mydepartments import MyDepartments
 
 default_session_cookie_name = 'JSESSIONID'
 
@@ -422,6 +424,22 @@ class iPortalAPIFactory:
             iPortal Maps服务
         """
         return create(MapsService, self._handler)
+
+    def groups_service(self) -> GroupsService:
+        """
+        获取iPortal Groups群组服务
+        Returns:
+            iPortal Groups群组服务
+        """
+        return create(GroupsService, self._handler)
+
+    def mydepartments_service(self) -> MyDepartments:
+        """
+        获取iPortal MyDepartments服务
+        Returns:
+            iPortal MyDepartments服务
+        """
+        return create(MyDepartments, self._handler)
 
 
 def create_sso_auth(url: str, username: str, passwd: str, token: str, proxies=None) -> AuthBase:
