@@ -12,7 +12,7 @@ icpy-tokentool
 
 示例：
 
-对服务http://localhost:8090/iserver生成一个不做任何验证的60分钟的token
+对服务http://localhost:8090/iserver生成一个不做任何客户端验证的60分钟的token
 
 icpy-tokentool -l http://localhost:8090/iserver -u admin -p iserver -c NONE -e 60
 
