@@ -1,6 +1,6 @@
 from typing import List
 
-from .model import Point2D
+from .model import Point2D, ChildResourceInfo
 from ..decorator import get
 
 
@@ -21,4 +21,8 @@ class MapService:
 
     @get('/maps/{map}')
     def get_map(self, map: str) -> GetMapResult:
+        pass
+
+    @get('/maps')
+    def get_map_resources(self) -> List[ChildResourceInfo]:
         pass

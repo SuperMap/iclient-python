@@ -20,6 +20,7 @@ from .api.mydatas import MyDatas
 from .api.mapsservice import MapsService
 from .api.groupsservice import GroupsService
 from .api.mydepartments import MyDepartments
+from .api.servicespage import ServicesPage
 
 default_session_cookie_name = 'JSESSIONID'
 
@@ -388,6 +389,10 @@ class APIFactory:
         """
         return create(Datacatalog,
                       RestInvocationHandlerImpl(self._services_url + '/' + service_name, proxies=self._proxies))
+
+    def servicespage(self):
+        return create(ServicesPage,
+                      RestInvocationHandlerImpl(self._base_url, proxies=self._proxies))
 
 
 class iPortalAPIFactory:

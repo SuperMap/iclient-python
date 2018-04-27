@@ -2,6 +2,34 @@ from enum import Enum
 from typing import List
 
 
+class DatasetType(Enum):
+    UNDEFINED = 'UNDEFINED'
+    POINT = 'POINT'
+    LINE = 'LINE'
+    REGION = 'REGION'
+    TEXT = 'TEXT'
+    NETWORK = 'NETWORK'
+    GRID = 'GRID'
+    IMAGE = 'IMAGE'
+    CAD = 'CAD'
+    LINEM = 'LINEM'
+    TABULAR = 'TABULAR'
+    NETWORKPOINT = 'NETWORKPOINT'
+    LINKTABLE = 'LINKTABLE'
+    WCS = 'WCS'
+    WMS = 'WMS'
+    POINT3D = 'POINT3D'
+    LINE3D = 'LINE3D'
+    REGION3D = 'REGION3D'
+    NETWORK3D = 'NETWORK3D'
+    MODEL = 'MODEL'
+    POINTEPS = 'POINTEPS'
+    LINEEPS = 'LINEEPS'
+    REGIONEPS = 'REGIONEPS'
+    TEXTEPS = 'TEXTEPS'
+    VECTORCOLLECTION = 'VECTORCOLLECTION'
+
+
 def default_init(cls: type):
     def _get_all_annotations(clz):
         result = {}
@@ -1168,7 +1196,7 @@ class FieldInfo:
 
 @default_init
 class UDBDatasetInfo(BigDataFileShareDataSetInfo):
-    datsetType: str
+    datasetType: DatasetType
     datasetName: str
     bounds: str
     epsgCode: int
@@ -1186,34 +1214,6 @@ class EncodeType(Enum):
     NONE = 'NONE'
     PNG = 'PNG'
     SGL = 'SGL'
-
-
-class DatasetType(Enum):
-    UNDEFINED = 'UNDEFINED'
-    POINT = 'POINT'
-    LINE = 'LINE'
-    REGION = 'REGION'
-    TEXT = 'TEXT'
-    NETWORK = 'NETWORK'
-    GRID = 'GRID'
-    IMAGE = 'IMAGE'
-    CAD = 'CAD'
-    LINEM = 'LINEM'
-    TABULAR = 'TABULAR'
-    NETWORKPOINT = 'NETWORKPOINT'
-    LINKTABLE = 'LINKTABLE'
-    WCS = 'WCS'
-    WMS = 'WMS'
-    POINT3D = 'POINT3D'
-    LINE3D = 'LINE3D'
-    REGION3D = 'REGION3D'
-    NETWORK3D = 'NETWORK3D'
-    MODEL = 'MODEL'
-    POINTEPS = 'POINTEPS'
-    LINEEPS = 'LINEEPS'
-    REGIONEPS = 'REGIONEPS'
-    TEXTEPS = 'TEXTEPS'
-    VECTORCOLLECTION = 'VECTORCOLLECTION'
 
 
 @default_init
@@ -1789,10 +1789,13 @@ class SparkJobState:
     publisherelapsedTime: int
 
 
-@default_init
-class GetAggregatePointsResultItem:
+class DistributedAnalystJob:
     id: str
     state: SparkJobState
+
+
+@default_init
+class GetAggregatePointsResultItem(DistributedAnalystJob):
     setting: AggregatePointsJobSetting
 
 
@@ -1805,9 +1808,7 @@ class PostAgggregatePointsEntity:
 
 
 @default_init
-class GetFeatureJoinResultItem:
-    id: str
-    state: SparkJobState
+class GetFeatureJoinResultItem(DistributedAnalystJob):
     setting: FeatureJoinJobSettting
 
 
@@ -1819,9 +1820,7 @@ class PostFeatureJoinEntity:
 
 
 @default_init
-class GetBuffersResultItem:
-    id: str
-    state: SparkJobState
+class GetBuffersResultItem(DistributedAnalystJob):
     setting: BuffersAnalystJobSetting
 
 
@@ -1833,9 +1832,7 @@ class PostBuffersEntity:
 
 
 @default_init
-class GetDensityResultItem:
-    id: str
-    state: SparkJobState
+class GetDensityResultItem(DistributedAnalystJob):
     setting: KernelDensityJobSetting
 
 
@@ -1847,9 +1844,7 @@ class PostDensityEntity:
 
 
 @default_init
-class GetOverlayResultItem:
-    id: str
-    state: SparkJobState
+class GetOverlayResultItem(DistributedAnalystJob):
     setting: OverlayAnalystJobSetting
 
 
@@ -1870,9 +1865,7 @@ class PostOverlayEntity:
 
 
 @default_init
-class GetQueryResultItem:
-    id: str
-    state: SparkJobState
+class GetQueryResultItem(DistributedAnalystJob):
     setting: SpatialQueryGeoJobSetting
 
 
@@ -1884,9 +1877,7 @@ class PostQueryEntity:
 
 
 @default_init
-class GetSummaryAttributesResultItem:
-    id: str
-    state: SparkJobState
+class GetSummaryAttributesResultItem(DistributedAnalystJob):
     setting: SummaryAttributesJobSetting
 
 
@@ -1898,9 +1889,7 @@ class PostSummaryAttributesEntity:
 
 
 @default_init
-class GetSummaryRegionResultItem:
-    id: str
-    state: SparkJobState
+class GetSummaryRegionResultItem(DistributedAnalystJob):
     setting: SummaryWithInJobSettingBase
 
 
@@ -1913,9 +1902,7 @@ class PostSummaryRegionEntity:
 
 
 @default_init
-class GetTopologyValidatorResultItem:
-    id: str
-    state: SparkJobState
+class GetTopologyValidatorResultItem(DistributedAnalystJob):
     setting: TopologyValidatorJobSettting
 
 
@@ -1927,9 +1914,7 @@ class PostTopologyValidatorEntity:
 
 
 @default_init
-class GetVectorClipResultItem:
-    id: str
-    state: SparkJobState
+class GetVectorClipResultItem(DistributedAnalystJob):
     setting: OverlayAnalystGeoJobSetting
 
 
@@ -2977,3 +2962,17 @@ class GetMyDepartmentsMembersResult:
     id: int
     nickName: str
     userName: str
+
+@default_init
+class ServiceMetaInfo:
+    componentType: str
+    interfaceType: str
+    name: str
+    url: str
+    additions: List[str]
+
+
+@default_init
+class ChildResourceInfo:
+    name: str
+

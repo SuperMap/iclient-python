@@ -13,11 +13,10 @@ class NamedObjects:
 
 class Option:
     _select_callback: Callable
-    def __init__(self, select_callback: Callable):
+    def __init__(self, select_callback: Callable, confirm_method_name: str = None):
         self._select_callback = select_callback
+        if confirm_method_name is not None:
+            setattr(self, confirm_method_name, lambda :self())
 
     def __call__(self, *args, **kwargs):
-        return self.selected()
-
-    def selected(self):
         return self._select_callback()

@@ -48,7 +48,7 @@ class Datacatalog:
         pass
 
     @get('/datacatalog/sharefile/{dataset_name}')
-    def get_sharefile_dataset(self, dataset_name: str) -> BigDataFileShareDataSetInfo:
+    def get_sharefile_dataset(self, dataset_name: str) -> BigDataFileShareDatasetContent:
         pass
 
     @head('/datacatalog/sharefile/{dataset_name}/fields')
