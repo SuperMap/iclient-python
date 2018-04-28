@@ -85,12 +85,12 @@ class RestInvocationHandlerImpl(RestInvocationHandler):
         self._auth = auth
         self._proxies = proxies if proxies is not None else {}
 
-    def _get_query_params(self, kwages, queryKWs):
+    def _get_query_params(self, kwarges, queryKWs):
         """
         根据queryKWs中的查询字符串的值，从kwages中查找对应的value值，构成查询字符串的key,value的字典
 
         Args:
-            kwages: 所有参数的key,value集合
+            kwarges: 所有参数的key,value集合
             queryKWs: 所有查询字符串的值
 
         Returns:
@@ -99,13 +99,13 @@ class RestInvocationHandlerImpl(RestInvocationHandler):
         query_params = {}
         if queryKWs:
             for name in queryKWs:
-                if name in kwages:
-                    if type(kwages[name]) in (int, str, bool, float):
-                        query_params[name] = kwages[name]
-                    elif isinstance(kwages[name], Enum):
-                        query_params[name] = kwages[name].value
+                if name in kwarges and not kwarges[name] is None:
+                    if type(kwarges[name]) in (int, str, bool, float):
+                        query_params[name] = kwarges[name]
+                    elif isinstance(kwarges[name], Enum):
+                        query_params[name] = kwarges[name].value
                     else:
-                        query_params[name] = to_json_str(kwages[name])
+                        query_params[name] = to_json_str(kwarges[name])
         return query_params
 
     def _send_request(self, rest: REST, *args, **kwargs):
@@ -411,8 +411,8 @@ class iPortalAPIFactory:
         auth = create_auth(self._base_url + '/login.json', username, passwd, token, proxies=self._proxies)
         self._handler = RestInvocationHandlerImpl(self._base_url, auth, proxies=self._proxies)
 
-    def get_base_url(self):
-        return self._base_url
+    # def get_base_url(self):
+    #     return self._base_url
 
     def mydatas_service(self) -> MyDatas:
         """
