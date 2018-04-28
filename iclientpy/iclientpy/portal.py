@@ -69,11 +69,11 @@ class Portal:
         entity = PostMyDatasItem()
         entity.type = type
         entity.fileName = data_name
-        data_id = ds.post_my_datas(entity).childID
+        data_id = ds.post_datas(entity).childID
         if not callback is None:
             import threading
             threading.Thread(target=self._monitor_upload_progress, args=(data_id, callback)).start()
-        ds.upload_my_data(data_id, data_content)
+        ds.upload_data(data_id, data_content)
         return data_id
 
     def upload_dataframe_as_json(self, data_name: str, df: DataFrame, callback: Callable = None):
@@ -89,6 +89,20 @@ class Portal:
         with StringIO(df.to_json()) as dff:
             return self.upload_data(data_name, dff, DataItemType.JSON, callback)
 
+    def search_data(self, owners: List[str] = None, tags: List[str] = None, keywords: List[str] = None):
+        """
+        查找数据
+        Args:
+            owners: 数据所有者
+            tags: 数据标签
+            keywords: 数据关键字
+
+        Returns:
+            数据信息的列表
+        """
+        ds = self._portal.datas_service()
+        return ds.get_datas(userNames=owners, tags=tags, keywords=keywords).content
+
     def get_data(self, data_id: str):
         """
         获取数据详细信息
@@ -98,7 +112,7 @@ class Portal:
         Returns:
             数据的信息
         """
-        return self._portal.datas_service().get_my_data(data_id)
+        return self._portal.datas_service().get_data(data_id)
 
     def get_data_upload_progress(self, data_id: str):
         """
@@ -169,6 +183,39 @@ class Portal:
         entity.tags = tags
         return self._portal.maps_service().post_maps(entity).newResourceID
 
+    def delete_map(self, map_id: str):
+        """
+        删除一个地图
+        Args:
+            map_id:地图id
+        """
+        self._portal.maps_service().delete_maps([map_id])
+
+    def delete_maps(self, map_ids: List[str]):
+        """
+        删除多个地图
+        Args:
+            map_ids: 地图的id列表
+        """
+        self._portal.maps_service().delete_maps(map_ids)
+
+    def delete_data(self, data_id: str):
+        """
+        删除一个数据
+        Args:
+            data_id: 数据的id
+        """
+        self._portal.datas_service().delete_data(data_id)
+
+    def delete_datas(self, data_ids: List[str]):
+        """
+        批量删除多个数据
+        Args:
+            data_ids: 数据的id列表
+        """
+        for data_id in data_ids:
+            self.delete_data(data_id)
+
     def prepare_geojson_layer(self, data_id: str, layer_name: str):
         """
         根据上传到iportal的geojson数据，生成Layer
@@ -216,7 +263,7 @@ class Portal:
             数据的共享权限
         """
         ds = self._portal.datas_service()
-        return ds.get_my_data_sharesetting(data_id)
+        return ds.get_data_sharesetting(data_id)
 
     def config_data_sharesetting(self, data_id, entities: List[IportalDataAuthorizeEntity]):
         """
@@ -229,7 +276,7 @@ class Portal:
 
         """
         ds = self._portal.datas_service()
-        if not ds.put_my_data_sharesetting(data_id, entities).succeed:
+        if not ds.put_data_sharesetting(data_id, entities).succeed:
             raise Exception('更新权限失败')
 
     def get_map_sharesetting(self, map_id: str):

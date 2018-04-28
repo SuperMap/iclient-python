@@ -21,6 +21,8 @@ from .api.mapsservice import MapsService
 from .api.groupsservice import GroupsService
 from .api.mydepartments import MyDepartments
 from .api.servicespage import ServicesPage
+from .api.onlinemapsservice import OnlineMapsService
+from .api.onlinedatasservice import OnlineDatasService
 
 default_session_cookie_name = 'JSESSIONID'
 
@@ -411,9 +413,6 @@ class iPortalAPIFactory:
         auth = create_auth(self._base_url + '/login.json', username, passwd, token, proxies=self._proxies)
         self._handler = RestInvocationHandlerImpl(self._base_url, auth, proxies=self._proxies)
 
-    # def get_base_url(self):
-    #     return self._base_url
-
     def datas_service(self) -> DatasService:
         """
         获取iPortal MyDatas服务
@@ -462,7 +461,7 @@ def create_sso_auth(url: str, username: str, passwd: str, token: str, proxies=No
     return CookieAuth(online_jsessionid)
 
 
-class OnlineAPIFactory(iPortalAPIFactory):
+class OnlineAPIFactory:
     def __init__(self, base_url: str = None, username: str = None, passwd: str = None, token: str = None, proxies=None):
         """
 
@@ -477,3 +476,19 @@ class OnlineAPIFactory(iPortalAPIFactory):
         auth = create_sso_auth(self._base_url + 'shiro-cas' if base_url.endswith('/') else base_url + '/shiro-cas',
                                username, passwd, token, proxies=self._proxies)
         self._handler = RestInvocationHandlerImpl(self._base_url, auth, proxies=self._proxies)
+
+    def datas_service(self) -> OnlineDatasService:
+        """
+        获取Online数据服务
+        Returns:
+            Online数据服务
+        """
+        return create(OnlineDatasService, self._handler)
+
+    def maps_service(self) -> OnlineMapsService:
+        """
+        获取Online地图服务
+        Returns:
+            Online地图服务
+        """
+        return create(OnlineMapsService, self._handler)

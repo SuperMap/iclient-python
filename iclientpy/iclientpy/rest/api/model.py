@@ -2963,6 +2963,7 @@ class GetMyDepartmentsMembersResult:
     nickName: str
     userName: str
 
+
 @default_init
 class ServiceMetaInfo:
     componentType: str
@@ -2976,3 +2977,14 @@ class ServiceMetaInfo:
 class ChildResourceInfo:
     name: str
 
+
+@default_init
+class OnlineDataShareSetting:
+    ids: List[str]
+    entities: List[IportalDataAuthorizeEntity]
+
+
+@default_init
+class OnlineMapShareSetting:
+    ids: List[str]
+    entities: List[MapShareSetting]

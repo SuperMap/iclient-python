@@ -1,7 +1,8 @@
 from unittest import TestCase, mock
 from iclientpy.portal import Portal, MapShareSettingBuilder, DataShareSettingBuilder
 from iclientpy.rest.api.model import GetMapsResult, ViewerMap, MethodResult, MyDatasMethodResult, DataItem, Status, \
-    DataItemType, MyDataUploadProcess, Layer, GetGroupsResult, PermissionType, DataPermissionType, EntityType
+    DataItemType, MyDataUploadProcess, Layer, GetGroupsResult, PermissionType, DataPermissionType, EntityType, \
+    GetMyDatasResult
 
 
 class MockiPortalAPIFactory:
@@ -39,8 +40,8 @@ class PortalTestCase(TestCase):
         data_services = mock.MagicMock()
         mdmr = MyDatasMethodResult()
         mdmr.childID = 'data_id'
-        data_services.post_my_datas = mock.MagicMock(return_value=mdmr)
-        data_services.upload_my_data = mock.MagicMock(return_value=mdmr)
+        data_services.post_datas = mock.MagicMock(return_value=mdmr)
+        data_services.upload_data = mock.MagicMock(return_value=mdmr)
         portal._portal.datas_service = mock.MagicMock(return_value=data_services)
         portal.get_data = mock.MagicMock()
         data1 = DataItem()
@@ -66,12 +67,23 @@ class PortalTestCase(TestCase):
         result = portal.upload_dataframe_as_json('data', df)
         self.assertEqual(result, 'data_id')
 
+    def test_get_datas(self):
+        portal = Portal('http://localhost:8090/iportal', 'admin', 'Supermap123')
+        portal._portal = mock.MagicMock()
+        data_services = mock.MagicMock()
+        res = GetMyDatasResult()
+        res.content = []
+        data_services.get_datas = mock.MagicMock(return_value=res)
+        portal._portal.datas_service = mock.MagicMock(return_value=data_services)
+        result = portal.search_data()
+        self.assertEqual(result, [])
+
     def test_get_data(self):
         portal = Portal('http://localhost:8090/iportal', 'admin', 'Supermap123')
         portal._portal = mock.MagicMock()
         data = DataItem()
         data_services = mock.MagicMock()
-        data_services.get_my_data = mock.MagicMock(return_value=data)
+        data_services.get_data = mock.MagicMock(return_value=data)
         portal._portal.datas_service = mock.MagicMock(return_value=data_services)
         result = portal.get_data('data_id')
         self.assertEqual(result, data)
@@ -122,7 +134,7 @@ class PortalTestCase(TestCase):
         portal._portal = mock.MagicMock()
         data_services = mock.MagicMock()
         portal._portal.datas_service = mock.MagicMock(return_value=data_services)
-        data_services.get_my_data_sharesetting = mock.MagicMock(return_value=[])
+        data_services.get_data_sharesetting = mock.MagicMock(return_value=[])
         result = portal.get_data_sharesetting('data_id')
         self.assertEqual(result, [])
 
@@ -133,9 +145,9 @@ class PortalTestCase(TestCase):
         portal._portal.datas_service = mock.MagicMock(return_value=data_services)
         res = MethodResult()
         res.succeed = True
-        data_services.put_my_data_sharesetting = mock.MagicMock(return_value=res)
+        data_services.put_data_sharesetting = mock.MagicMock(return_value=res)
         portal.config_data_sharesetting('data_id', [])
-        data_services.put_my_data_sharesetting.assert_called_once_with('data_id', [])
+        data_services.put_data_sharesetting.assert_called_once_with('data_id', [])
 
     def test_config_data_sharesetting_exception(self):
         portal = Portal('http://localhost:8090/iportal', 'admin', 'Supermap123')
@@ -144,10 +156,10 @@ class PortalTestCase(TestCase):
         portal._portal.datas_service = mock.MagicMock(return_value=data_services)
         res = MethodResult()
         res.succeed = False
-        data_services.put_my_data_sharesetting = mock.MagicMock(return_value=res)
+        data_services.put_data_sharesetting = mock.MagicMock(return_value=res)
         with self.assertRaises(Exception):
             portal.config_data_sharesetting('data_id', [])
-        data_services.put_my_data_sharesetting.assert_called_once_with('data_id', [])
+        data_services.put_data_sharesetting.assert_called_once_with('data_id', [])
 
     def test_get_map_sharesetting(self):
         portal = Portal('http://localhost:8090/iportal', 'admin', 'Supermap123')
@@ -180,6 +192,51 @@ class PortalTestCase(TestCase):
         with self.assertRaises(Exception):
             portal.config_map_sharesetting('map_id', [])
         maps_services.put_map_sharesetting.assert_called_once_with('map_id', [])
+
+    def test_delete_map(self):
+        portal = Portal('http://localhost:8090/iportal', 'admin', 'Supermap123')
+        portal._portal = mock.MagicMock()
+        maps_service = mock.MagicMock()
+        portal._portal.maps_service = mock.MagicMock(return_value=maps_service)
+        res = MethodResult()
+        res.succeed = True
+        maps_service.delete_maps = mock.MagicMock(return_value=res)
+        portal.delete_map('map_id')
+        maps_service.delete_maps.assert_called_once_with(['map_id'])
+
+    def test_delete_maps(self):
+        portal = Portal('http://localhost:8090/iportal', 'admin', 'Supermap123')
+        portal._portal = mock.MagicMock()
+        maps_service = mock.MagicMock()
+        portal._portal.maps_service = mock.MagicMock(return_value=maps_service)
+        res = MethodResult()
+        res.succeed = True
+        maps_service.delete_maps = mock.MagicMock(return_value=res)
+        portal.delete_maps(['map_id'])
+        maps_service.delete_maps.assert_called_once_with(['map_id'])
+
+    def test_delete_data(self):
+        portal = Portal('http://localhost:8090/iportal', 'admin', 'Supermap123')
+        portal._portal = mock.MagicMock()
+        data_services = mock.MagicMock()
+        portal._portal.datas_service = mock.MagicMock(return_value=data_services)
+        res = MethodResult()
+        res.succeed = True
+        data_services.delete_data = mock.MagicMock(return_value=res)
+        portal.delete_data('data_id')
+        data_services.delete_data.assert_called_once_with('data_id')
+
+    def test_delete_datas(self):
+        portal = Portal('http://localhost:8090/iportal', 'admin', 'Supermap123')
+        portal._portal = mock.MagicMock()
+        data_services = mock.MagicMock()
+        portal._portal.datas_service = mock.MagicMock(return_value=data_services)
+        res = MethodResult()
+        res.succeed = True
+        data_services.delete_data = mock.MagicMock(return_value=res)
+        portal.delete_datas(['data_id', 'data_id2'])
+        self.assertEqual(data_services.delete_data.call_count, 2)
+        self.assertEqual(data_services.delete_data.call_args_list, [mock.call('data_id'), mock.call('data_id2')])
 
 
 class MapShareSettingBuilderTestCase(TestCase):

@@ -2,10 +2,10 @@ from ..decorator import get, post, put, delete
 from typing import List
 from io import FileIO
 from iclientpy.rest.api.model import GetMyDatasResult, PostMyDatasItem, MyDatasMethodResult, DataItem, MethodResult, \
-    PutMyDataItem, MyDataUploadProcess, IportalDataAuthorizeEntity
+    PutMyDataItem, MyDataUploadProcess, IportalDataAuthorizeEntity, OnlineDataShareSetting
 
 
-class DatasService:
+class OnlineDatasService:
     @get('/datas',
          queryKWs=['userNames', 'types', 'fileName', 'serviceStatus', 'serviceId', 'ids', 'keywords', 'orderBy',
                    'orderType', 'tags', 'filterFields'])
@@ -22,6 +22,10 @@ class DatasService:
     def get_data(self, data_id: str) -> DataItem:
         pass
 
+    @put('/mycontent/datas/sharesetting', entityKW='entity')
+    def put_sharesetting(self, entity: OnlineDataShareSetting) -> MethodResult:
+        pass
+
     @put('/mycontent/datas/{data_id}', entityKW='entity')
     def put_data(self, data_id: str, entity: PutMyDataItem) -> MethodResult:
         pass
@@ -36,10 +40,6 @@ class DatasService:
 
     @get('/mycontent/datas/{data_id}/progress')
     def get_upload_process(self, data_id: str) -> MyDataUploadProcess:
-        pass
-
-    @get('/mycontent/datas/{data_id}/sharesetting')
-    def get_data_sharesetting(self, data_id: str) -> List[IportalDataAuthorizeEntity]:
         pass
 
     @put('/mycontent/datas/{data_id}/sharesetting', entityKW='entity')
