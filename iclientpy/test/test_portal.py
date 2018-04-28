@@ -41,7 +41,7 @@ class PortalTestCase(TestCase):
         mdmr.childID = 'data_id'
         data_services.post_my_datas = mock.MagicMock(return_value=mdmr)
         data_services.upload_my_data = mock.MagicMock(return_value=mdmr)
-        portal._portal.mydatas_service = mock.MagicMock(return_value=data_services)
+        portal._portal.datas_service = mock.MagicMock(return_value=data_services)
         portal.get_data = mock.MagicMock()
         data1 = DataItem()
         data1.status = Status.CREATED
@@ -72,7 +72,7 @@ class PortalTestCase(TestCase):
         data = DataItem()
         data_services = mock.MagicMock()
         data_services.get_my_data = mock.MagicMock(return_value=data)
-        portal._portal.mydatas_service = mock.MagicMock(return_value=data_services)
+        portal._portal.datas_service = mock.MagicMock(return_value=data_services)
         result = portal.get_data('data_id')
         self.assertEqual(result, data)
 
@@ -80,7 +80,7 @@ class PortalTestCase(TestCase):
         portal = Portal('http://localhost:8090/iportal', 'admin', 'Supermap123')
         portal._portal = mock.MagicMock()
         data_services = mock.MagicMock()
-        portal._portal.mydatas_service = mock.MagicMock(return_value=data_services)
+        portal._portal.datas_service = mock.MagicMock(return_value=data_services)
         process = MyDataUploadProcess()
         process.read = 10
         process.total = 100
@@ -121,7 +121,7 @@ class PortalTestCase(TestCase):
         portal = Portal('http://localhost:8090/iportal', 'admin', 'Supermap123')
         portal._portal = mock.MagicMock()
         data_services = mock.MagicMock()
-        portal._portal.mydatas_service = mock.MagicMock(return_value=data_services)
+        portal._portal.datas_service = mock.MagicMock(return_value=data_services)
         data_services.get_my_data_sharesetting = mock.MagicMock(return_value=[])
         result = portal.get_data_sharesetting('data_id')
         self.assertEqual(result, [])
@@ -130,7 +130,7 @@ class PortalTestCase(TestCase):
         portal = Portal('http://localhost:8090/iportal', 'admin', 'Supermap123')
         portal._portal = mock.MagicMock()
         data_services = mock.MagicMock()
-        portal._portal.mydatas_service = mock.MagicMock(return_value=data_services)
+        portal._portal.datas_service = mock.MagicMock(return_value=data_services)
         res = MethodResult()
         res.succeed = True
         data_services.put_my_data_sharesetting = mock.MagicMock(return_value=res)
@@ -141,7 +141,7 @@ class PortalTestCase(TestCase):
         portal = Portal('http://localhost:8090/iportal', 'admin', 'Supermap123')
         portal._portal = mock.MagicMock()
         data_services = mock.MagicMock()
-        portal._portal.mydatas_service = mock.MagicMock(return_value=data_services)
+        portal._portal.datas_service = mock.MagicMock(return_value=data_services)
         res = MethodResult()
         res.succeed = False
         data_services.put_my_data_sharesetting = mock.MagicMock(return_value=res)

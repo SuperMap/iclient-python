@@ -65,7 +65,7 @@ class Portal:
         Returns:
             数据的id
         """
-        ds = self._portal.mydatas_service()
+        ds = self._portal.datas_service()
         entity = PostMyDatasItem()
         entity.type = type
         entity.fileName = data_name
@@ -98,7 +98,7 @@ class Portal:
         Returns:
             数据的信息
         """
-        return self._portal.mydatas_service().get_my_data(data_id)
+        return self._portal.datas_service().get_my_data(data_id)
 
     def get_data_upload_progress(self, data_id: str):
         """
@@ -109,7 +109,7 @@ class Portal:
         Returns:
 
         """
-        process = self._portal.mydatas_service().get_upload_process(data_id)
+        process = self._portal.datas_service().get_upload_process(data_id)
         return process.read, process.total
 
     def __prepare_base_layer(self, type: BaseLayerType):
@@ -215,7 +215,7 @@ class Portal:
         Returns:
             数据的共享权限
         """
-        ds = self._portal.mydatas_service()
+        ds = self._portal.datas_service()
         return ds.get_my_data_sharesetting(data_id)
 
     def config_data_sharesetting(self, data_id, entities: List[IportalDataAuthorizeEntity]):
@@ -228,7 +228,7 @@ class Portal:
         Returns:
 
         """
-        ds = self._portal.mydatas_service()
+        ds = self._portal.datas_service()
         if not ds.put_my_data_sharesetting(data_id, entities).succeed:
             raise Exception('更新权限失败')
 

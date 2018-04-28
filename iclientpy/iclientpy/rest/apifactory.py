@@ -16,7 +16,7 @@ from .proxyfactory import RestInvocationHandler
 from .proxyfactory import create
 from ..dtojson import to_json_str
 from .api.datacatalog import Datacatalog
-from .api.mydatas import MyDatas
+from .api.datasservice import DatasService
 from .api.mapsservice import MapsService
 from .api.groupsservice import GroupsService
 from .api.mydepartments import MyDepartments
@@ -414,13 +414,13 @@ class iPortalAPIFactory:
     # def get_base_url(self):
     #     return self._base_url
 
-    def mydatas_service(self) -> MyDatas:
+    def datas_service(self) -> DatasService:
         """
         获取iPortal MyDatas服务
         Returns:
             iPortal MyDatas服务
         """
-        return create(MyDatas, self._handler)
+        return create(DatasService, self._handler)
 
     def maps_service(self) -> MapsService:
         """

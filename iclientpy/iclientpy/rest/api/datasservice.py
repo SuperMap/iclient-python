@@ -5,8 +5,8 @@ from iclientpy.rest.api.model import GetMyDatasResult, PostMyDatasItem, MyDatasM
     PutMyDataItem, MyDataUploadProcess, IportalDataAuthorizeEntity
 
 
-class MyDatas:
-    @get('/mycontent/datas',
+class DatasService:
+    @get('/datas',
          queryKWs=['userNames', 'types', 'fileName', 'serviceStatus', 'serviceId', 'ids', 'keywords', 'orderBy',
                    'orderType', 'tags', 'filterFields'])
     def get_my_datas(self, userNames: List[str], types: List[str], fileName: str, serviceStatus: List[str],
@@ -18,7 +18,7 @@ class MyDatas:
     def post_my_datas(self, entity: PostMyDatasItem) -> MyDatasMethodResult:
         pass
 
-    @get('/mycontent/datas/{data_id}')
+    @get('/datas/{data_id}')
     def get_my_data(self, data_id: str) -> DataItem:
         pass
 
