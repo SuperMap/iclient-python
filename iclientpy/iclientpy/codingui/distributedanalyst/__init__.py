@@ -1,11 +1,15 @@
-from ._aggregate import attach as aggregate_attach
+from ._aggregate import attach as aggregate_attach, new_executor as new_aggregate_executor
 from ._datacatalog import get_datas
 from iclientpy.rest.api.datacatalog import Datacatalog
 from iclientpy.rest.api.distributedanalyst import DistributedAnalyst
+from iclientpy.rest.api.restmap import MapService
+from typing import Callable
+from functools import partial
 
 
-def get_datas_with_optionms(distributedanalyst: DistributedAnalyst, datacatalog: Datacatalog):
-    return get_datas(distributedanalyst, datacatalog, [aggregate_attach])
+def get_datas_with_optionms(distributedanalyst: DistributedAnalyst, datacatalog: Datacatalog, map_service_fun: Callable[[str], MapService]):
+    aggregate_executor = new_aggregate_executor(distributedanalyst,map_service_fun)
+    return get_datas(datacatalog, [partial(aggregate_attach, aggregate_executor)])
 
 
 # class Dataset:

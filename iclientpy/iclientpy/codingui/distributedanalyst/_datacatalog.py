@@ -5,7 +5,7 @@ from iclientpy.codingui.comon import NamedObjects
 from ._common import *
 
 
-def get_datas(distributedanalyst: DistributedAnalyst, datacatalog: Datacatalog, attach_list: List[Callable[[DistributedAnalyst, Iterable[DatasetAndFields], NamedObjects], None]]) -> NamedObjects:
+def get_datas(datacatalog: Datacatalog, attach_list: List[Callable[[Iterable[DatasetAndFields], NamedObjects], None]]) -> NamedObjects:
     result = NamedObjects()
     sharefile_contents = datacatalog.get_sharefile() #type:DatasetsContent
     relationship_contents = datacatalog.get_relationship_datasets() #type:DatasetsContent
@@ -15,7 +15,7 @@ def get_datas(distributedanalyst: DistributedAnalyst, datacatalog: Datacatalog, 
     for name in relationship_contents.datasetNames:
         dataset_and_fields_list.append(_get_dataset(datacatalog.get_relationship_dataset, datacatalog.get_relationship_dataset_fields, datacatalog.get_relationship_dataset_field, name))
     for attach in attach_list:
-        attach(distributedanalyst, dataset_and_fields_list, result)
+        attach(dataset_and_fields_list, result)
     return result
 
 

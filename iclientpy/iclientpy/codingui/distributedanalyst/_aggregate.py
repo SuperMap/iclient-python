@@ -1,6 +1,7 @@
 import json
-from typing import List, Iterable,Tuple
+from typing import List, Iterable,Tuple, Callable, Any
 from iclientpy.rest.api.model import PostAgggregatePointsEntity, DatasetInputSetting, SummaryMeshAnalystSetting,SummaryAnalystType,MappingParameters,DistanceUnit, FieldType,MethodResult,TargetSericeType
+from iclientpy.rest.api.restmap import MapService
 from iclientpy.codingui.comon import NamedObjects,Option
 from iclientpy.dtojson import to_json_str
 from functools import partial
@@ -82,13 +83,14 @@ class PreparingAggregate:
     _modes: List[str]
     _analyst: SummaryMeshAnalystSetting
     _region_dataset_names: List[str]
-    _distributedanalyst: DistributedAnalyst
+    _executor: DistributedAnalyst
 
-    def __init__(self, dataset_name: str, field_names: List[str], region_dataset_names: List[str], distributedanalyst: DistributedAnalyst ):
+    def __init__(self, dataset_name: str, field_names: List[str], region_dataset_names: List[str], executor: Callable[[PostAgggregatePointsEntity], Any] ):
         self._postentity = PostAgggregatePointsEntity()
         self._postentity.input = DatasetInputSetting()
         self._postentity.input.datasetName = dataset_name
         self._analyst = SummaryMeshAnalystSetting()
+        self._analyst.meshSizeUnit = DistanceUnit.Meter
         self._analyst.mappingParameters = MappingParameters()
         self._analyst.mappingParameters.numericPrecision = 1
         self._postentity.analyst = self._analyst
@@ -96,7 +98,7 @@ class PreparingAggregate:
         self._fields = []
         self._modes = []
         self._region_dataset_names = list(region_dataset_names)
-        self._distributedanalyst = distributedanalyst
+        self._executor = executor
 
     def _init_field_options(self, field_names:Iterable[str]):
         self._field_options = NamedObjects()
@@ -158,15 +160,14 @@ class PreparingAggregate:
         return self._postentity
 
     def execute(self):
-        post_result = self._distributedanalyst.post_aggregatepoints(self._postentity) #type:MethodResult
-        if not post_result.succeed:
-            raise Exception(post_result.error.errorMsg)
+        #TODO 验证设置是否完整，不完整的话给予提示
+        return self._executor(self._postentity)
 
 
 from ._common import *
 
 
-def attach(distributedanalyst: DistributedAnalyst, dataset_and_fields: Iterable[DatasetAndFields], to_attach: NamedObjects):
+def attach(executor: Callable[[PostAgggregatePointsEntity], Any], dataset_and_fields: Iterable[DatasetAndFields], to_attach: NamedObjects):
     point_datasets = [resource for resource in dataset_and_fields if is_point(resource)]
     region_dataset_names = [get_name(resource) for resource in dataset_and_fields if is_region(resource)]
     for dataset in point_datasets:
@@ -183,5 +184,40 @@ def attach(distributedanalyst: DistributedAnalyst, dataset_and_fields: Iterable[
                        and field.fieldInfo.type in (FieldType.INT16, FieldType.INT32, FieldType.INT64, FieldType.SINGLE, FieldType.DOUBLE)
                        ]
         def aggregate():
-            return PreparingAggregate(name, field_names, region_dataset_names, distributedanalyst)
+            return PreparingAggregate(name, field_names, region_dataset_names, executor)
         options.prepare_aggregate = aggregate
+
+
+from ._runningjob import RunningJob
+from functools import partial
+
+
+class DisplayRunningStateExecutor:
+    _distributedanalyst: DistributedAnalyst
+    _map_service_factory: Callable[[str], MapService]
+
+    def __init__(self, distributedanalyst: DistributedAnalyst, map_service_factory: Callable[[str], MapService]):
+        self._distributedanalyst = distributedanalyst
+        self._map_service_factory = map_service_factory
+
+    def __call__(self, method_result: MethodResult):
+        job = RunningJob(partial(self._distributedanalyst.get_aggregatepoints_job, method_result.newResourceID), self._map_service_factory)
+        return job.display()
+
+
+class _Executor:
+    _invoke_post: Callable[[PostAgggregatePointsEntity], MethodResult]
+    _display: Callable[[MethodResult], Any]
+
+    def __init__(self, invoke_post: Callable[[PostAgggregatePointsEntity], MethodResult], display: Callable[[MethodResult], Any]):
+        self._invoke_post = invoke_post
+        self._display = display
+
+
+    def __call__(self, entity: PostAgggregatePointsEntity):
+        method_result = self._invoke_post(entity)
+        return self._display(method_result)
+
+
+def new_executor(distributedanalyst: DistributedAnalyst,map_service_fun: Callable[[str], MapService]):
+    return _Executor(distributedanalyst.post_aggregatepoints, DisplayRunningStateExecutor(distributedanalyst, map_service_fun))
