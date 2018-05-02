@@ -215,8 +215,6 @@ class Online:
             base_layer.type = SourceType.BING
             base_layer.title = '必应地图'
             base_layer.name = 'bing_layername'
-            # base_layer.identifier = 'china'
-            # base_layer.url = 'http://t2.supermapcloud.com/FileService/image'
             base_layers = base_layers + [base_layer]
         elif type is OnlineBaseLayerType.OPENSTREET:
             base_layer = Layer()
@@ -225,7 +223,6 @@ class Online:
             base_layer.type = SourceType.OSM
             base_layer.title = 'OpenStreet'
             base_layer.name = 'osm_layername'
-            # base_layer.url = 'http://t2.supermapcloud.com/FileService/image'
             base_layers = base_layers + [base_layer]
         elif type is OnlineBaseLayerType.TIANDITUIMAGE:
             base_layer = Layer()
