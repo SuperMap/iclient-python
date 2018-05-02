@@ -11,6 +11,16 @@ from iclientpy.rest.api.model import DataItemType, PostMyDatasItem, Layer, Layer
 class OnlineBaseLayerType(Enum):
     DEFAULT = 'DEFAULT'
     TIANDITU = 'TIANDITU'
+    CHINADARK = 'CHINADARK'
+    CHINALIGHT = 'CHINALIGHT'
+    CHINABLUEDRAK = 'CHINABLUEDRAK'
+    GOOGLE = 'GOOGLE'
+    GAODE = 'GAODE'
+    BING = 'BING'
+    OPENSTREET = 'OPENSTREET'
+    TIANDITUIMAGE = 'TIANDITUIMAGE'
+    TIANDITUTERRAIN = 'TIANDITUTERRAIN'
+    BAIDU = 'BAIDU'
 
 
 class Online:
@@ -137,15 +147,131 @@ class Online:
             base_layer.name = '天地图'
             base_layer.isVisible = True
             base_layer.type = SourceType.TIANDITU_VEC
-            base_layer_label = Layer()
-            base_layer_label.url = 'http://t1.tianditu.cn'
-            base_layer_label.title = '天地图-标签'
-            base_layer_label.zindex = 1
-            base_layer_label.layerType = LayerType.OVERLAY_LAYER
-            base_layer_label.name = '天地图-标签'
-            base_layer_label.isVisible = True
-            base_layer_label.type = SourceType.TIANDITU_VEC
-            base_layers = base_layers + [base_layer, base_layer_label]
+            base_layer_text = Layer()
+            base_layer_text.url = 'http://t1.tianditu.cn'
+            base_layer_text.title = '天地图-标签'
+            base_layer_text.zindex = 1
+            base_layer_text.layerType = LayerType.OVERLAY_LAYER
+            base_layer_text.name = '天地图-标签'
+            base_layer_text.isVisible = True
+            base_layer_text.type = SourceType.TIANDITU_VEC
+            base_layers = base_layers + [base_layer, base_layer_text]
+        elif type is OnlineBaseLayerType.CHINADARK:
+            base_layer = Layer()
+            base_layer.layerType = LayerType.BASE_LAYER
+            base_layer.isVisible = True
+            base_layer.prjCoordSys = PrjCoordSys()
+            base_layer.prjCoordSys.epsgCode = 3857
+            base_layer.type = SourceType.SUPERMAP_REST
+            base_layer.title = 'China_Dark'
+            base_layer.url = 'https://www.supermapol.com/proxy/iserver/services/map_China/rest/maps/China_Dark'
+            base_layers = base_layers + [base_layer]
+        elif type is OnlineBaseLayerType.CHINALIGHT:
+            base_layer = Layer()
+            base_layer.layerType = LayerType.BASE_LAYER
+            base_layer.isVisible = True
+            base_layer.prjCoordSys = PrjCoordSys()
+            base_layer.prjCoordSys.epsgCode = 3857
+            base_layer.type = SourceType.SUPERMAP_REST
+            base_layer.title = 'China_Light'
+            base_layer.url = 'https://www.supermapol.com/iserver/services/map_China/rest/maps/China_Light'
+            base_layers = base_layers + [base_layer]
+        elif type is OnlineBaseLayerType.CHINABLUEDRAK:
+            base_layer = Layer()
+            base_layer.layerType = LayerType.BASE_LAYER
+            base_layer.isVisible = True
+            base_layer.prjCoordSys = PrjCoordSys()
+            base_layer.prjCoordSys.epsgCode = 3857
+            base_layer.type = SourceType.CLOUD
+            base_layer.identifier = 'blue-black'
+            base_layer.title = '中国_蓝黑'
+            base_layer.name = 'cloud_layername'
+            base_layer.url = 'http://t3.supermapcloud.com/MapService/getGdp?&x=${x}&y=${y}&z=${z}'
+            base_layers = base_layers + [base_layer]
+        elif type is OnlineBaseLayerType.GOOGLE:
+            base_layer = Layer()
+            base_layer.layerType = LayerType.BASE_LAYER
+            base_layer.isVisible = True
+            base_layer.type = SourceType.GOOGLE
+            base_layer.title = '谷歌地图'
+            base_layer.name = 'google_layername'
+            base_layer.identifier = 'china'
+            base_layer.url = 'http://mt3.google.cn/vt/lyrs=m&hl=zh-CN&gl=cn&x=${x}&y=${y}&z=${z}&scale=${z}'
+            base_layers = base_layers + [base_layer]
+        elif type is OnlineBaseLayerType.GAODE:
+            base_layer = Layer()
+            base_layer.layerType = LayerType.BASE_LAYER
+            base_layer.isVisible = True
+            base_layer.type = SourceType.CLOUD
+            base_layer.title = '高德地图'
+            base_layer.name = 'cloud_layername'
+            # base_layer.identifier = 'china'
+            base_layer.url = 'http://t2.supermapcloud.com/FileService/image'
+            base_layers = base_layers + [base_layer]
+        elif type is OnlineBaseLayerType.BING:
+            base_layer = Layer()
+            base_layer.layerType = LayerType.BASE_LAYER
+            base_layer.isVisible = True
+            base_layer.type = SourceType.BING
+            base_layer.title = '必应地图'
+            base_layer.name = 'bing_layername'
+            # base_layer.identifier = 'china'
+            # base_layer.url = 'http://t2.supermapcloud.com/FileService/image'
+            base_layers = base_layers + [base_layer]
+        elif type is OnlineBaseLayerType.OPENSTREET:
+            base_layer = Layer()
+            base_layer.layerType = LayerType.BASE_LAYER
+            base_layer.isVisible = True
+            base_layer.type = SourceType.OSM
+            base_layer.title = 'OpenStreet'
+            base_layer.name = 'osm_layername'
+            # base_layer.url = 'http://t2.supermapcloud.com/FileService/image'
+            base_layers = base_layers + [base_layer]
+        elif type is OnlineBaseLayerType.TIANDITUIMAGE:
+            base_layer = Layer()
+            base_layer.layerType = LayerType.BASE_LAYER
+            base_layer.isVisible = True
+            base_layer.type = SourceType.TIANDITU_IMG
+            base_layer.title = '天地图影像'
+            base_layer.name = 'tianditu_layername'
+            base_layer.url = 'http://t1.tianditu.cn'
+            base_layer_text = Layer()
+            base_layer_text.url = 'http://t1.tianditu.cn'
+            base_layer_text.title = '天地图影像_路网'
+            base_layer_text.name = 'tianditu_text_name'
+            base_layer_text.zindex = 1
+            base_layer_text.layerType = LayerType.OVERLAY_LAYER
+            base_layer_text.name = '天地图影像_路网'
+            base_layer_text.isVisible = True
+            base_layer_text.type = SourceType.TIANDITU_VEC
+            base_layers = base_layers + [base_layer, base_layer_text]
+        elif type is OnlineBaseLayerType.TIANDITUTERRAIN:
+            base_layer = Layer()
+            base_layer.layerType = LayerType.BASE_LAYER
+            base_layer.isVisible = True
+            base_layer.type = SourceType.TIANDITU_TER
+            base_layer.title = '天地图地形'
+            base_layer.name = 'tianditu_layername'
+            base_layer.url = 'http://t1.tianditu.cn'
+            base_layer_text = Layer()
+            base_layer_text.url = 'http://t1.tianditu.cn'
+            base_layer_text.title = '天地图地形_路网'
+            base_layer_text.name = 'tianditu_text_name'
+            base_layer_text.zindex = 1
+            base_layer_text.layerType = LayerType.OVERLAY_LAYER
+            base_layer_text.name = '天地图地形_路网'
+            base_layer_text.isVisible = True
+            base_layer_text.type = SourceType.TIANDITU_VEC
+            base_layers = base_layers + [base_layer, base_layer_text]
+        elif type is OnlineBaseLayerType.BAIDU:
+            base_layer = Layer()
+            base_layer.layerType = LayerType.BASE_LAYER
+            base_layer.isVisible = True
+            base_layer.type = SourceType.BAIDU
+            base_layer.title = '百度地图'
+            base_layer.name = '百度图层'
+            base_layer.url = 'http://online1.map.bdimg.com'
+            base_layers = base_layers + [base_layer]
         return base_layers
 
     def create_map(self, layers: List[Layer], epsgCode: int, map_title: str, center: tuple = None, extend: tuple = None,
