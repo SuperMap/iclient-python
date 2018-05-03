@@ -65,7 +65,9 @@ def to_json_str(obj):
     return obj.name if isinstance(obj, Enum) else json.dumps(to_dict_or_list(obj))
 
 
-def import_root_module_to_local(kls, local_dict = {}):
+def import_root_module_to_local(kls, local_dict = None):
+    if local_dict is None:
+        local_dict = {}
     generic_start = kls.find('[')
     generic_end = kls.rfind(']')
     kls_no_generic = kls
