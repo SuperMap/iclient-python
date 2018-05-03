@@ -8,96 +8,26 @@ from functools import partial
 from iclientpy.rest.api.distributedanalyst import DistributedAnalyst
 
 
-class SummaryMeshBuilder:
-    _setting:SummaryMeshAnalystSetting
-
-    def __init__(self, setting:SummaryMeshAnalystSetting, job_builder):
-        self._setting = setting
-        self._job_builder = job_builder
-
-    def set_mesh_hexagon(self):
-        self._setting.meshType = 1
-        return self
-
-    def set_mesh_square(self):
-        self._setting.meshType = 0
-        return self
-
-    def set_bounds(self, bounds: Tuple[float, float, float, float]):
-        self._setting.query = ','.join([str(f) for f in bounds])
-        return self
-
-    def set_resolution(self, value:float):
-        self._setting.resolution = value
-        return self
-
-    def _mesh_size_unit_selected(self, value:DistanceUnit):
-        self._setting.meshSizeUnit = value
-        return self
-
-    @property
-    def mesh_sieze_units(self):
-        result = NamedObjects()
-        for unit in [DistanceUnit.Meter, DistanceUnit.Kilometer, DistanceUnit.Yard, DistanceUnit.Foot, DistanceUnit.Mile]:
-            result[unit.name] = Option(partial(self._mesh_size_unit_selected, unit), 'select')
-        return result
-
-    @property
-    def then(self):
-        return self._job_builder
-
-    def __repr__(self):
-        return self._job_builder.__repr__()
-
-
-class SummaryRegionBuilder:
-    _setting:SummaryMeshAnalystSetting
-    _region_dataset_options: NamedObjects
-    def __init__(self, setting:SummaryMeshAnalystSetting, job_builder, region_dataset_names: List[str]):
-        self._setting = setting
-        self._job_builder = job_builder
-        self._init_region_dataset_options(region_dataset_names)
-
-    def _dataset_selected(self, dataset_name):
-        self._setting.regionDataset = dataset_name
-        return self._job_builder
-
-    def _init_region_dataset_options(self, region_dataset_names: List[str]):
-        self._region_dataset_options = NamedObjects()
-        for name in region_dataset_names:
-            self._region_dataset_options[name] = Option(partial(self._dataset_selected, name), 'select')
-
-    @property
-    def available_region_datasets(self):
-        return self._region_dataset_options
-
-    def __repr__(self):
-        return self._job_builder.__repr__()
-
-
-
 class PreparingAggregate:
     _postentity: PostAgggregatePointsEntity
     _field_options: NamedObjects
     _fields: List[str]
     _modes: List[str]
-    _analyst: SummaryMeshAnalystSetting
-    _region_dataset_names: List[str]
+    _analyst_setting: SummaryMeshAnalystSetting
     _executor: DistributedAnalyst
 
-    def __init__(self, dataset_name: str, field_names: List[str], region_dataset_names: List[str], executor: Callable[[PostAgggregatePointsEntity], Any] ):
+    def __init__(self, dataset_name: str, field_names: List[str], executor: Callable[[PostAgggregatePointsEntity], Any] ):
         self._postentity = PostAgggregatePointsEntity()
         self._postentity.input = DatasetInputSetting()
         self._postentity.input.datasetName = dataset_name
-        self._analyst = SummaryMeshAnalystSetting()
-        self._analyst.meshSizeUnit = DistanceUnit.Meter
-        self._analyst.mappingParameters = MappingParameters()
-        self._analyst.mappingParameters.numericPrecision = 1
-        self._postentity.analyst = self._analyst
+        self._analyst_setting = SummaryMeshAnalystSetting()
+        self._analyst_setting.meshSizeUnit = DistanceUnit.Meter
+        self._analyst_setting.mappingParameters = MappingParameters()
+        self._analyst_setting.mappingParameters.numericPrecision = 1
+        self._postentity.analyst = self._analyst_setting
         self._init_field_options(field_names)
         self._fields = []
         self._modes = []
-        self._region_dataset_names = list(region_dataset_names)
         self._executor = executor
 
     def _init_field_options(self, field_names:Iterable[str]):
@@ -122,34 +52,8 @@ class PreparingAggregate:
         analyst.statisticModes = ','.join(self._modes)
         return self
 
-    @property
-    def prepare_summarymesh(self) -> SummaryMeshBuilder:
-        """
-        设置聚合类型为格网聚合，返回一个格网聚合设置对象以进一步设置格网聚合所需参数。
-
-        Args:
-
-        Returns:
-            格网聚合设置对象
-        """
-        self._postentity.type = SummaryAnalystType.SUMMARYMESH
-        return SummaryMeshBuilder(self._analyst, self)
-
-    @property
-    def prepare_summaryregion(self) -> SummaryRegionBuilder:
-        """
-        设置聚合类型为多边形聚合，返回一个多边形聚合设置对象以进一步设置格网聚合所需参数。
-
-        Args:
-
-        Returns:
-            多边形聚合设置对象
-        """
-        self._postentity.type = SummaryAnalystType.SUMMARYREGION
-        return SummaryRegionBuilder(self._analyst, self, self._region_dataset_names)
-
     def set_numeric_precision(self, value):
-        self._analyst.mappingParameters.numericPrecision = value
+        self._analyst_setting.mappingParameters.numericPrecision = value
         return self
 
     def __repr__(self):
@@ -162,6 +66,62 @@ class PreparingAggregate:
     def execute(self):
         #TODO 验证设置是否完整，不完整的话给予提示
         return self._executor(self._postentity)
+
+
+class SummaryRegion(PreparingAggregate):
+    _region_dataset_options: NamedObjects
+    def __init__(self, dataset_name: str, field_names: List[str], region_dataset_names: List[str], executor: Callable[[PostAgggregatePointsEntity], Any]):
+        PreparingAggregate.__init__(self, dataset_name, field_names, executor)
+        self._postentity.type = SummaryAnalystType.SUMMARYREGION
+        self._init_region_dataset_options(region_dataset_names)
+
+    def _dataset_selected(self, dataset_name):
+        self._analyst_setting.regionDataset = dataset_name
+        return self
+
+    def _init_region_dataset_options(self, region_dataset_names: List[str]):
+        self._region_dataset_options = NamedObjects()
+        for name in region_dataset_names:
+            self._region_dataset_options[name] = Option(partial(self._dataset_selected, name), 'select')
+
+    @property
+    def available_region_datasets(self):
+        return self._region_dataset_options
+
+
+class SummaryMesh(PreparingAggregate):
+
+    def __init__(self, dataset_name: str, field_names: List[str], executor: Callable[[PostAgggregatePointsEntity], Any] ):
+        PreparingAggregate.__init__(self, dataset_name, field_names, executor)
+        self._postentity.type = SummaryAnalystType.SUMMARYMESH
+        self._analyst_setting.meshType = 0
+
+    def set_mesh_hexagon(self):
+        self._analyst_setting.meshType = 1
+        return self
+
+    def set_mesh_square(self):
+        self._analyst_setting.meshType = 0
+        return self
+
+    def set_bounds(self, bounds: Tuple[float, float, float, float]):
+        self._analyst_setting.query = ','.join([str(f) for f in bounds])
+        return self
+
+    def set_resolution(self, value:float):
+        self._analyst_setting.resolution = value
+        return self
+
+    def _mesh_size_unit_selected(self, value:DistanceUnit):
+        self._analyst_setting.meshSizeUnit = value
+        return self
+
+    @property
+    def available_mesh_sieze_units(self):
+        result = NamedObjects()
+        for unit in [DistanceUnit.Meter, DistanceUnit.Kilometer, DistanceUnit.Yard, DistanceUnit.Foot, DistanceUnit.Mile]:
+            result[unit.name] = Option(partial(self._mesh_size_unit_selected, unit), 'select')
+        return result
 
 
 from ._common import *
@@ -183,9 +143,9 @@ def attach(executor: Callable[[PostAgggregatePointsEntity], Any], dataset_and_fi
                        and field.fieldInfo.name.lower() != 'smuserid'
                        and field.fieldInfo.type in (FieldType.INT16, FieldType.INT32, FieldType.INT64, FieldType.SINGLE, FieldType.DOUBLE)
                        ]
-        def aggregate():
-            return PreparingAggregate(name, field_names, region_dataset_names, executor)
-        options.prepare_aggregate = aggregate
+
+        options.prepare_summary_region_aggregate = lambda :SummaryRegion(name, field_names, region_dataset_names, executor)
+        options.prepare_summary_messh_aggregate = lambda :SummaryMesh(name, field_names, executor)
 
 
 from ._runningjob import RunningJob
