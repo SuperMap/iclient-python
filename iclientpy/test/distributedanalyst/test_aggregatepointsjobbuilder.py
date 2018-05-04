@@ -8,13 +8,14 @@ class AggregatePointsJobBuilderTest(TestCase):
     def test_summary_mesh(self):
         executor = MagicMock()
         builder = SummaryMesh('s_processing_newyorkPoint_P', ['medallion', 'hack_license', 'vecdor_id', 'rate_code', 'store_and_fwd_flag', 'pickup_datetime', 'dropoff_datetime', 'passenger_count', 'trip_time_in_secs', 'trip_distance', 'pickup_longitude', 'pickup_latitude', 'dropoff_longitude', 'dropoff_latitude'], executor)
+
         self.assertEqual(builder.job_setting.input.datasetName, 's_processing_newyorkPoint_P')
+        self.assertEqual(builder.job_setting.analyst.meshSizeUnit, DistanceUnit.Meter)
 
         builder.set_numeric_precision(2)
         self.assertEqual(builder.job_setting.analyst.mappingParameters.numericPrecision, 2)
 
         builder.available_mesh_sieze_units.Kilometer.select()
-        self.assertEqual(builder.job_setting.type, SummaryAnalystType.SUMMARYMESH)
         self.assertEqual(builder.job_setting.analyst.meshSizeUnit, DistanceUnit.Kilometer)
 
         builder.set_bounds((-180, -90, 180, 90))
@@ -36,8 +37,10 @@ class AggregatePointsJobBuilderTest(TestCase):
 
     def test_summary_region(self):
         executor = MagicMock()
-        builder = SummaryRegion('s_processing_newyorkPoint_P', ['medallion', 'hack_license', 'vecdor_id', 'rate_code', 'store_and_fwd_flag', 'pickup_datetime', 'dropoff_datetime', 'passenger_count', 'trip_time_in_secs', 'trip_distance', 'pickup_longitude', 'pickup_latitude', 'dropoff_longitude', 'dropoff_latitude'], ['s_processing_newyorkZone_R', 's_processing_singleRegion_R'], executor)
-        self.assertEqual(builder.job_setting.input.datasetName, 's_processing_newyorkPoint_P')
+        builder = SummaryRegion('s_processing_newyorkPoint_P1', ['medallion', 'hack_license', 'vecdor_id', 'rate_code', 'store_and_fwd_flag', 'pickup_datetime', 'dropoff_datetime', 'passenger_count', 'trip_time_in_secs', 'trip_distance', 'pickup_longitude', 'pickup_latitude', 'dropoff_longitude', 'dropoff_latitude'], ['s_processing_newyorkZone_R', 's_processing_singleRegion_R'], executor)
+        self.assertEqual(builder.job_setting.input.datasetName, 's_processing_newyorkPoint_P1')
+
+        self.assertIsNone(builder.job_setting.analyst.meshSizeUnit)
 
         builder.set_numeric_precision(2)
         self.assertEqual(builder.job_setting.analyst.mappingParameters.numericPrecision, 2)

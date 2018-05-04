@@ -21,7 +21,6 @@ class PreparingAggregate:
         self._postentity.input = DatasetInputSetting()
         self._postentity.input.datasetName = dataset_name
         self._analyst_setting = SummaryMeshAnalystSetting()
-        self._analyst_setting.meshSizeUnit = DistanceUnit.Meter
         self._analyst_setting.mappingParameters = MappingParameters()
         self._analyst_setting.mappingParameters.numericPrecision = 1
         self._postentity.analyst = self._analyst_setting
@@ -95,6 +94,7 @@ class SummaryMesh(PreparingAggregate):
         PreparingAggregate.__init__(self, dataset_name, field_names, executor)
         self._postentity.type = SummaryAnalystType.SUMMARYMESH
         self._analyst_setting.meshType = 0
+        self._analyst_setting.meshSizeUnit = DistanceUnit.Meter
 
     def set_mesh_hexagon(self):
         self._analyst_setting.meshType = 1
