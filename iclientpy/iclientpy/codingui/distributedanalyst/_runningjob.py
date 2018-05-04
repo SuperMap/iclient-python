@@ -32,10 +32,11 @@ class RunningJob:
                                service_info.serviceAddress.rfind('/services/') + len('/services/'):]
                 map_service = self._map_service_fun(service_name) #type:MapService
                 map_name = map_service.get_map_resources()[0].name
-                bounds = map_service.get_map(map_name).bounds
+                map_info = map_service.get_map(map_name)
+                bounds = map_info.bounds
                 default_tiles = icp.TileMapLayer(
                     url=service_info.serviceAddress + '/maps/' + map_name)
-                map = icp.MapView(default_tiles=default_tiles, crs='EPSG4326',
+                map = icp.MapView(default_tiles=default_tiles, crs='EPSG' + str(map_info.prjCoordSys.epsgCode),
                                   fit_bounds=[[bounds.leftBottom.y, bounds.leftBottom.x],[bounds.rightTop.y, bounds.rightTop.x]])
                 map._ipython_display_(**kwargs)
         return job
