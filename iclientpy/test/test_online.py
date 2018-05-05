@@ -1,8 +1,9 @@
 from unittest import TestCase, mock
 from iclientpy.online import Online
 from iclientpy.rest.api.model import GetMapsResult, ViewerMap, MethodResult, MyDatasMethodResult, DataItem, Status, \
-    DataItemType, MyDataUploadProcess, Layer, PermissionType, DataPermissionType, EntityType, GetMyDatasResult, \
-    IportalDataAuthorizeEntity, OnlineDataShareSetting, OnlineMapShareSetting, MapShareSetting
+    DataItemType, MyDataUploadProcess, Layer, GetMyDatasResult
+from io import FileIO
+from pandas import DataFrame
 
 
 class MockOnlineAPIFactory:
@@ -55,6 +56,7 @@ class OnlineTestCase(TestCase):
         online.get_data_upload_progress.side_effect = [(0, 100), (50, 100), (100, 100)]
         callback = mock.MagicMock()
         data_content = mock.MagicMock()
+        data_content.__class__ = FileIO
         result = online.upload_data('test.json', data_content, DataItemType.JSON, callback)
         self.assertEqual(result, 'data_id')
 
@@ -63,6 +65,7 @@ class OnlineTestCase(TestCase):
         online._online = mock.MagicMock()
         online.upload_data = mock.MagicMock(return_value='data_id')
         df = mock.MagicMock()
+        df.__class__ = DataFrame
         df.to_json = mock.MagicMock(return_value='testtesttest')
         result = online.upload_dataframe_as_json('data', df)
         self.assertEqual(result, 'data_id')

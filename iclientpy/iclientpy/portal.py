@@ -6,6 +6,7 @@ from iclientpy.rest.apifactory import iPortalAPIFactory
 from iclientpy.rest.api.model import DataItemType, PostMyDatasItem, Layer, LayerType, SourceType, PostMapsItem, Point2D, \
     Rectangle2D, PrjCoordSys, MapShareSetting, PermissionType, EntityType, IportalDataAuthorizeEntity, \
     DataPermissionType, Status
+from iclientpy.typeassert import typeassert
 
 
 class BaseLayerType(Enum):
@@ -17,6 +18,7 @@ class Portal:
     def __init__(self, url, username: str = None, password: str = None, token: str = None):
         self._portal = iPortalAPIFactory(url, username, password, token)
 
+    @typeassert
     def search_map(self, owners: List[str] = None, tags: List[str] = None, keywords: List[str] = None):
         """
         查找地图
@@ -31,6 +33,7 @@ class Portal:
         ms = self._portal.maps_service()
         return ms.get_maps(userNames=owners, tags=tags, keywords=keywords).content
 
+    @typeassert
     def get_map(self, map_id: str):
         """
         获取指定id的地图的详细信息
@@ -53,6 +56,7 @@ class Portal:
                 read = 100
             callback(read, total)
 
+    @typeassert
     def upload_data(self, data_name: str, data_content: FileIO, type: DataItemType, callback: Callable = None):
         """
         上传数据
@@ -76,6 +80,7 @@ class Portal:
         ds.upload_data(data_id, data_content)
         return data_id
 
+    @typeassert
     def upload_dataframe_as_json(self, data_name: str, df: DataFrame, callback: Callable = None):
         """
         上传DataFrame为JSON类型数据
@@ -89,6 +94,7 @@ class Portal:
         with StringIO(df.to_json()) as dff:
             return self.upload_data(data_name, dff, DataItemType.JSON, callback)
 
+    @typeassert
     def search_data(self, owners: List[str] = None, tags: List[str] = None, keywords: List[str] = None):
         """
         查找数据
@@ -103,6 +109,7 @@ class Portal:
         ds = self._portal.datas_service()
         return ds.get_datas(userNames=owners, tags=tags, keywords=keywords).content
 
+    @typeassert
     def get_data(self, data_id: str):
         """
         获取数据详细信息
@@ -114,6 +121,7 @@ class Portal:
         """
         return self._portal.datas_service().get_data(data_id)
 
+    @typeassert
     def get_data_upload_progress(self, data_id: str):
         """
         获取数据上传进度
@@ -148,6 +156,7 @@ class Portal:
             base_layers = base_layers + [base_layer, base_layer_label]
         return base_layers
 
+    @typeassert
     def create_map(self, layers: List[Layer], epsgCode: int, map_title: str, center: tuple = None, extend: tuple = None,
                    base_layer_type: BaseLayerType = BaseLayerType.DEFAULT, tags: List[str] = None):
         """
@@ -183,6 +192,7 @@ class Portal:
         entity.tags = tags
         return self._portal.maps_service().post_maps(entity).newResourceID
 
+    @typeassert
     def delete_map(self, map_id: str):
         """
         删除一个地图
@@ -191,6 +201,7 @@ class Portal:
         """
         self._portal.maps_service().delete_maps([map_id])
 
+    @typeassert
     def delete_maps(self, map_ids: List[str]):
         """
         删除多个地图
@@ -199,6 +210,7 @@ class Portal:
         """
         self._portal.maps_service().delete_maps(map_ids)
 
+    @typeassert
     def delete_data(self, data_id: str):
         """
         删除一个数据
@@ -207,6 +219,7 @@ class Portal:
         """
         self._portal.datas_service().delete_data(data_id)
 
+    @typeassert
     def delete_datas(self, data_ids: List[str]):
         """
         批量删除多个数据
@@ -216,6 +229,7 @@ class Portal:
         for data_id in data_ids:
             self.delete_data(data_id)
 
+    @typeassert
     def prepare_geojson_layer(self, data_id: str, layer_name: str):
         """
         根据上传到iportal的geojson数据，生成Layer
@@ -240,6 +254,7 @@ class Portal:
         layer.themeSettings = '{"filter" : "", "vectorType": "REGION", "type" : "VECTOR"}'
         return layer
 
+    @typeassert
     def search_group(self, owners: List[str] = None, tags: List[str] = None, keywords: List[str] = None):
         """
         查找群组
@@ -253,6 +268,7 @@ class Portal:
         """
         return self._portal.groups_service().get_groups(tags=tags, userNames=owners, keywords=keywords).content;
 
+    @typeassert
     def get_data_sharesetting(self, data_id: str):
         """
         获取数据的共享权限
@@ -265,6 +281,7 @@ class Portal:
         ds = self._portal.datas_service()
         return ds.get_data_sharesetting(data_id)
 
+    @typeassert
     def config_data_sharesetting(self, data_id, entities: List[IportalDataAuthorizeEntity]):
         """
         设置数据的共享权限
@@ -279,6 +296,7 @@ class Portal:
         if not ds.put_data_sharesetting(data_id, entities).succeed:
             raise Exception('更新权限失败')
 
+    @typeassert
     def get_map_sharesetting(self, map_id: str):
         """
         返回地图的共享权限
@@ -291,6 +309,7 @@ class Portal:
         maps = self._portal.maps_service()
         return maps.get_map_sharesetting(map_id)
 
+    @typeassert
     def config_map_sharesetting(self, map_id: str, entities: List[MapShareSetting]):
         """
         设置地图的共享权限
@@ -310,6 +329,7 @@ class MapShareSettingBuilder:
     def __init__(self, settings: List[MapShareSetting] = None):
         self._settings = [] if settings is None else settings
 
+    @typeassert
     def share_to_user(self, user_name: str, type: PermissionType):
         """
         共享地图给指定用户
@@ -327,6 +347,7 @@ class MapShareSettingBuilder:
         self._settings.append(entity)
         return self
 
+    @typeassert
     def share_to_users(self, user_names: List[str], type: PermissionType):
         """
         共享地图给多个用户
@@ -341,6 +362,7 @@ class MapShareSettingBuilder:
             self.share_to_user(user_name, type)
         return self
 
+    @typeassert
     def share_to_group(self, group_id: str, type: PermissionType):
         """
         共享地图给群组
@@ -358,6 +380,7 @@ class MapShareSettingBuilder:
         self._settings.append(entity)
         return self
 
+    @typeassert
     def share_to_department(self, department_id: str, type: PermissionType):
         """
         共享地图给指定组织
@@ -375,6 +398,7 @@ class MapShareSettingBuilder:
         self._settings.append(entity)
         return self
 
+    @typeassert
     def share_to_everyone(self, type: PermissionType):
         """
         共享地图给所有人
@@ -392,6 +416,7 @@ class MapShareSettingBuilder:
         self._settings.append(entity)
         return self
 
+    @typeassert
     def build(self):
         """
         获得共享信息列表
@@ -405,6 +430,7 @@ class DataShareSettingBuilder:
     def __init__(self, settings: List[IportalDataAuthorizeEntity] = None):
         self._settings = [] if settings is None else settings
 
+    @typeassert
     def share_to_user(self, user_name: str, type: DataPermissionType):
         """
         共享数据给指定用户
@@ -422,6 +448,7 @@ class DataShareSettingBuilder:
         self._settings.append(entity)
         return self
 
+    @typeassert
     def share_to_users(self, user_names: List[str], type: DataPermissionType):
         """
         共享数据给多个用户
@@ -436,6 +463,7 @@ class DataShareSettingBuilder:
             self.share_to_user(user_name, type)
         return self
 
+    @typeassert
     def share_to_group(self, group_id: str, type: DataPermissionType):
         """
         共享数据给群组
@@ -453,6 +481,7 @@ class DataShareSettingBuilder:
         self._settings.append(entity)
         return self
 
+    @typeassert
     def share_to_everyone(self, type: DataPermissionType):
         """
         共享数据给所有人
@@ -470,6 +499,7 @@ class DataShareSettingBuilder:
         self._settings.append(entity)
         return self
 
+    @typeassert
     def build(self):
         """
         获得共享信息列表

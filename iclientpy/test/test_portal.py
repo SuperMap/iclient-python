@@ -3,6 +3,8 @@ from iclientpy.portal import Portal, MapShareSettingBuilder, DataShareSettingBui
 from iclientpy.rest.api.model import GetMapsResult, ViewerMap, MethodResult, MyDatasMethodResult, DataItem, Status, \
     DataItemType, MyDataUploadProcess, Layer, GetGroupsResult, PermissionType, DataPermissionType, EntityType, \
     GetMyDatasResult
+from io import FileIO
+from pandas import DataFrame
 
 
 class MockiPortalAPIFactory:
@@ -55,6 +57,7 @@ class PortalTestCase(TestCase):
         portal.get_data_upload_progress.side_effect = [(0, 100), (50, 100), (100, 100)]
         callback = mock.MagicMock()
         data_content = mock.MagicMock()
+        data_content.__class__ = FileIO
         result = portal.upload_data('test.json', data_content, DataItemType.JSON, callback)
         self.assertEqual(result, 'data_id')
 
@@ -63,6 +66,7 @@ class PortalTestCase(TestCase):
         portal._portal = mock.MagicMock()
         portal.upload_data = mock.MagicMock(return_value='data_id')
         df = mock.MagicMock()
+        df.__class__ = DataFrame
         df.to_json = mock.MagicMock(return_value='testtesttest')
         result = portal.upload_dataframe_as_json('data', df)
         self.assertEqual(result, 'data_id')

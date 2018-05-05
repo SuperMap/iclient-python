@@ -6,6 +6,7 @@ from iclientpy.rest.apifactory import OnlineAPIFactory
 from iclientpy.rest.api.model import DataItemType, PostMyDatasItem, Layer, LayerType, SourceType, PostMapsItem, Point2D, \
     Rectangle2D, PrjCoordSys, Status, OnlineMapShareSetting, OnlineDataShareSetting, MapShareSetting, PermissionType, \
     EntityType, IportalDataAuthorizeEntity, DataPermissionType
+from iclientpy.typeassert import typeassert
 
 
 class OnlineBaseLayerType(Enum):
@@ -27,6 +28,7 @@ class Online:
     def __init__(self, username: str, password: str):
         self._online = OnlineAPIFactory('https://www.supermapol.com', username, password)
 
+    @typeassert
     def search_map(self, owners: List[str] = None, tags: List[str] = None, keywords: List[str] = None):
         """
         查找地图
@@ -41,6 +43,7 @@ class Online:
         ms = self._online.maps_service()
         return ms.get_maps(userNames=owners, tags=tags, keywords=keywords).content
 
+    @typeassert
     def get_map(self, map_id: str):
         """
         获取指定id的地图的详细信息
@@ -63,6 +66,7 @@ class Online:
                 read = 100
             callback(read, total)
 
+    @typeassert
     def upload_data(self, data_name: str, data_content: FileIO, type: DataItemType, callback: Callable = None):
         """
         上传数据
@@ -86,6 +90,7 @@ class Online:
         ds.upload_data(data_id, data_content)
         return data_id
 
+    @typeassert
     def upload_dataframe_as_json(self, data_name: str, df: DataFrame, callback: Callable = None):
         """
         上传DataFrame为JSON类型数据
@@ -99,6 +104,7 @@ class Online:
         with StringIO(df.to_json()) as dff:
             return self.upload_data(data_name, dff, DataItemType.JSON, callback)
 
+    @typeassert
     def search_data(self, owners: List[str] = None, tags: List[str] = None, keywords: List[str] = None):
         """
         查找数据
@@ -113,6 +119,7 @@ class Online:
         ds = self._online.datas_service()
         return ds.get_datas(userNames=owners, tags=tags, keywords=keywords).content
 
+    @typeassert
     def get_data(self, data_id: str):
         """
         获取数据详细信息
@@ -124,6 +131,7 @@ class Online:
         """
         return self._online.datas_service().get_data(data_id)
 
+    @typeassert
     def get_data_upload_progress(self, data_id: str):
         """
         获取数据上传进度
@@ -205,7 +213,6 @@ class Online:
             base_layer.type = SourceType.CLOUD
             base_layer.title = '高德地图'
             base_layer.name = 'cloud_layername'
-            # base_layer.identifier = 'china'
             base_layer.url = 'http://t2.supermapcloud.com/FileService/image'
             base_layers = base_layers + [base_layer]
         elif type is OnlineBaseLayerType.BING:
@@ -271,6 +278,7 @@ class Online:
             base_layers = base_layers + [base_layer]
         return base_layers
 
+    @typeassert
     def create_map(self, layers: List[Layer], epsgCode: int, map_title: str, center: tuple = None, extend: tuple = None,
                    base_layer_type: OnlineBaseLayerType = OnlineBaseLayerType.DEFAULT, tags: List[str] = None):
         """
@@ -306,6 +314,7 @@ class Online:
         entity.tags = tags
         return self._online.maps_service().post_maps(entity).newResourceID
 
+    @typeassert
     def delete_map(self, map_id: str):
         """
         删除一个地图
@@ -314,6 +323,7 @@ class Online:
         """
         self._online.maps_service().delete_maps([map_id])
 
+    @typeassert
     def delete_maps(self, map_ids: List[str]):
         """
         删除多个地图
@@ -322,6 +332,7 @@ class Online:
         """
         self._online.maps_service().delete_maps(map_ids)
 
+    @typeassert
     def delete_data(self, data_id: str):
         """
         删除一个数据
@@ -330,6 +341,7 @@ class Online:
         """
         self._online.datas_service().delete_data(data_id)
 
+    @typeassert
     def delete_datas(self, data_ids: List[str]):
         """
         批量删除多个数据
@@ -339,6 +351,7 @@ class Online:
         for data_id in data_ids:
             self.delete_data(data_id)
 
+    @typeassert
     def prepare_geojson_layer(self, data_id: str, layer_name: str):
         """
         根据上传到Online的geojson数据，生成Layer
@@ -363,6 +376,7 @@ class Online:
         layer.themeSettings = '{"filter" : "", "vectorType": "REGION", "type" : "VECTOR"}'
         return layer
 
+    @typeassert
     def share_data(self, data_id: str, is_public: bool):
         """
         共享数据
@@ -383,6 +397,7 @@ class Online:
             setting.entities = []
         self._online.datas_service().put_sharesetting(entity=setting)
 
+    @typeassert
     def share_map(self, map_id: str, is_public: bool):
         """
         共享地图
