@@ -139,7 +139,10 @@ class EnumParser:
         self._clz = clz
 
     def __call__(self, value, *args):
-        return self._clz[value] if value is not None else None
+        try:
+            return self._clz[value] if value is not None else None
+        except KeyError:
+            raise Exception("枚举类型{name}中不包含{key}。keys:{keys}".format(name=self._clz.__name__, key=value, keys = list(self._clz.__members__.keys()).__repr__()))
 
 
 class ReturnOriginalParser:

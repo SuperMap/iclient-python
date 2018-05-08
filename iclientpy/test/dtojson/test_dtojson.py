@@ -115,3 +115,12 @@ class TestDTOJson(TestCase):
         class Kls:
             my_list: typing.List[typing.List[alias]]
         deserializer(Kls) #不抛出异常就算过
+
+
+class TestEnumParser(TestCase):
+    def test_key_error(self):
+        with self.assertRaises(Exception) as cm:
+            from iclientpy.dtojson import EnumParser
+            EnumParser(C)('notexist')
+        self.assertIn('CC', cm.exception.__repr__())
+        self.assertIn('notexist', cm.exception.__repr__())

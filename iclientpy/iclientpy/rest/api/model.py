@@ -1311,7 +1311,7 @@ class Charset(Enum):
     UNICODE = 'UNICODE'
     UTF32 = 'UTF32'
     UTF7 = 'UTF7'
-    URF8 = 'UTF8'
+    UTF8 = 'UTF8'
     VIETNAMESE = 'VIETNAMESE'
     WINDOWS1252 = 'WINDOWS1252'
     XIA5 = 'XIA5'
