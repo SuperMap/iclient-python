@@ -5,6 +5,7 @@ from iclientpy.dtojson import deserializer
 from iclientpy.rest.decorator import HttpMethod
 from iclientpy.rest.api.model import *
 from iclientpy.rest.apifactory import APIFactory
+from iclientpy.rest.api.restdata import DataService
 from .abstractrest import AbstractRESTTestCase
 from unittest import mock
 
@@ -19,70 +20,70 @@ class RESTDataTest(AbstractRESTTestCase):
     @mock.patch('builtins.open', mock.mock_open(read_data='1'))
     def test_dataservice(self):
         jsonstr = '{"datasourceNames":["World"],"childUriList":["http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/name/World"],"datasourceCount":1}'
-        self.check_api('get_datasources',
+        self.check_api(DataService.get_datasources,
                        self.baseuri + "/services/data-World/rest/data/datasources.json", HttpMethod.GET,
                        httpretty.Response(status=200, body=jsonstr))
 
         jsonstr = '{"datasourceInfo":{"distanceUnit":"METER","coordUnit":"DEGREE","name":"World","description":"testtest","engineType":"UDB","prjCoordSys":{"distanceUnit":"METER","projectionParam":null,"epsgCode":4326,"coordUnit":"DEGREE","name":"Longitude / Latitude Coordinate System---GCS_WGS_1984","projection":null,"type":"PCS_EARTH_LONGITUDE_LATITUDE","coordSystem":{"datum":{"name":"D_WGS_1984","type":"DATUM_WGS_1984","spheroid":{"flatten":0.00335281066474748,"name":"WGS_1984","axis":6378137,"type":"SPHEROID_WGS_1984"}},"unit":"DEGREE","spatialRefType":"SPATIALREF_EARTH_LONGITUDE_LATITUDE","name":"GCS_WGS_1984","type":"GCS_WGS_1984","primeMeridian":{"longitudeValue":0,"name":"Greenwich","type":"PRIMEMERIDIAN_GREENWICH"}}}},"childUriList":["http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets"]}'
-        self.check_api('get_datasource',
+        self.check_api(DataService.get_datasource,
                        self.baseuri + "/services/data-World/rest/data/datasources/World.json", HttpMethod.GET,
                        httpretty.Response(status=200, body=jsonstr), datasource='World')
         item = PutDatasourceItem()
         item.description = 'testtest'
-        self.check_api('put_datasource',
+        self.check_api(DataService.put_datasource,
                        self.baseuri + "/services/data-World/rest/data/datasources/World.json", HttpMethod.PUT,
                        httpretty.Response(status=200,
                                           body='{"postResultType":"CreateChild","newResourceID":"/test13","succeed":true,"newResourceLocation":"http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/test13.json"}'),
                        datasource='World', entity=item)
         jsonstr = '{"datasetCount":46,"datasetNames":["LandCover","WorldEarth","worldimage","Night","LandCover_1","LandCover_2","LandCover_3","Ocean","Ocean_Label","Country_Label","Continent_Label","Lakes","Rivers","Grids","continent_T","Ocean_Label_1","Countries","Capitals","OceanLabel","CountryLabel1","CountryLabel","continent_T_1","Ocean_Label_1_1","Capitals_1","Countries_1","Rivers_1","Lakes_1","Ocean_Label_2","continent_T_2","Ocean_Label_1_2","Capitals_2","Countries_2","Rivers_2","Lakes_2","Ocean_Label_3","continent_T_3","Ocean_Label_1_3","Capitals_3","Countries_3","Rivers_3","Lakes_3","Ocean_Label_4","LandCover2","test","test2","test13"],"childUriList":["http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/LandCover","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/WorldEarth","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/worldimage","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/Night","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/LandCover_1","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/LandCover_2","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/LandCover_3","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/Ocean","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/Ocean_Label","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/Country_Label","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/Continent_Label","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/Lakes","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/Rivers","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/Grids","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/continent_T","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/Ocean_Label_1","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/Countries","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/Capitals","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/OceanLabel","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/CountryLabel1","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/CountryLabel","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/continent_T_1","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/Ocean_Label_1_1","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/Capitals_1","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/Countries_1","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/Rivers_1","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/Lakes_1","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/Ocean_Label_2","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/continent_T_2","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/Ocean_Label_1_2","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/Capitals_2","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/Countries_2","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/Rivers_2","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/Lakes_2","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/Ocean_Label_3","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/continent_T_3","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/Ocean_Label_1_3","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/Capitals_3","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/Countries_3","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/Rivers_3","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/Lakes_3","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/Ocean_Label_4","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/LandCover2","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/test","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/test2","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/test13"]}'
-        self.check_api('get_datasets',
+        self.check_api(DataService.get_datasets,
                        self.baseuri + "/services/data-World/rest/data/datasources/World/datasets.json", HttpMethod.GET,
                        httpretty.Response(status=200, body=jsonstr), datasource='World')
         entity = CopyDatasetItem()
         entity.srcDatasourceName = 'World'
         entity.srcDatasetName = 'continent_T_1'
         entity.destDatasetName = 'test'
-        self.check_api('copy_dataset',
+        self.check_api(DataService.copy_dataset,
                        self.baseuri + "/services/data-World/rest/data/datasources/World/datasets.json", HttpMethod.POST,
                        httpretty.Response(status=200, body='{"succeed": true}'), datasource='World', entity=entity)
         entity = CreateDatasetItem()
         entity.datasetName = 'test2'
         entity.datasetType = DatasetType.LINE
         entity.isFileCache = False
-        self.check_api('create_dataset',
+        self.check_api(DataService.create_dataset,
                        self.baseuri + "/services/data-World/rest/data/datasources/World/datasets/test2.json",
                        HttpMethod.PUT,
                        httpretty.Response(status=200, body='{"succeed": true}'), datasource='World', dataset='test2',
                        entity=entity)
         jsonstr = '{"childUriList":["http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/LandCover/fields","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/LandCover/features","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/LandCover/domain"],"supportAttachments":false,"supportFeatureMetadatas":false,"datasetInfo":{"pixelFormat":"BIT32","maxValue":13,"description":"","type":"GRID","blockSize":256,"dataSourceName":"World","tableName":"LandCover","noValue":-9999,"minValue":0,"isReadOnly":false,"encodeType":"SGL","width":5760,"bounds":{"top":90,"left":-180,"bottom":-90,"leftBottom":{"x":-180,"y":-90},"right":180,"rightTop":{"x":180,"y":90}},"name":"LandCover","prjCoordSys":{"distanceUnit":"METER","projectionParam":null,"epsgCode":4326,"coordUnit":"DEGREE","name":"Longitude / Latitude Coordinate System---GCS_WGS_1984","projection":null,"type":"PCS_EARTH_LONGITUDE_LATITUDE","coordSystem":{"datum":{"name":"D_WGS_1984","type":"DATUM_WGS_1984","spheroid":{"flatten":0.00335281066474748,"name":"WGS_1984","axis":6378137,"type":"SPHEROID_WGS_1984"}},"unit":"DEGREE","spatialRefType":"SPATIALREF_EARTH_LONGITUDE_LATITUDE","name":"GCS_WGS_1984","type":"GCS_WGS_1984","primeMeridian":{"longitudeValue":0,"name":"Greenwich","type":"PRIMEMERIDIAN_GREENWICH"}}},"datasourceConnectionInfo":null,"height":2880}}'
-        self.check_api('get_dataset',
+        self.check_api(DataService.get_dataset,
                        self.baseuri + "/services/data-World/rest/data/datasources/World/datasets/test2.json",
                        HttpMethod.GET, httpretty.Response(status=200, body=jsonstr), datasource='World',
                        dataset='test2')
         entity = PutDatasetItem()
         entity.description = "blablablabla"
-        self.check_api('put_dataset',
+        self.check_api(DataService.put_dataset,
                        self.baseuri + "/services/data-World/rest/data/datasources/World/datasets/test2.json",
                        HttpMethod.PUT, httpretty.Response(status=200, body=jsonstr), datasource='World',
                        dataset='test2', entity=entity)
-        self.check_api('delete_dataset',
+        self.check_api(DataService.delete_dataset,
                        self.baseuri + "/services/data-World/rest/data/datasources/World/datasets/test2.json",
                        HttpMethod.DELETE, httpretty.Response(status=200, body='{"succeed": true}'), datasource='World',
                        dataset='test2')
         jsonstr = '[{"fieldNames":["SMID","SMSDRIW","SMSDRIN","SMSDRIE","SMSDRIS","SMUSERID","SMAREA","SMPERIMETER","SMGEOMETRYSIZE","SQKM","SQMI","COLOR_MAP","CAPITAL","COUNTRY","POP_1994","CONTINENT"],"fieldValues":["22","-7.433472633361816","62.35749816894531","-6.38972282409668","61.388328552246094","6","0.25430895154659083","5.743731026651685","4500","1474.69","569.38","5","示例首都a","示例国家a","47067.0","亚洲"],"geometry":{"id":22,"parts":[3],"points":[{"x":-40,"y":60},{"x":-45,"y":62},{"x":-40,"y":55},{"x":-40,"y":60}],"style":null,"type":"REGION"}},{"fieldNames":["SMID","SMSDRIW","SMSDRIN","SMSDRIE","SMSDRIS","SMUSERID","SMAREA","SMPERIMETER","SMGEOMETRYSIZE","SQKM","SQMI","COLOR_MAP","CAPITAL","COUNTRY","POP_1994","CONTINENT"],"fieldValues":["23","-7.433472633361816","62.35749816894531","-6.38972282409668","61.388328552246094","6","0.25430895154659083","5.743731026651685","4500","1474.69","569.38","5","示例首都b","示例国家b","47067.0","亚洲"],"geometry":{"id":23,"parts":[3],"points":[{"x":-40,"y":60},{"x":-45,"y":62},{"x":-40,"y":55},{"x":-40,"y":60}],"style":null,"type":"REGION","prjCoordSys":null}}]'
         features = deserializer(List[Feature])(jsonstr)
-        self.check_api('post_features',
+        self.check_api(DataService.post_features,
                        self.baseuri + "/services/data-World/rest/data/datasources/World/datasets/Countries/features.json",
                        HttpMethod.POST, httpretty.Response(status=200, body='{"succeed": true}'),
                        datasourceName='World', datasetName='Countries', entity=features, isUseBatch=True)
 
-        self.check_api('get_features',
+        self.check_api(DataService.get_features,
                        self.baseuri + "/services/data-World/rest/data/datasources/World/datasets/Countries/features.json",
                        HttpMethod.GET, httpretty.Response(status=200,
                                                           body='{"startIndex": 0,"childUriList": ["http://192.168.20.158:8090/iserver/services/data-World/rest/data/feature/0-13-0", "http://192.168.20.158:8090/iserver/services/data-World/rest/data/feature/0-13-1"], "geometryType":"REGION","featureCount": 247}'),
                        datasourceName='World', datasetName='Countries', fromIndex=3, toIndex=5)
         jsonstr = '{"fieldNames":["SMID","SMSDRIW","SMSDRIN","SMSDRIE","SMSDRIS","SMUSERID","SMGEOMETRYSIZE"],"geometry":{"texts":["北美洲"],"center":{"x":-102.51862991556618,"y":49.37313255456132},"parts":null,"style":null,"prjCoordSys":null,"textStyle":{"italicAngle":0,"shadow":false,"sizeFixed":false,"underline":false,"rotation":0,"backOpaque":false,"bold":false,"align":"MIDDLECENTER","foreColor":{"red":127,"green":127,"blue":127,"alpha":0},"italic":false,"strikeout":false,"fontName":"文泉驿微米黑","outline":true,"borderSpacingWidth":4,"backColor":{"red":255,"green":255,"blue":255,"alpha":0},"outlineWidth":1,"fontHeight":7.604914623695876,"fontWidth":0,"opaqueRate":100,"stringAlignment":"LEFT","fontScale":1,"fontWeight":0},"id":1,"type":"TEXT","rotations":[0],"partTopo":null,"points":[{"x":-102.51862991556618,"y":49.37313255456132}]},"fieldValues":["1","-114.38229","53.17559","-90.65496","45.570675","0","107"],"ID":1}'
-        self.check_api('get_feature',
+        self.check_api(DataService.get_feature,
                        self.baseuri + "/services/data-World/rest/data/datasources/World/datasets/continent_T/features/1.json",
                        HttpMethod.GET, httpretty.Response(status=200, body=jsonstr),
                        datasourceName='World', datasetName='continent_T', featureId='1')
@@ -90,33 +91,33 @@ class RESTDataTest(AbstractRESTTestCase):
         entity.geometry = Geometry()
         entity.fieldNames = []
         entity.fieldValues = []
-        self.check_api('put_feature',
+        self.check_api(DataService.put_feature,
                        self.baseuri + "/services/data-World/rest/data/datasources/World/datasets/continent_T/features/1.json",
                        HttpMethod.PUT, httpretty.Response(status=200, body='{"succeed": true}'),
                        datasourceName='World', datasetName='continent_T', featureId='1', entity='entity')
-        self.check_api('delete_feature',
+        self.check_api(DataService.delete_feature,
                        self.baseuri + "/services/data-World/rest/data/datasources/World/datasets/continent_T/features/1.json",
                        HttpMethod.DELETE, httpretty.Response(status=200, body='{"succeed": true}'),
                        datasourceName='World', datasetName='continent_T', featureId='1')
-        self.check_api('get_attachments',
+        self.check_api(DataService.get_attachments,
                        self.baseuri + "/services/data-World/rest/data/datasources/World/datasets/continent_T/features/1/attachments.json",
                        HttpMethod.GET, httpretty.Response(status=200,
                                                           body='[{"size":28002,"name":"World.bru","id":1,"contentType":"application/octet-stream"}]'),
                        datasourceName='World', datasetName='continent_T', featureId='1')
         with open('./World.zip', 'rb') as fileb:
-            self.check_api('post_attachments',
+            self.check_api(DataService.post_attachments,
                            self.baseuri + "/services/data-World/rest/data/datasources/World/datasets/continent_T/features/1/attachments.json",
                            HttpMethod.POST, httpretty.Response(status=200,
                                                                body='[{"size":28002,"name":"World.bru","id":1,"contentType":"application/octet-stream"}]'),
                            datasourceName='World', datasetName='continent_T', featureId='1', file=fileb)
-        self.check_api('get_metadata',
+        self.check_api(DataService.get_metadata,
                        self.baseuri + "/services/data-World/rest/data/datasources/World/datasets/continent_T/features/1/metadata.json",
                        HttpMethod.GET, httpretty.Response(status=200,
                                                           body='{"createTime":1436945830474,"createUser":"admin","lastEditTime":1436945830474,"lastEditUser":"admin"}'),
                        datasourceName='World', datasetName='continent_T', featureId='1')
 
         jsonstr = '{"fieldNames":["SMID","SMSDRIW","SMSDRIN","SMSDRIE","SMSDRIS","SMUSERID","SMGEOMETRYSIZE"],"geometry":{"texts":["北美洲"],"center":{"x":-102.51862991556618,"y":49.37313255456132},"parts":null,"style":null,"prjCoordSys":null,"textStyle":{"italicAngle":0,"shadow":false,"sizeFixed":false,"underline":false,"rotation":0,"backOpaque":false,"bold":false,"align":"MIDDLECENTER","foreColor":{"red":127,"green":127,"blue":127,"alpha":0},"italic":false,"strikeout":false,"fontName":"文泉驿微米黑","outline":true,"borderSpacingWidth":4,"backColor":{"red":255,"green":255,"blue":255,"alpha":0},"outlineWidth":1,"fontHeight":7.604914623695876,"fontWidth":0,"opaqueRate":100,"stringAlignment":"LEFT","fontScale":1,"fontWeight":0},"id":1,"type":"TEXT","rotations":[0],"partTopo":null,"points":[{"x":-102.51862991556618,"y":49.37313255456132}]},"fieldValues":["1","-114.38229","53.17559","-90.65496","45.570675","0","107"],"ID":1}'
-        self.check_api('get_feature_by_url',
+        self.check_api(DataService.get_feature_by_url,
                        'http://192.168.20.182:8090/iserver/services/data-World/rest/data/feature/0-19-0.json',
                        HttpMethod.GET, httpretty.Response(status=200, body=jsonstr),
                        feature_url='http://192.168.20.182:8090/iserver/services/data-World/rest/data/feature/0-19-0')
@@ -124,34 +125,34 @@ class RESTDataTest(AbstractRESTTestCase):
         entity.geometry = Geometry()
         entity.fieldNames = []
         entity.fieldValues = []
-        self.check_api('put_feature_by_url',
+        self.check_api(DataService.put_feature_by_url,
                        'http://192.168.20.182:8090/iserver/services/data-World/rest/data/feature/0-19-0.json',
                        HttpMethod.PUT, httpretty.Response(status=200, body='{"succeed": true}'),
                        feature_url='http://192.168.20.182:8090/iserver/services/data-World/rest/data/feature/0-19-0',
                        entity='entity')
-        self.check_api('delete_feature_by_url',
+        self.check_api(DataService.delete_feature_by_url,
                        'http://192.168.20.182:8090/iserver/services/data-World/rest/data/feature/0-19-0.json',
                        HttpMethod.DELETE, httpretty.Response(status=200, body='{"succeed": true}'),
                        feature_url='http://192.168.20.182:8090/iserver/services/data-World/rest/data/feature/0-19-0')
-        self.check_api('get_attachments_by_url',
+        self.check_api(DataService.get_attachments_by_url,
                        'http://192.168.20.182:8090/iserver/services/data-World/rest/data/feature/0-19-0/attachments.json',
                        HttpMethod.GET, httpretty.Response(status=200,
                                                           body='[{"size":28002,"name":"World.bru","id":1,"contentType":"application/octet-stream"}]'),
                        feature_url='http://192.168.20.182:8090/iserver/services/data-World/rest/data/feature/0-19-0')
         with open('./World.zip', 'rb') as filea:
-            self.check_api('post_attachments_by_url',
+            self.check_api(DataService.post_attachments_by_url,
                            'http://192.168.20.182:8090/iserver/services/data-World/rest/data/feature/0-19-0/attachments.json',
                            HttpMethod.POST, httpretty.Response(status=200,
                                                                body='[{"size":28002,"name":"World.bru","id":1,"contentType":"application/octet-stream"}]'),
                            feature_url='http://192.168.20.182:8090/iserver/services/data-World/rest/data/feature/0-19-0',
                            file=filea)
-        self.check_api('get_metadata_by_url',
+        self.check_api(DataService.get_metadata_by_url,
                        'http://192.168.20.182:8090/iserver/services/data-World/rest/data/feature/0-19-0/metadata.json',
                        HttpMethod.GET, httpretty.Response(status=200,
                                                           body='{"createTime":1436945830474,"createUser":"admin","lastEditTime":1436945830474,"lastEditUser":"admin"}'),
                        feature_url='http://192.168.20.182:8090/iserver/services/data-World/rest/data/feature/0-19-0')
         jsonstr = '[{"isRequired":true,"defaultValue":"","name":"SmID","caption":"SmID","type":"INT32","maxLength":4,"isZeroLengthAllowed":true,"isSystemField":true},{"isRequired":true,"defaultValue":"0","name":"SmSdriW","caption":"SmSdriW","type":"SINGLE","maxLength":4,"isZeroLengthAllowed":true,"isSystemField":true},{"isRequired":true,"defaultValue":"0","name":"SmSdriN","caption":"SmSdriN","type":"SINGLE","maxLength":4,"isZeroLengthAllowed":true,"isSystemField":true},{"isRequired":true,"defaultValue":"0","name":"SmSdriE","caption":"SmSdriE","type":"SINGLE","maxLength":4,"isZeroLengthAllowed":true,"isSystemField":true},{"isRequired":true,"defaultValue":"0","name":"SmSdriS","caption":"SmSdriS","type":"SINGLE","maxLength":4,"isZeroLengthAllowed":true,"isSystemField":true},{"isRequired":true,"defaultValue":"0","name":"SmUserID","caption":"SmUserID","type":"INT32","maxLength":4,"isZeroLengthAllowed":true,"isSystemField":false},{"isRequired":false,"defaultValue":"0","name":"SmGeometrySize","caption":"SmGeometrySize","type":"INT32","maxLength":4,"isZeroLengthAllowed":true,"isSystemField":true}]'
-        self.check_api('get_fields',
+        self.check_api(DataService.get_fields,
                        self.baseuri + "/services/data-World/rest/data/datasources/World/datasets/continent_T/fields.json",
                        HttpMethod.GET, httpretty.Response(status=200, body=jsonstr), datasourceName='World',
                        datasetName='continent_T')
@@ -164,31 +165,31 @@ class RESTDataTest(AbstractRESTTestCase):
         entity.maxLength = 20
         entity.isZeroLengthAllowed = True
         entity.isSystemField = False
-        self.check_api('post_fields',
+        self.check_api(DataService.post_fields,
                        self.baseuri + "/services/data-World/rest/data/datasources/World/datasets/continent_T/fields.json",
                        HttpMethod.POST, httpretty.Response(status=200, body='{"succeed": true}'),
                        datasourceName='World',
                        datasetName='continent_T', entity=entity)
         jsonstr = '{"childUriList":["http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/continent_T/fields/SmID/MAX","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/continent_T/fields/SmID/MIN","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/continent_T/fields/SmID/AVERAGE","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/continent_T/fields/SmID/STDDEVIATION","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/continent_T/fields/SmID/SUM","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/World/datasets/continent_T/fields/SmID/VARIANCE"],"fieldInfo":{"isRequired":true,"defaultValue":"","name":"SmID","caption":"SmID","type":"INT32","maxLength":4,"isZeroLengthAllowed":true,"isSystemField":true}}'
-        self.check_api('get_field',
+        self.check_api(DataService.get_field,
                        self.baseuri + "/services/data-World/rest/data/datasources/World/datasets/continent_T/fields/smid.json",
                        HttpMethod.GET, httpretty.Response(status=200, body=jsonstr), datasourceName='World',
                        datasetName='continent_T', field='smid')
-        self.check_api('put_field',
+        self.check_api(DataService.put_field,
                        self.baseuri + "/services/data-World/rest/data/datasources/World/datasets/continent_T/fields/smid.json",
                        HttpMethod.PUT, httpretty.Response(status=200, body='{"succeed": true}'), datasourceName='World',
                        datasetName='continent_T', field='smid', entity=entity)
-        self.check_api('delete_field',
+        self.check_api(DataService.delete_field,
                        self.baseuri + "/services/data-World/rest/data/datasources/World/datasets/continent_T/fields/smid.json",
                        HttpMethod.DELETE, httpretty.Response(status=200, body='{"succeed": true}'),
                        datasourceName='World', datasetName='continent_T', field='smid')
-        self.check_api('get_statistic',
+        self.check_api(DataService.get_statistic,
                        self.baseuri + "/services/data-World/rest/data/datasources/World/datasets/continent_T/fields/smid/MAX.json",
                        HttpMethod.GET, httpretty.Response(status=200, body='{"result":7,"mode":"MAX"}'),
                        datasourceName='World', datasetName='continent_T', field='smid',
                        statisticMode=StatisticMode.MAX.value)
         jsonstr = '{"codeCount":11,"codeInfos":[{"value":"城市","valueType":"TEXT"},{"value":"旱地","valueType":"TEXT"},{"value":"水浇地","valueType":"TEXT"},{"value":"水田","valueType":"TEXT"},{"value":"沙漠","valueType":"TEXT"},{"value":"沼泽","valueType":"TEXT"},{"value":"湖泊水库","valueType":"TEXT"},{"value":"灌丛","valueType":"TEXT"},{"value":"用材林","valueType":"TEXT"},{"value":"经济林","valueType":"TEXT"},{"value":"草地","valueType":"TEXT"}],"description":"","fieldName":"LANDTYPE","name":"LANDTYPE","type":"CODE","valueType":"TEXT"},{"description":"","fieldName":"Area","name":"Area","rangeCount":1,"rangeInfos":[{"max":"999999.0","min":"0.0","type":"CLOSE_OPEN","valueType":"SINGLE"}],"type":"RANGE","valueType":"SINGLE"}]'
-        self.check_api('get_domain',
+        self.check_api(DataService.get_domain,
                        self.baseuri + "/services/data-World/rest/data/datasources/World/datasets/continent_T/domain.json",
                        HttpMethod.GET, httpretty.Response(status=200, body=jsonstr), datasourceName='World',
                        datasetName='continent_T')
@@ -200,7 +201,7 @@ class RESTDataTest(AbstractRESTTestCase):
         bounds.leftBottom.y = 34.663401
         bounds.rightTop.x = 113.361881
         bounds.rightTop.y = 35.673401
-        self.check_api('get_gridvalues',
+        self.check_api(DataService.get_gridvalues,
                        self.baseuri + "/services/data-World/rest/data/datasources/World/datasets/continent_T/gridValues.json",
                        HttpMethod.GET, httpretty.Response(status=200, body=jsonstr), datasourceName='World',
                        datasetName='continent_T', bounds=bounds)
@@ -218,12 +219,12 @@ class RESTDataTest(AbstractRESTTestCase):
         bounds2.circle.centerPoint.y = 35.673401
         bounds2.circle.radius = 1
         entity = [bounds2, bounds]
-        self.check_api('post_gridvalues',
+        self.check_api(DataService.post_gridvalues,
                        self.baseuri + "/services/data-World/rest/data/datasources/World/datasets/continent_T/gridValues.json",
                        HttpMethod.POST, httpretty.Response(status=200, body=jsonstr), datasourceName='World',
                        datasetName='continent_T', entity=entity)
         jsonstr = '{"column":4677,"row":885,"value":11,"centerPoint":{"x":112.361881,"y":34.673401}}'
-        self.check_api('get_gridvalue',
+        self.check_api(DataService.get_gridvalue,
                        self.baseuri + "/services/data-World/rest/data/datasources/World/datasets/continent_T/gridValue.json",
                        HttpMethod.GET, httpretty.Response(status=200, body=jsonstr), datasourceName='World',
                        datasetName='continent_T', x=112.361881, y=34.673401)
@@ -235,7 +236,7 @@ class RESTDataTest(AbstractRESTTestCase):
         bounds.leftBottom.y = 34.663401
         bounds.rightTop.x = 113.361881
         bounds.rightTop.y = 35.673401
-        self.check_api('get_imagevalues',
+        self.check_api(DataService.get_imagevalues,
                        self.baseuri + "/services/data-World/rest/data/datasources/World/datasets/continent_T/imageValues.json",
                        HttpMethod.GET, httpretty.Response(status=200, body=jsonstr), datasourceName='World',
                        datasetName='continent_T', bounds=bounds)
@@ -253,27 +254,27 @@ class RESTDataTest(AbstractRESTTestCase):
         bounds2.circle.centerPoint.y = 35.673401
         bounds2.circle.radius = 1
         entity = [bounds2, bounds]
-        self.check_api('post_imagevalues',
+        self.check_api(DataService.post_imagevalues,
                        self.baseuri + "/services/data-World/rest/data/datasources/World/datasets/continent_T/imageValues.json",
                        HttpMethod.POST, httpretty.Response(status=200, body=jsonstr), datasourceName='World',
                        datasetName='continent_T', entity=entity)
         jsonstr = '{"color":{"red":74,"green":84,"blue":50,"alpha":255},"column":1663,"bounds":null,"row":314,"value":4871218,"centerPoint":{"x":112.361881,"y":34.673401}}'
-        self.check_api('get_imagevalue',
+        self.check_api(DataService.get_imagevalue,
                        self.baseuri + "/services/data-World/rest/data/datasources/World/datasets/continent_T/imageValue.json",
                        HttpMethod.GET, httpretty.Response(status=200, body=jsonstr), datasourceName='World',
                        datasetName='continent_T', x=112.361881, y=34.673401)
         jsonstr = '[{"resourceConfigID":null,"supportedMediaTypes":["application/xml","text/xml","application/json","application/fastjson","application/rjson","text/html","application/jsonp","application/x-java-serialized-object","application/geojson"],"path":"http://192.168.20.182:8090/iserver/services/data-World/rest/data/featureResults/8b9abf652a7442dab6e4b4877a09a906_8de35e1b2fe64fbfbbf6647a6caaaebb.json","name":"8b9abf652a7442dab6e4b4877a09a906_8de35e1b2fe64fbfbbf6647a6caaaebb","resourceType":"ArithResultResource"},{"resourceConfigID":null,"supportedMediaTypes":["application/xml","text/xml","application/json","application/fastjson","application/rjson","text/html","application/jsonp","application/x-java-serialized-object","application/geojson"],"path":"http://192.168.20.182:8090/iserver/services/data-World/rest/data/featureResults/8b9abf652a7442dab6e4b4877a09a906_3a3ea69440194352b4df976cb1aa40f6.json","name":"8b9abf652a7442dab6e4b4877a09a906_3a3ea69440194352b4df976cb1aa40f6","resourceType":"ArithResultResource"}]'
-        self.check_api('get_featureResults', self.baseuri + "/services/data-World/rest/data/featureResults.json",
+        self.check_api(DataService.get_featureResults, self.baseuri + "/services/data-World/rest/data/featureResults.json",
                        HttpMethod.GET, httpretty.Response(status=200, body=jsonstr))
         jsonstr = '{"postResultType":"CreateChild","newResourceID":"8b9abf652a7442dab6e4b4877a09a906_2a07c9dca97e4742898cfc6068b3f130","succeed":true,"newResourceLocation":"http://192.168.20.182:8090/iserver/services/data-World/rest/data/featureResults/8b9abf652a7442dab6e4b4877a09a906_2a07c9dca97e4742898cfc6068b3f130.json"}'
         entity = PostFeatureResultsItem()
         entity.getFeatureMode = GetFeatureMode.ID
         entity.datasetNames = ["World:Capitals"]
         entity.ids = ["1", "2", "3"]
-        self.check_api('post_featureResults', self.baseuri + "/services/data-World/rest/data/featureResults.json",
+        self.check_api(DataService.post_featureResults, self.baseuri + "/services/data-World/rest/data/featureResults.json",
                        HttpMethod.POST, httpretty.Response(status=200, body=jsonstr), entity=entity)
         jsonstr = '{"features":[],"featureUriList":["http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/name/World/datasets/name/Capitals/features/2","http://192.168.20.182:8090/iserver/services/data-World/rest/data/datasources/name/World/datasets/name/Capitals/features/3"],"totalCount":2,"featureCount":2}'
-        self.check_api('get_featureResult', self.baseuri + "/services/data-World/rest/data/featureResults/123.json",
+        self.check_api(DataService.get_featureResult, self.baseuri + "/services/data-World/rest/data/featureResults/123.json",
                        HttpMethod.GET, httpretty.Response(status=200, body=jsonstr), featureResultId='123')
         jsonstr = '{"postResultType":"CreateChild","newResourceID":"8b9abf652a7442dab6e4b4877a09a906_89ad051daecc4b38ba0fb2ae26b0dabb","succeed":true,"newResourceLocation":"http://192.168.20.182:8090/iserver/services/data-World/rest/data/coordtransfer/8b9abf652a7442dab6e4b4877a09a906_89ad051daecc4b38ba0fb2ae26b0dabb.json"}'
         entity = PostCoordtransferItem()
@@ -286,8 +287,8 @@ class RESTDataTest(AbstractRESTTestCase):
         entity.sourcePoints = [p1, p2]
         entity.sourceEpsgCode = 4326
         entity.targetEpsgCode = 3857
-        self.check_api('post_coordtransfer', self.baseuri + "/services/data-World/rest/data/coordtransfer.json",
+        self.check_api(DataService.post_coordtransfer, self.baseuri + "/services/data-World/rest/data/coordtransfer.json",
                        HttpMethod.POST, httpretty.Response(status=200, body=jsonstr), entity=entity)
         jsonstr = '[{"center":{"x":1.2688789880426234E7,"y":489371.98562014726},"parts":[1],"style":null,"prjCoordSys":null,"id":0,"type":"POINT","partTopo":null,"points":[{"x":1.2688789880426234E7,"y":489371.98562014726}]},{"center":{"x":1.257747038963296E7,"y":377793.7702294255},"parts":[1],"style":null,"prjCoordSys":null,"id":0,"type":"POINT","partTopo":null,"points":[{"x":1.257747038963296E7,"y":377793.7702294255}]}]'
-        self.check_api('get_coordtransfer', self.baseuri + "/services/data-World/rest/data/coordtransfer/123.json",
+        self.check_api(DataService.get_coordtransfer, self.baseuri + "/services/data-World/rest/data/coordtransfer/123.json",
                        HttpMethod.GET, httpretty.Response(status=200, body=jsonstr), coordtransferResult='123')

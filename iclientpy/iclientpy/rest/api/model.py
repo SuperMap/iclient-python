@@ -1,5 +1,6 @@
 from enum import Enum
 from typing import List
+from ._modeljsonutil import AbstractTypeParserSwitcherBuilder
 
 
 class DatasetType(Enum):
@@ -1229,6 +1230,9 @@ class DatasetInfo(Named):
     datasourceConnectionInfo: DatasourceConnectionInfo
 
 
+_datset_info_parser_builder = AbstractTypeParserSwitcherBuilder(DatasetInfo, 'type')
+
+
 class PixelFormat(Enum):
     BIT8 = 'BIT8'
     BIT16 = 'BIT16'
@@ -1247,6 +1251,7 @@ class PixelFormat(Enum):
 
 
 @default_init
+@_datset_info_parser_builder(DatasetType.GRID.name)
 class DatasetGridInfo(DatasetInfo):
     blockSize: int
     height: int
@@ -1271,6 +1276,7 @@ class ColorSpaceType(Enum):
 
 
 @default_init
+@_datset_info_parser_builder(DatasetType.IMAGE.name)
 class DatasetImageInfo(DatasetInfo):
     blockSize: int
     height: int
@@ -1315,6 +1321,7 @@ class Charset(Enum):
 
 
 @default_init
+@_datset_info_parser_builder(DatasetType.POINT.name, DatasetType.LINE.name, DatasetType.REGION.name)
 class DatasetVectorInfo(DatasetInfo):
     isFileCache: bool
     charset: Charset
@@ -1329,11 +1336,6 @@ class ArcGISDatasetVectorInfo(DatasetVectorInfo):
 @default_init
 class WFSDatasetInfo(DatasetVectorInfo):
     crsCode: str
-
-
-@default_init
-class SpatialDatasetInfo(DatasetInfo):
-    datasetName: str
 
 
 @default_init
@@ -2033,32 +2035,8 @@ class CopyDatasetItem:
 
 
 @default_init
-class RestDatasetInfo:
-    @default_init
-    class DatasetInfo(Named):
-        name: str
-        description: str
-        type: DatasetType
-        bounds: Rectangle2D
-        dataSourceName: str
-        encodeType: EncodeType
-        isReadOnly: bool
-        prjCoordSys: PrjCoordSys
-        tableName: str
-        charset: Charset
-        isFileCache: bool
-        recordCount: int
-        blockSize: int
-        height: int
-        width: int
-        pixelFormat: PixelFormat
-        isMultiBand: bool
-        # palette: List[str]
-
-
-@default_init
 class GetDatasetResult:
-    datasetInfo: RestDatasetInfo
+    datasetInfo: DatasetInfo
     childUriList: List[str]
 
 
@@ -2988,3 +2966,5 @@ class OnlineDataShareSetting:
 class OnlineMapShareSetting:
     ids: List[str]
     entities: List[MapShareSetting]
+
+_datset_info_parser_builder.build_and_regist()
