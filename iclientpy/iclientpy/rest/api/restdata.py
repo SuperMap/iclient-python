@@ -55,9 +55,9 @@ class DataService:
         pass
 
     @post('/data/datasources/{datasourceName}/datasets/{datasetName}/features', entityKW='entity',
-          queryKWs=['isUseBatch', 'returnContent', '_method'])
+          queryKWs=['isUseBatch', 'returnContent'])
     def post_features(self, datasourceName: str, datasetName: str, entity: List[Feature], isUseBatch: bool = None,
-                      returnContent: bool = None, _method: str = None) -> MethodResult:
+                      returnContent: bool = None) -> MethodResult:
         pass
 
     @get('/data/datasources/{datasourceName}/datasets/{datasetName}/features', queryKWs=['fromIndex', 'toIndex'])
