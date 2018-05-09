@@ -447,18 +447,19 @@ class iPortalAPIFactory:
 
 
 def create_sso_auth(url: str, username: str, passwd: str, token: str, proxies=None) -> AuthBase:
-    SSO_URL = 'https://sso.supermap.com/login'
-    params = {'format': 'json'}
-    params.update({'service': url})
-    session = requests.session()
-    lt_res = session.get(SSO_URL, params=params, proxies=proxies, allow_redirects=False)
-    params.update(json.loads(lt_res.content))
-    params.update({"username": username, "password": passwd})
-    ticket_res = session.post(SSO_URL, params=params, proxies=proxies, allow_redirects=False)
-    url = ticket_res.headers["location"]
-    online_res = session.get(url, proxies=proxies, allow_redirects=False)
-    online_jsessionid = online_res.cookies[default_session_cookie_name]
-    return CookieAuth(online_jsessionid)
+    if username is not None and passwd is not None:
+        SSO_URL = 'https://sso.supermap.com/login'
+        params = {'format': 'json'}
+        params.update({'service': url})
+        session = requests.session()
+        lt_res = session.get(SSO_URL, params=params, proxies=proxies, allow_redirects=False)
+        params.update(json.loads(lt_res.content))
+        params.update({"username": username, "password": passwd})
+        ticket_res = session.post(SSO_URL, params=params, proxies=proxies, allow_redirects=False)
+        url = ticket_res.headers["location"]
+        online_res = session.get(url, proxies=proxies, allow_redirects=False)
+        online_jsessionid = online_res.cookies[default_session_cookie_name]
+        return CookieAuth(online_jsessionid)
 
 
 class OnlineAPIFactory:

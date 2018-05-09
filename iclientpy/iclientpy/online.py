@@ -25,7 +25,7 @@ class OnlineBaseLayerType(Enum):
 
 
 class Online:
-    def __init__(self, username: str, password: str):
+    def __init__(self, username: str = None, password: str = None):
         self._online = OnlineAPIFactory('https://www.supermapol.com', username, password)
 
     @typeassert
