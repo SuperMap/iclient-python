@@ -21,4 +21,4 @@ class AbstractTypeParserSwitcherBuilder:
         return wrap
 
     def build_and_regist(self):
-        register(self._clz, AbstractTypeParserSwitcher(self._field_name, self._parsers))
+        register(self._clz, AbstractTypeParserSwitcher(self._field_name, self._parsers, parser(self._clz)))

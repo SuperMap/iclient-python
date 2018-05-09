@@ -257,12 +257,15 @@ class AbstractTypeParserSwitcher:
     _field_name: str
     _parsers: {}
 
-    def __init__(self, field_name: str, parsers: dict):
+    def __init__(self, field_name: str, parsers: dict, default_parser = None):
         self._field_name = field_name
         self._parsers = parsers
+        self._default_parser = default_parser
 
     def __call__(self, json_obj: dict, *args):
         if json_obj is None:
             return None
         parser = self._parsers.get(json_obj.get(self._field_name, None), None)
-        return None if parser is None else parser(json_obj, *args)
+        if parser is not None:
+            return parser(json_obj, *args)
+        return None if self._default_parser  is None else self._default_parser(json_obj, *args)
