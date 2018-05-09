@@ -11,6 +11,13 @@ class ServiceComponentType(Enum):
     distributedanalysis='com.supermap.processing.jobserver.ProcessingServer'
 
 
+class ServiceInterfaceType(Enum):
+    rest = 'com.supermap.services.rest.RestServlet'
+    restjsr = 'com.supermap.services.rest.JaxrsServletForJersey'
+    handler = 'com.supermap.services.handler.HandlerServlet'
+    wcs = 'com.supermap.services.wcs.WCSServlet'
+
+
 class ServicesPage:
 
     @get('/services')
