@@ -122,5 +122,5 @@ class TestEnumParser(TestCase):
         with self.assertRaises(Exception) as cm:
             from iclientpy.dtojson import EnumParser
             EnumParser(C)('notexist')
-        self.assertIn('CC', cm.exception.__repr__())
+        self.assertIn(C.CC.name, cm.exception.__repr__())
         self.assertIn('notexist', cm.exception.__repr__())
