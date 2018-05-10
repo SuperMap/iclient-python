@@ -14,7 +14,6 @@ class AbstractTypeParserSwitcherBuilder:
 
     def __call__(self, *field_values):
         def wrap(sub_class: type):
-            sub_class_parser = parser(sub_class)
             for field_value in field_values:
                 self._parsers[field_value] = parser(sub_class)
             return sub_class
