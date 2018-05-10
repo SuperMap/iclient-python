@@ -65,25 +65,31 @@ def _translate_method_docstrings(method):
         method.__doc__ = _translate(method.__doc__)
 
 
+def _filter_translate_member(parent):
+    def verify(item):
+        name, member = item
+        return not _is_private(name) and _is_iclientpy_module(member) and _is_current_module_member(parent, member)
+
+    return verify
+
+
 def _translate_class_docstrings(clz):
     _t_builder.clz_name(clz.__name__)
     clz.__doc__ = _translate(clz.__doc__)
-    for name, member in inspect.getmembers(clz):
-        if not _is_private(name) and _is_iclientpy_module(member) and _is_current_module_member(clz, member):
-            if inspect.isfunction(member) or inspect.ismethod(member):
-                _translate_method_docstrings(member)
+    for name, member in list(filter(_filter_translate_member(clz), inspect.getmembers(clz))):
+        if inspect.isfunction(member) or inspect.ismethod(member):
+            _translate_method_docstrings(member)
 
 
 def _translate_module_docstrings(mo):
     _t_builder.module_name(mo.__name__)
     mo.__doc__ = _translate(mo.__doc__)
-    for name, member in inspect.getmembers(mo):
-        if not _is_private(name) and _is_iclientpy_module(member) and _is_current_module_member(mo, member):
-            if inspect.isclass(member):
-                _translate_class_docstrings(member)
-            elif inspect.ismethod(member) or inspect.isfunction(member):
-                _t_builder.clz_name(None)
-                _translate_method_docstrings(member)
+    for name, member in list(filter(_filter_translate_member(mo), inspect.getmembers(mo))):
+        if inspect.isclass(member):
+            _translate_class_docstrings(member)
+        elif inspect.ismethod(member) or inspect.isfunction(member):
+            _t_builder.clz_name(None)
+            _translate_method_docstrings(member)
 
 
 def i18n():
