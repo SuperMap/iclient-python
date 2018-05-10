@@ -2,10 +2,14 @@ from typing import Callable, Dict, Tuple
 from iclientpy.rest.api.servicespage import ServiceMetaInfo
 from iclientpy.rest.apifactory import APIFactory
 from iclientpy.rest.api.servicespage import ServiceComponentType, ServiceInterfaceType
+
+
 class ServiceUIRegister:
     _registed: Dict[Tuple[str, str], Tuple[str, type]]
+
     def __init__(self):
         self._registed = {}
+
     def __call__(self, component_type: ServiceComponentType, interface_type: ServiceInterfaceType, service_api_method: Callable):
         def wrapper(clz: type):
             self._registed[(component_type.value, interface_type.value)] = (service_api_method.__name__, clz)
@@ -20,5 +24,3 @@ class ServiceUIRegister:
         service_api_method_name, ui_clz = value
         service_api = getattr(api_factory, service_api_method_name)(service_meta_info.name)
         return ui_clz(service_api)
-
-

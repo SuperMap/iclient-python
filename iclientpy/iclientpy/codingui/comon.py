@@ -1,4 +1,6 @@
 from typing import Callable
+
+
 class NamedObjects:
 
     def __repr__(self):
@@ -13,6 +15,7 @@ class NamedObjects:
 
 class Option:
     _select_callback: Callable
+
     def __init__(self, select_callback: Callable, confirm_method_name: str = None):
         self._select_callback = select_callback
         if confirm_method_name is not None:
