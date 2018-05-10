@@ -2954,6 +2954,7 @@ class ServiceMetaInfo:
 @default_init
 class ChildResourceInfo:
     name: str
+    path: str
 
 
 @default_init

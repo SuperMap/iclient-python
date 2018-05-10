@@ -72,3 +72,31 @@ class DataServiceUI:
             options['no_action_available'] = None
 
 
+from iclientpy.rest.api.restmap import MapService
+
+
+@ui_class_register(ServiceComponentType.map, ServiceInterfaceType.rest, APIFactory.map_service)
+class MapServiceUI:
+    _map_service: MapService
+
+    def __init__(self, map_service: MapService):
+        self._map_service = map_service
+
+    def _create_map_widget(self, map_name: str, path: str):
+        map_info = self._map_service.get_map(map_name)
+        bounds = map_info.bounds
+        from iclientpy.jupyter.widgets.mapview import MapView
+        from iclientpy.jupyter.widgets.tilemaplayer import TileMapLayer
+        default_tiles = TileMapLayer(url=path)
+        map = MapView(default_tiles=default_tiles, crs='EPSG' + str(map_info.prjCoordSys.epsgCode),
+                          fit_bounds=[[bounds.leftBottom.y, bounds.leftBottom.x],
+                                      [bounds.rightTop.y, bounds.rightTop.x]])
+        return map
+    @property
+    def maps(self):
+        result = NamedObjects()
+        map_resources = self._map_service.get_map_resources()
+        for map_resource in map_resources:
+            map_name = map_resource.name
+            result[map_name] = self._create_map_widget(map_name, map_resource.path)
+        return result
