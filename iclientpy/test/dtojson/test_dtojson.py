@@ -116,6 +116,12 @@ class TestDTOJson(TestCase):
             my_list: typing.List[typing.List[alias]]
         deserializer(Kls) #不抛出异常就算过
 
+    def test_generator(self):
+        def generate():
+            for i in range(10):
+                yield  i
+        to_json_str(generate())
+
 
 class TestEnumParser(TestCase):
     def test_key_error(self):

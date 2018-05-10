@@ -24,7 +24,7 @@ def is_primitive(o) -> bool:
 
 def to_dict_or_list(obj):
     clz = type(obj)
-    if clz is list:
+    if clz is list or hasattr(obj, '__next__'):
         result = []
         for e in obj:
             result.append(to_dict_or_list(e))
