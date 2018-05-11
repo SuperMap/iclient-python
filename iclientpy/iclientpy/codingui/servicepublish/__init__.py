@@ -6,24 +6,7 @@ from iclientpy.codingui.comon import NamedObjects
 from iclientpy.rest.api.model import PostWorkspaceParameter, ServiceType
 
 
-def get_workspace_with_optionms(post_workspace: Callable):
-    return PrepareWorkspacePublish(post_workspace)
-
-
 class PrepareWorkspacePublish:
-    _post_workspace: Callable
-
-    def __init__(self, post_workspace: Callable):
-        self._post_workspace = post_workspace
-
-    def publish(self):
-        return WorkspacePublish(self._post_workspace)
-
-    def __call__(self, *args, **kwargs):
-        return WorkspacePublish(self._post_workspace)
-
-
-class WorkspacePublish:
     _post_entity: PostWorkspaceParameter
     _service_types_options: NamedObjects
     _executor: Callable
@@ -68,7 +51,6 @@ class WorkspacePublish:
         self._clear_workspace_info()
         workspace = NamedObjects()
         self._add_workspace_info_kv('type', 'SQL')
-        # self._add_workspace_info_kv('driver', 'SQL Server')
         workspace['set_server_name'] = partial(self._add_workspace_info_kv, 'server')
         workspace['set_workspace_name'] = partial(self._add_workspace_info_kv, 'name')
         workspace['set_database_name'] = partial(self._add_workspace_info_kv, 'database')
@@ -82,7 +64,6 @@ class WorkspacePublish:
         self._clear_workspace_info()
         workspace = NamedObjects()
         self._add_workspace_info_kv('type', 'PGSQL')
-        # self._add_workspace_info_kv('driver', 'pgSQL Server')
         workspace['set_server_name'] = partial(self._add_workspace_info_kv, 'server')
         workspace['set_workspace_name'] = partial(self._add_workspace_info_kv, 'name')
         workspace['set_database_name'] = partial(self._add_workspace_info_kv, 'database')

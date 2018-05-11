@@ -26,10 +26,21 @@ tokentool_a = Analysis(['iclientpy/rest/cmd/obaintoken.py'],
              excludes=[],
              win_no_prefer_redirects=False,
              win_private_assemblies=False,
-             cipher=block_cipher)		 
+             cipher=block_cipher)
+initserver_a = Analysis(['iclientpy/rest/cmd/initserver.py'],
+             pathex=['.'],
+             binaries=[],
+             datas=[],
+             hiddenimports=[],
+             hookspath=[],
+             runtime_hooks=[],
+             excludes=[],
+             win_no_prefer_redirects=False,
+             win_private_assemblies=False,
+             cipher=block_cipher)
 		
 		
-MERGE( (cachetool_a, 'cachetool', 'cachetool'), (tokentool_a, 'tokentool', 'tokentool') )
+MERGE( (cachetool_a, 'cachetool', 'cachetool'), (tokentool_a, 'tokentool', 'tokentool'), (initserver_a,'initserver','initserver') )
 
 
 cachetool_pyz = PYZ(cachetool_a.pure, cachetool_a.zipped_data, cipher=block_cipher)
@@ -66,6 +77,23 @@ tokentool_coll = COLLECT(tokentool_exe,
                strip=False,
                upx=True,
                name='tokentool')
+
+initserver_pyz = PYZ(initserver_a.pure, initserver_a.zipped_data, cipher=block_cipher)
+initserver_exe = EXE(initserver_pyz,
+          initserver_a.scripts,
+          exclude_binaries=True,
+          name='initserver',
+          debug=False,
+          strip=False,
+          upx=True,
+          console=True )
+initserver_coll = COLLECT(initserver_exe,
+               initserver_a.binaries,
+               initserver_a.zipfiles,
+               initserver_a.datas,
+               strip=False,
+               upx=True,
+               name='initserver')
 		  
 
 

@@ -181,6 +181,7 @@ setup_args = {
         'console_scripts': [
             'icpy-cachetool = iclientpy.rest.cmd.updatecache:main',
             'icpy-tokentool = iclientpy.rest.cmd.obaintoken:main',
+            'icpy-initserver = iclientpy.rest.cmd.initserver:main'
         ],
     },
     'author': 'SuperMap',

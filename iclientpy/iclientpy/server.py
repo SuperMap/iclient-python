@@ -6,7 +6,7 @@ from .rest.api.servicespage import ServicesPage, ServiceComponentType
 from .codingui.servicespage import get_services_by_component_type
 from .rest.api.model import ServiceMetaInfo
 from iclientpy.codingui.comon import NamedObjects
-from iclientpy.codingui.servicepublish import get_workspace_with_optionms
+from iclientpy.codingui.servicepublish import PrepareWorkspacePublish
 from iclientpy.codingui.servicespage import ui_class_register
 
 
@@ -33,7 +33,6 @@ class Server:
                                          self._apifactory.map_service)
         else:
             self._get_bigdatas = lambda: '服务不可用'
-        self._post_workspace = partial(get_workspace_with_optionms, self._apifactory.management().post_workspaces)
 
     @property
     def bigdatas(self):
@@ -53,6 +52,5 @@ class Server:
     def service_names(self) -> List[str]:
         return [meta_info.name for meta_info in self._services_page.list_services()]
 
-    @property
-    def workspace(self):
-        return self._post_workspace()
+    def prepare_workspace_for_publish(self):
+        return PrepareWorkspacePublish(self._apifactory.management().post_workspaces)
