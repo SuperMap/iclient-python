@@ -1,6 +1,6 @@
 from unittest import TestCase
 from unittest.mock import MagicMock
-from iclientpy.codingui.comon import Option
+from iclientpy.codingui.comon import Option, NamedObjects
 
 
 class TestCommon(TestCase):
@@ -11,3 +11,13 @@ class TestCommon(TestCase):
         callback.assert_called()
         option()
         self.assertEqual(callback.call_count, 2)
+
+    def test_NamedObjects(self):
+        named = NamedObjects()
+        named['a'] = object()
+        named['b'] = object()
+        self.assertIs(named[0], named.a)
+        self.assertIs(named[1], named.b)
+
+        named['a'] = object()
+        self.assertIs(named[0], named.a)

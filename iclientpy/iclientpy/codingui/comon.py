@@ -1,16 +1,29 @@
-from typing import Callable
+from typing import Callable,Dict
 
 
 class NamedObjects:
+    _key_index: Dict[str, int]
+    _index_key: Dict[int, str]
+    _index: int
+
+    def __init__(self):
+        self._key_index = {}
+        self._index_key = {}
+        self._index = 0
 
     def __repr__(self):
-        return list(self.__dict__.keys()).__repr__()
+        array = ['{index}:{key}'.format(index= str(index), key=key) for index, key in self._index_key.items()]
+        return '\n'.join(array)
 
     def __setitem__(self, key, value):
         self.__dict__[key] = value
+        if not key in self._key_index:
+            self._key_index[key] = self._index
+            self._index_key[self._index] = key
+            self._index += 1
 
     def __getitem__(self, key):
-        return self.__dict__[key]
+        return self.__dict__[self._index_key[key]] if isinstance(key, int) else self.__dict__[key]
 
 
 class Option:
