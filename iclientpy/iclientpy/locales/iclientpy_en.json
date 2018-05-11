@@ -1,0 +1,18 @@
+{
+	"iclientpy.online.Online.search_map": "\n        search map\n        Args:\n            owners: map owner\n            tags: map tags\n            keywords: map keywords\n\n        Returns:\n            map info\n        ",
+	"iclientpy.online.Online.get_map": "\n        get map by map's id\n        Args:\n            map_id: map's id\n\n        Returns:\n            地图信息\n        ",
+	"iclientpy.online.Online.upload_data": "\n        upload data\n        Args:\n            data_name: data name\n            data_content: data stream\n            type: data type\n            callback: upload progress callback function\n\n        Returns:\n            data id\n        ",
+	"iclientpy.online.Online.upload_dataframe_as_json": "\n        upload DataFrame as json type data\n        Args:\n            data_name: data name\n            df: DataFrame content\n\n        Returns:\n\n        ",
+	"iclientpy.online.Online.search_data": "\n        search data\n        Args:\n            owners: data owner\n            tags: data tags\n            keywords: data keywords\n\n        Returns:\n            data info\n        ",
+	"iclientpy.online.Online.get_data": "\n        get data info by data id\n        Args:\n            data_id: data id\n\n        Returns:\n            data info\n        ",
+	"iclientpy.online.Online.get_data_upload_progress": "\n        get data upload progress\n        Args:\n            data_id: data id\n\n        Returns:\n\n        ",
+	"iclientpy.online.Online.create_map": "\n        create map\n        Args:\n            layers: map layers\n            epsgCode: epsg code\n            map_title: map title\n            center: map center point\n            extend: map extend\n            base_layer_type: base layer type\n            tags: map tags\n\n        Returns:\n            map id\n        ",
+    "iclientpy.online.Online.delete_map": "\n        delete map\n        Args:\n            map_id:map id\n        ",
+    "iclientpy.online.Online.delete_maps": "\n        delete multi map\n        Args:\n            map_ids: map id list\n        ",
+    "iclientpy.online.Online.delete_data": "\n        delete data\n        Args:\n            data_id: data id\n        ",
+    "iclientpy.online.Online.delete_datas": "\n        delete multi data\n        Args:\n            data_ids: data id list\n        ",
+    "iclientpy.online.Online.prepare_geojson_layer": "\n        prepare layer by geojson\n        Args:\n            data_id: geojson data id\n            layer_name: layer name\n\n        Returns:\n            Layer信息\n        ",
+	"iclientpy.online.Online.share_data": "\n        share data\n        Args:\n            data_id: data id \n            is_public: public or not\n        ",
+	"iclientpy.online.Online.share_map": "\n        share map \n        Args:\n            map_id: map id \n            is_public: public or not\n        ",
+	"iclientpy.dtojson.to_json_str": "\n   convert json object to json string\n\n   Args:\n       obj: python object\n\n   Returns:\n       string \n   "
+}

@@ -159,7 +159,7 @@ setup_args = {
             'iclientpy/static/index.js.map',
             'iclientpy/static/lib.js',
         ] + glob('iclientpy/static/*.png') + glob('iclientpy/static/*.svg') + glob(
-            'iclientpy/jupyter/chinageojson.json')),
+            'iclientpy/jupyter/chinageojson.json') + glob('iclientpy/locales/*.json')),
     ],
     'install_requires': [
         'ipywidgets==7.0.0',

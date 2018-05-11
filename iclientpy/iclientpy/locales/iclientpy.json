@@ -1,0 +1,18 @@
+{
+	"iclientpy.online.Online.search_map": "\n        查找地图\n        Args:\n            owners: 地图所有者\n            tags: 地图标签\n            keywords: 关键字\n        Returns:\n            简略的地图信息列表\n        ",
+	"iclientpy.online.Online.get_map": "\n        获取指定id的地图的详细信息\n        Args:\n            map_id: 地图的id\n\n        Returns:\n            地图信息\n        ",
+	"iclientpy.online.Online.upload_data": "\n        上传数据\n        Args:\n            data_name: 数据名称\n            data_content: 数据流\n            type: 数据类型\n            callback: 上传进度回调方法\n\n        Returns:\n            数据的id\n        ",
+	"iclientpy.online.Online.upload_dataframe_as_json": "\n        上传DataFrame为JSON类型数据\n        Args:\n            data_name: 上传后数据名称\n            df: DataFrame数据\n\n        Returns:\n\n        ",
+	"iclientpy.online.Online.search_data": "\n        查找数据\n        Args:\n            owners: 数据所有者\n            tags: 数据标签\n            keywords: 数据关键字\n\n        Returns:\n            数据信息的列表\n        ",
+	"iclientpy.online.Online.get_data": "\n        获取数据详细信息\n        Args:\n            data_id: 数据的id\n\n        Returns:\n            数据的信息\n        ",
+	"iclientpy.online.Online.get_data_upload_progress": "\n        获取数据上传进度\n        Args:\n            data_id: 数据的id\n\n        Returns:\n\n        ",
+	"iclientpy.online.Online.create_map": "\n        创建地图\n        Args:\n            layers: 地图图层\n            epsgCode: 投影编码\n            map_title: 地图名称\n            center: 地图中心点\n            extend: 地图缩放范围\n            base_layer_type: 默认底图类型\n            tags: 地图标签\n\n        Returns:\n            地图的id\n        ",
+	"iclientpy.online.Online.delete_map": "\n        删除一个地图\n        Args:\n            map_id:地图id\n        ",
+	"iclientpy.online.Online.delete_maps": "\n        删除多个地图\n        Args:\n            map_ids: 地图的id列表\n        ",
+	"iclientpy.online.Online.delete_data": "\n        删除一个数据\n        Args:\n            data_id: 数据的id\n        ",
+	"iclientpy.online.Online.delete_datas": "\n        批量删除多个数据\n        Args:\n            data_ids: 数据的id列表\n        ",
+	"iclientpy.online.Online.prepare_geojson_layer": "\n        根据上传到Online的geojson数据，生成Layer\n        Args:\n            data_id: 数据在Online中的id\n            layer_name: 图层名称\n\n        Returns:\n            Layer信息\n        ",
+	"iclientpy.online.Online.share_data": "\n        共享数据\n        Args:\n            data_id: 数据id\n            is_public: 是否公开\n        ",
+	"iclientpy.online.Online.share_map": "\n        共享地图\n        Args:\n            map_id: 地图id\n            is_public: 是否公开\n        ",
+	"iclientpy.dtojson.to_json_str": "\n   将json对象转为json字符串\n\n   Args:\n       obj: Python对象，用于转为json字符串\n\n   Returns:\n       字符串，Python对象转成的json字符串\n   "
+}

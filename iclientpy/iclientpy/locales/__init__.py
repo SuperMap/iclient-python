@@ -1,5 +1,5 @@
 from .conf import *
-
+import json
 import inspect
 
 __all__ = ['i18n']
@@ -7,9 +7,8 @@ __all__ = ['i18n']
 
 class _Translater:
     def __init__(self):
-        import importlib
-        l_module = importlib.import_module(language_module)
-        self._translate = getattr(l_module, locale_member_name)
+        with open(translate_file_path, 'r', encoding='utf-8') as translate:
+            self._translate = json.load(translate)
 
     def translate(self, key: str, default_value):
         return self._translate.get(key, default_value)
