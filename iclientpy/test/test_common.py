@@ -16,8 +16,10 @@ class TestCommon(TestCase):
         named = NamedObjects()
         named['a'] = object()
         named['b'] = object()
+        original_a = named.a
         self.assertIs(named[0], named.a)
         self.assertIs(named[1], named.b)
 
         named['a'] = object()
+        self.assertIsNot(original_a, named.a)
         self.assertIs(named[0], named.a)
