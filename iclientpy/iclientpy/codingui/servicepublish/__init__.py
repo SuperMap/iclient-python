@@ -1,6 +1,6 @@
 import json
 from functools import partial
-from typing import List, Callable
+from typing import List, Callable, Any
 from iclientpy.dtojson import to_json_str
 from iclientpy.codingui.comon import NamedObjects
 from iclientpy.rest.api.model import PostWorkspaceParameter, ServiceType
@@ -9,7 +9,7 @@ from iclientpy.rest.api.model import PostWorkspaceParameter, ServiceType
 class PrepareWorkspacePublish:
     _post_entity: PostWorkspaceParameter
     _service_types_options: NamedObjects
-    _executor: Callable
+    _executor: Callable[[PostWorkspaceParameter], Any]
     _workspace_info: List[str]
 
     def __init__(self, post_workspace: Callable):
@@ -119,5 +119,28 @@ class PrepareWorkspacePublish:
 
     def execute(self):
         self._post_entity.workspaceConnectionInfo = ';'.join(self._workspace_info)
-        services = self._executor(self._post_entity)
-        return [service.serviceAddress for service in services]
+        return self._executor(self._post_entity)
+
+
+from iclientpy.rest.api.management import Management, PostWorkspaceResultItem
+from iclientpy.rest.apifactory import APIFactory
+from ..servicespage import ui_class_register
+
+
+class PostWorkspaceExecutor:
+    _management: Management
+    _api_factory: APIFactory
+
+    def __init__(self, api_factory: APIFactory):
+        self._management = api_factory.management()
+        self._api_factory = api_factory
+
+    def __call__(self, param: PostWorkspaceParameter):
+        post_result = self._management.post_workspaces(param)  # type:List[PostWorkspaceResultItem]
+        result = NamedObjects()
+        for item in post_result:
+            service_addr = item.serviceAddress
+            service_name = service_addr[
+                           service_addr.rfind('/services/') + len('/services/'):]
+            result[service_name] = ui_class_register.new_service_ui_from_service_type(service_name=service_name, service_type=item.serviceType, api_factory=self._api_factory)
+        return result

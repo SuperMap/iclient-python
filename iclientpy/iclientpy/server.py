@@ -6,7 +6,7 @@ from .rest.api.servicespage import ServicesPage, ServiceComponentType
 from .codingui.servicespage import get_services_by_component_type
 from .rest.api.model import ServiceMetaInfo
 from iclientpy.codingui.comon import NamedObjects
-from iclientpy.codingui.servicepublish import PrepareWorkspacePublish
+from iclientpy.codingui.servicepublish import PrepareWorkspacePublish, PostWorkspaceExecutor
 from iclientpy.codingui.servicespage import ui_class_register
 
 
@@ -43,7 +43,7 @@ class Server:
         servicelist = self._services_page.list_services()  # type: List[ServiceMetaInfo]
         result = NamedObjects()
         for meta_info in servicelist:
-            ui = ui_class_register.new_service_ui(meta_info, self._apifactory)
+            ui = ui_class_register.new_service_ui_from_meta_info(meta_info, self._apifactory)
             if ui is not None:
                 result[meta_info.name] = ui
         return result
@@ -53,4 +53,4 @@ class Server:
         return [meta_info.name for meta_info in self._services_page.list_services()]
 
     def prepare_workspace_for_publish(self):
-        return PrepareWorkspacePublish(self._apifactory.management().post_workspaces)
+        return PrepareWorkspacePublish(PostWorkspaceExecutor(self._apifactory))

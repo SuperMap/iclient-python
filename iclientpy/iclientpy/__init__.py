@@ -9,6 +9,7 @@ from ._version import version_info, __version__
 from .rest import *
 from .portal import *
 from .online import *
+from .server import Server
 from ipyleaflet import *
 
 
