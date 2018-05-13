@@ -13,7 +13,7 @@ def typeassert(func):
         for name, value in bound_values.arguments.items():
             if name in func_annotations:
                 clz = _get_expect_type(func_annotations[name])
-                if not isinstance(value, clz):
+                if value is not None and not isinstance(value, clz):
                     raise TypeError(
                         'Argument {} must be {}'.format(name, func_annotations[name])
                     )

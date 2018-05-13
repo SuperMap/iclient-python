@@ -1,6 +1,6 @@
 from typing import List, Callable
 from enum import Enum
-from io import FileIO, StringIO
+from io import IOBase, StringIO
 from pandas import DataFrame
 from iclientpy.rest.apifactory import OnlineAPIFactory
 from iclientpy.rest.api.model import DataItemType, PostMyDatasItem, Layer, LayerType, SourceType, PostMapsItem, Point2D, \
@@ -67,7 +67,7 @@ class Online:
             callback(read, total)
 
     @typeassert
-    def upload_data(self, data_name: str, data_content: FileIO, type: DataItemType, callback: Callable = None):
+    def upload_data(self, data_name: str, data_content: IOBase, type: DataItemType, callback: Callable = None):
         """
         上传数据
         Args:
