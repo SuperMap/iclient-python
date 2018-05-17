@@ -91,21 +91,43 @@ def _translate_module_docstrings(mo):
             _translate_method_docstrings(member)
 
 
+import importlib
+import sys
+
+
+def _hook_iclientpy_module(mod):
+    if _is_iclientpy_module(mod):
+        if inspect.ismodule(mod):
+            _translate_module_docstrings(mod)
+        elif inspect.isclass(mod):
+            _translate_class_docstrings(mod)
+        elif inspect.ismethod(mod):
+            _translate_method_docstrings(mod)
+    return mod
+
+
+class iClientpyLoader:
+    def load_module(self, fullname):
+        icp_module = importlib.import_module(fullname)
+        _hook_iclientpy_module(icp_module)
+        return icp_module
+
+
+class iClientpyFinder:
+    def __init__(self):
+        self._skip = set()
+        self._loader = iClientpyLoader()
+
+    def find_module(self, fullname, path=None):
+        if fullname in self._skip:
+            return None
+        if 'iclientpy' in fullname:
+            self._skip.add(fullname)
+            return self._loader
+        else:
+            return None
+
+
 def i18n():
     if hook:
-        import builtins
-
-        old_import = builtins.__import__
-
-        def _new_import(*args, **kwargs):
-            result = old_import(*args, **kwargs)
-            if _is_iclientpy_module(result):
-                if inspect.ismodule(result):
-                    _translate_module_docstrings(result)
-                elif inspect.isclass(result):
-                    _translate_class_docstrings(result)
-                elif inspect.ismethod(result):
-                    _translate_method_docstrings(result)
-            return result
-
-        builtins.__import__ = _new_import
+        sys.meta_path.insert(0, iClientpyFinder())
