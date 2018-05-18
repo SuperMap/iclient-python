@@ -159,7 +159,8 @@ setup_args = {
             'iclientpy/static/index.js.map',
             'iclientpy/static/lib.js',
         ] + glob('iclientpy/static/*.png') + glob('iclientpy/static/*.svg') + glob(
-            'iclientpy/jupyter/chinageojson.json') + glob('iclientpy/locales/*.json')),
+            'iclientpy/jupyter/chinageojson.json') + glob('iclientpy/locales/*.json') + glob(
+            'iclientpy/notebook/*.ipynb')),
     ],
     'install_requires': [
         'ipywidgets==7.0.0',
@@ -181,7 +182,8 @@ setup_args = {
         'console_scripts': [
             'icpy-cachetool = iclientpy.rest.cmd.updatecache:main',
             'icpy-tokentool = iclientpy.rest.cmd.obaintoken:main',
-            'icpy-initserver = iclientpy.rest.cmd.initserver:main'
+            'icpy-initserver = iclientpy.rest.cmd.initserver:main',
+            'icpy-serverstart = iclientpy.notebook.start_server:main'
         ],
     },
     'author': 'SuperMap',

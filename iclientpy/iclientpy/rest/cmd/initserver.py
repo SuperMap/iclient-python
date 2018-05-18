@@ -58,7 +58,7 @@ def get_parser():
     require_group.add_argument('-l', '--uri', dest='address', help='服务地址，如：http://localhost:8090/iserver')
     require_group.add_argument('-u', '--user', dest='username', help='用户名')
     require_group.add_argument('-p', '--password', dest='password', help='密码')
-    require_group.add_argument('-t', '--default', dest='timeout', default=1, type=int,
+    require_group.add_argument('-t', '--timeout', dest='timeout', default=1, type=int,
                                help='超时时间，等待iServer启动的超时时间，单位为分钟')
     return parser
 
