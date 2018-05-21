@@ -4,10 +4,6 @@ from os.path import join as pjoin, abspath, dirname
 import argparse
 import sys
 
-__all__ = ['server']
-
-server = None
-
 
 def get_parser():
     parser = argparse.ArgumentParser(epilog='for more information , visit<http://iclientpy.supermap.io/>.', description="""
