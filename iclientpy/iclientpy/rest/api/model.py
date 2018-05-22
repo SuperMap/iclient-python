@@ -2762,7 +2762,7 @@ class Layer:
     bounds: Rectangle2D
     cartoCSS: str
     datasourceName: str
-    features: List[Feature]
+    # features: List[Feature]
     id: int
     identifier: str
     isVisible: bool
@@ -2967,5 +2967,6 @@ class OnlineDataShareSetting:
 class OnlineMapShareSetting:
     ids: List[str]
     entities: List[MapShareSetting]
+
 
 _datset_info_parser_builder.build_and_regist()

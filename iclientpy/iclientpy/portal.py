@@ -1,3 +1,4 @@
+import types
 from typing import List, Callable
 from enum import Enum
 from io import FileIO, StringIO
@@ -31,7 +32,16 @@ class Portal:
             简略的地图信息列表
         """
         ms = self._portal.maps_service()
-        return ms.get_maps(userNames=owners, tags=tags, keywords=keywords).content
+        contents = ms.get_maps(userNames=owners, tags=tags, keywords=keywords).content
+
+        _url = self._portal._base_url + "/../apps/viewer/"
+        for content in contents:
+            def _repr_html_(self, **kwargs):
+                return "<iframe src='" + _url + str(self.id) + "' style='width: 100%; height: 600px;'/>"
+
+            content._repr_html_ = types.MethodType(_repr_html_, content)
+
+        return contents
 
     @typeassert
     def get_map(self, map_id: str):
@@ -44,7 +54,15 @@ class Portal:
             地图信息
         """
         ms = self._portal.maps_service()
-        return ms.get_map(map_id)
+        content = ms.get_map(map_id)
+
+        _url = self._portal._base_url + "/../apps/viewer/"
+
+        def _repr_html_(self, **kwargs):
+            return "<iframe src='" + _url + str(self.id) + "' style='width: 100%; height: 600px;'/>"
+
+        content._repr_html_ = types.MethodType(_repr_html_, content)
+        return content
 
     def _monitor_upload_progress(self, data_id: str, callback: Callable = None):
         item = self.get_data(data_id)

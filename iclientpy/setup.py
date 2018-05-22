@@ -183,7 +183,8 @@ setup_args = {
             'icpy-cachetool = iclientpy.rest.cmd.updatecache:main',
             'icpy-tokentool = iclientpy.rest.cmd.obaintoken:main',
             'icpy-initserver = iclientpy.rest.cmd.initserver:main',
-            'icpy-serverstart = iclientpy.notebook.start_server:main'
+            'icpy-serverstart = iclientpy.notebook.start_server:main',
+            'icpy-onlinestart = iclientpy.notebook.start_online:main'
         ],
     },
     'author': 'SuperMap',
