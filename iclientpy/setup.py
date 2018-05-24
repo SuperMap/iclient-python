@@ -159,7 +159,7 @@ setup_args = {
             'iclientpy/static/index.js.map',
             'iclientpy/static/lib.js',
         ] + glob('iclientpy/static/*.png') + glob('iclientpy/static/*.svg') + glob(
-            'iclientpy/jupyter/chinageojson.json') + glob('iclientpy/locales/*.json') + glob(
+            'iclientpy/jupyter/chinageojson.json') + glob(
             'iclientpy/notebook/*.ipynb')),
     ],
     'install_requires': [
