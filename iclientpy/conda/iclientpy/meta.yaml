@@ -1,0 +1,41 @@
+# This file created by conda-build 3.10.3
+# ------------------------------------------------
+
+package:
+    name: iclientpy
+    version: 9.0.0
+
+source:
+    path: ../../../iclientpy
+
+build:
+    string: py36_0
+    always_include_files:
+        - ../../../iclientpy/static
+
+requirements:
+    build:
+        - pytest 3.5.1 py36_0
+        - pytest-runner 4.2 py36_0
+        - python 3.6.5 h0c2934d_0
+        - python-dateutil 2.7.3 py36_0
+        - python-utils 2.3.0 py36_0
+        - sphinx
+    run:
+        - ipywidgets ==7.0.0
+        - pandas ==0.20.3
+        - progressbar2 ==3.34.3
+        - geojson ==2.3.0
+        - ipyleaflet ==0.5.3
+        - python >=3.6,<3.7.0a0
+        - requests ==2.18.4
+        - geopandas ==0.3.0
+        - lxml ==4.2.1
+        - beautifulsoup4 ==4.6.0
+
+about:
+    home: https://github.com/SuperMap/iclient-python
+    summary: iclient for jupyter
+extra:
+    copy_test_source_files: true
+    final: true

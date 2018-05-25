@@ -12,6 +12,7 @@ iClientPy: SuperMap iClient Python
 
    guide
    geticlientpy
+   installanacondaicpy
    jupyter
    restapi
    tool
