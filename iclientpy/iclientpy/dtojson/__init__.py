@@ -172,13 +172,15 @@ class ListParser:
         return result
 
 
+_str_str_typing_dict = typing.Dict[str,str]
+
 def parser(clz: type, field_parser: typing.Dict[typing.Tuple[type, str], typing.Callable] = {},
            type_parser: typing.Dict[type, typing.Callable] = {}):
     if clz in primitive_types:
         return _primitive_parser
     if issubclass(clz, Enum):
         return EnumParser(clz)
-    if clz == dict:
+    if clz == dict or clz is _str_str_typing_dict:
         return _dict_parser
     if issubclass(clz, list):
         if not isinstance(clz, typing.GenericMeta):

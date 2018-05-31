@@ -130,3 +130,16 @@ class TestEnumParser(TestCase):
             EnumParser(C)('notexist')
         self.assertIn(C.CC.name, cm.exception.__repr__())
         self.assertIn('notexist', cm.exception.__repr__())
+
+
+from typing import Dict
+
+
+def return_dict() -> Dict[str, str]:
+    pass
+
+class test_dict(TestCase):
+    def test(self):
+        import inspect
+        deserializer(inspect.getfullargspec(return_dict).annotations.get('return', None))('{"Path":"/home/supermap/supermap-iserver-9.0.1a-linux64-deploy/webapps/iserver"}')
+        # 不抛出异常就算过
