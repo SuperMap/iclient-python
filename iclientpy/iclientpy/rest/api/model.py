@@ -1026,6 +1026,14 @@ class RestMngTileStorageInfo:
 
 
 @default_init
+class RestMngFileListItem:
+    fileName: str
+    filePath: str
+    fileSize: int
+    isDirectory: bool
+
+
+@default_init
 class ContextSetting:
     driver_memory: str
     executor_memory: str

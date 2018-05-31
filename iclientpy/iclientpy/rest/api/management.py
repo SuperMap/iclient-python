@@ -1,3 +1,4 @@
+from typing import Dict
 from ..decorator import post, get, put, delete, head
 from .model import *
 from .abstracttypefields import mng_service_info_deserializer
@@ -61,6 +62,10 @@ class Management:
     def get_service(self, service_name: str) -> MngServiceInfo:
         pass
 
+    @get('/manager/filemanager', fixed_queryKWs={'path': './', 'mode': 'editRelativePath'})
+    def get_home_path(self) -> Dict[str, str]:
+        pass
+
     @get('/manager/filemanager/uploadtasks')
     def get_fileuploadtasks(self) -> List[GetFileUploadResult]:
         pass
@@ -76,6 +81,10 @@ class Management:
 
     @get('/manager/filemanager/uploadtasks/{id}')
     def get_fileuploadtask(self, id: str) -> GetFileUploadTaskResult:
+        pass
+
+    @get('/manager/filemanager/list', queryKWs=['path'])
+    def get_file_list(self, path: str, filters: str) -> List[RestMngFileListItem]:
         pass
 
     @get('/manager/datastores')
