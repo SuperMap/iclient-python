@@ -4,6 +4,8 @@ from typing import List, Callable, Any
 from iclientpy.dtojson import to_json_str
 from iclientpy.codingui.comon import NamedObjects
 from iclientpy.rest.api.model import PostWorkspaceParameter, ServiceType
+from iclientpy.rest.api.management import Management
+from .remotefilebrowser import RemoteFileBrowser, File
 
 
 class PrepareWorkspacePublish:
@@ -11,20 +13,29 @@ class PrepareWorkspacePublish:
     _service_types_options: NamedObjects
     _executor: Callable[[PostWorkspaceParameter], Any]
     _workspace_info: List[str]
+    _mng: Management
 
-    def __init__(self, post_workspace: Callable):
+    def __init__(self, post_workspace: Callable, mng: Management):
         self._post_entity = PostWorkspaceParameter()
         self._post_entity.servicesTypes = []
         self._service_types_options = NamedObjects()
         self._init_servicetype([ServiceType.RESTMAP, ServiceType.RESTDATA])
         self._executor = post_workspace
         self._workspace_info = []
+        self._mng = mng
+
+    def _attach_file_explorer(self, file_workspace):
+        class SelectableFile(File):
+            def select(self_file):
+                file_workspace.set_path(self_file.path)
+        file_workspace.get_file_explorer = lambda : RemoteFileBrowser(mng=self._mng,file_clz=SelectableFile)
 
     def use_file_workspace(self):
         self._clear_workspace_info()
         workspace = NamedObjects()
         workspace['set_path'] = partial(self._add_workspace_info)
         setattr(self, 'workspace', workspace)
+        self._attach_file_explorer(workspace)
         return self
 
     def use_file_workspace_with_password(self):
@@ -32,6 +43,7 @@ class PrepareWorkspacePublish:
         file_workspace = NamedObjects()
         file_workspace['set_path'] = partial(self._add_workspace_info_kv, 'server')
         file_workspace['set_password'] = partial(self._add_workspace_info_kv, 'password')
+        self._attach_file_explorer(file_workspace)
         setattr(self, 'workspace', file_workspace)
         return self
 

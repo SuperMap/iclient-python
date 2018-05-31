@@ -5,7 +5,7 @@ from iclientpy.codingui.servicepublish import PrepareWorkspacePublish
 class WorkspacePublishTestCase(TestCase):
     def test_file_workspace(self):
         post_func = mock.MagicMock()
-        wsp = PrepareWorkspacePublish(post_func)
+        wsp = PrepareWorkspacePublish(post_func, None)
         wsp.use_file_workspace()
         self.assertTrue(hasattr(wsp.workspace, 'set_path'))
         wsp.workspace.set_path('test')
@@ -25,7 +25,7 @@ class WorkspacePublishTestCase(TestCase):
 
     def test_file_workspace_with_password(self):
         post_func = mock.MagicMock()
-        wsp = PrepareWorkspacePublish(post_func)
+        wsp = PrepareWorkspacePublish(post_func, None)
         wsp.use_file_workspace_with_password()
         self.assertTrue(hasattr(wsp.workspace, 'set_path'))
         self.assertTrue(hasattr(wsp.workspace, 'set_password'))
@@ -43,9 +43,28 @@ class WorkspacePublishTestCase(TestCase):
 }""")
         post_func.assert_called_once()
 
+    def test_select_file(self):
+        post_func = mock.MagicMock()
+        mng = mock.MagicMock()
+        wsp = PrepareWorkspacePublish(post_func, mng)
+        wsp.use_file_workspace()
+        mng.get_home_path = mock.MagicMock(return_value={'Path':'/iserver'})
+        world_file = mock.MagicMock()
+        world_file.isDirectory = False
+        world_file.name = 'world.sxwu'
+        world_file.filePath = '/iserver/world.sxwu'
+        mng.get_file_list = mock.MagicMock(return_value=[world_file])
+
+        explorer = wsp.workspace.get_file_explorer()
+        explorer[0].select()
+        self.assertEqual(str(wsp), """{
+  "servicesTypes": [],
+  "workspaceConnectionInfo": "/iserver/world.sxwu"
+}""")
+
     def test_oracle_workspace(self):
         post_func = mock.MagicMock()
-        wsp = PrepareWorkspacePublish(post_func)
+        wsp = PrepareWorkspacePublish(post_func, None)
         wsp.use_oracle_workspace()
         self.assertTrue(hasattr(wsp.workspace, 'set_server_name'))
         self.assertTrue(hasattr(wsp.workspace, 'set_workspace_name'))
@@ -71,7 +90,7 @@ class WorkspacePublishTestCase(TestCase):
 
     def test_sql_workspace(self):
         post_func = mock.MagicMock()
-        wsp = PrepareWorkspacePublish(post_func)
+        wsp = PrepareWorkspacePublish(post_func, None)
         wsp.use_sql_workspace()
         self.assertTrue(hasattr(wsp.workspace, 'set_server_name'))
         self.assertTrue(hasattr(wsp.workspace, 'set_workspace_name'))
@@ -99,7 +118,7 @@ class WorkspacePublishTestCase(TestCase):
 
     def test_pgsql_workspace(self):
         post_func = mock.MagicMock()
-        wsp = PrepareWorkspacePublish(post_func)
+        wsp = PrepareWorkspacePublish(post_func, None)
         wsp.use_pgsql_workspace()
         self.assertTrue(hasattr(wsp.workspace, 'set_server_name'))
         self.assertTrue(hasattr(wsp.workspace, 'set_workspace_name'))

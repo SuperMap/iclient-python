@@ -53,4 +53,4 @@ class Server:
         return [meta_info.name for meta_info in self._services_page.list_services()]
 
     def prepare_workspace_for_publish(self):
-        return PrepareWorkspacePublish(PostWorkspaceExecutor(self._apifactory))
+        return PrepareWorkspacePublish(PostWorkspaceExecutor(self._apifactory), self._apifactory.management())
