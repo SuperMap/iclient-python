@@ -24,6 +24,7 @@ def main(cmd):
         shutil.copytree(os.path.join(output_dir, cur_platform_name), cur_platform_dir)
         filename = [name for name in os.listdir(cur_platform_dir) if name.endswith('bz2') and 'iclientpy' in name][0]
         convert_from = os.path.join(cur_platform_dir, filename)
+        # 经测试conda-build版本3.0.19,3.10.5执行convert时都会报错，3.0.27正常。其它版本未测试。
         get_ipython().system('conda convert -o {channel_dir} -p all {convert_from}')
         return
     if cmd == 'indexchannel':
