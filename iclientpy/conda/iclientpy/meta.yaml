@@ -27,7 +27,7 @@ requirements:
         - progressbar2 ==3.34.3
         - geojson ==2.3.0
         - ipyleaflet ==0.5.3
-        - python >=3.6,<3.7.0a0
+        - python >=3.6.4,<3.7.0a0
         - requests ==2.18.4
         - geopandas ==0.3.0
         - lxml ==4.2.1

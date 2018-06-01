@@ -18,7 +18,7 @@ get_ipython().system('conda index {channel_dir}')
 noarch_dir = os.path.join(channel_dir, 'noarch')
 get_ipython().system('conda index {noarch_dir}')
 import tarfile
-with tarfile.open(os.path.join(conda_build_dir, 'conda-package.tar'), 'w') as zipf:
+with tarfile.open(os.path.join(conda_build_dir, 'iclientpy-conda-package.tar'), 'w') as zipf:
     for root,dirs,files in os.walk(channel_dir):
         for file in files:
             zipf.add(os.path.join(root, file), os.path.relpath(os.path.join(root, file), conda_build_dir))
