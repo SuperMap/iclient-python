@@ -5,9 +5,9 @@ import shutil
 import pathlib
 conda_build_dir = os.path.abspath(os.path.join(sys.argv[0], os.pardir))
 output_dir = os.path.join(conda_build_dir, 'output')
-if pathlib.Path(output_dir).exists():
-    shutil.rmtree(output_dir)
-get_ipython().system('conda build -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/ --output-folder {output_dir} iclientpy')
+#if pathlib.Path(output_dir).exists():
+#    shutil.rmtree(output_dir)
+#get_ipython().system('conda build -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/ --output-folder {output_dir} iclientpy')
 cur_platform_name = [name for name in os.listdir(output_dir) if name != 'noarch'][0]
 channel_dir = os.path.join(conda_build_dir, 'channel')
 if pathlib.Path(channel_dir).exists():
