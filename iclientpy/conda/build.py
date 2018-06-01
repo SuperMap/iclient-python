@@ -15,7 +15,7 @@ if pathlib.Path(channel_dir).exists():
 cur_platform_dir = os.path.join(channel_dir, cur_platform_name)
 pathlib.Path(channel_dir).mkdir(parents=True, exist_ok=True)
 shutil.copytree(os.path.join(output_dir, cur_platform_name), cur_platform_dir)
-filename = [name for name in os.listdir(cur_platform_dir) if name.endswith('bz2')][0]
+filename = [name for name in os.listdir(cur_platform_dir) if name.endswith('bz2') and 'iclientpy' in name][0]
 convert_from = os.path.join(cur_platform_dir, filename)
 get_ipython().system('conda convert -o {channel_dir} -p all {convert_from}')
 get_ipython().system('conda index {channel_dir}')
