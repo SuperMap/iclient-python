@@ -41,15 +41,11 @@ iClientPy初探
 
         conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/
         conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/
-        conda config --add channels conda-forge
+        conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/
         conda config --set show_channel_urls yes
 
-15. 下载iclientpy离线包
-16. 执行命令：conda index /path/to/iclientpychannel (可以是相对路径)
-17. 执行命令：conda index /path/to/iclientpychannel/noarch (可以是相对路径)
-18. 执行命令：conda search -c D:/path/to/iclientpychannel --override-channel
-19. 执行命令：conda install -c D:/path/to/iclientpychannel iclientpy
-20. 执行命令在jupyter notebook中启用iclientpy
+15. 执行命令：conda install -c http://iclientpy.supermap.io/conda/channel iclientpy （第一次安装耗时会比较久）
+16. 执行命令在jupyter notebook中启用iclientpy
 
     ::
 

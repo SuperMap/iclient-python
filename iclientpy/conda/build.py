@@ -5,7 +5,7 @@ conda_build_dir = os.path.abspath(os.path.join(sys.argv[0], os.pardir))
 output_dir = os.path.join(conda_build_dir, 'output')
 get_ipython().system('conda build -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/ --output-folder {output_dir} iclientpy')
 import pathlib
-cur_platform_name = [name for name in os.listdir('./output') if name != 'noarch'][0]
+cur_platform_name = [name for name in os.listdir(output_dir) if name != 'noarch'][0]
 channel_dir = os.path.join(conda_build_dir, 'channel')
 cur_platform_dir = os.path.join(channel_dir, cur_platform_name)
 pathlib.Path(channel_dir).mkdir(parents=True, exist_ok=True)
