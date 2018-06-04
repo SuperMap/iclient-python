@@ -27,12 +27,11 @@ def main(cmd):
         # 经测试conda-build版本3.0.19,3.10.5执行convert时都会报错，3.0.27正常。其它版本未测试。
         get_ipython().system('conda convert -o {channel_dir} -p all {convert_from}')
         return
-    if cmd == 'indexchannel':
-        get_ipython().system('conda index {channel_dir}')
-        return
-    if cmd == 'indexnoarch':
-        noarch_dir = os.path.join(channel_dir, 'noarch')
-        get_ipython().system('conda index {noarch_dir}')
+    if cmd == 'index':
+        paths = [os.path.join(channel_dir, dir) for dir in os.listdir(channel_dir)]
+        paths.append(channel_dir)
+        all_path = ' '.join(paths)
+        get_ipython().system('conda index {all_path}')
         return
     if cmd == 'tar':
         tar_file_path = os.path.join(conda_build_dir, 'iclientpy-conda-package.tar')
