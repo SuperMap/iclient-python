@@ -3,15 +3,25 @@
 
 iClientPy正在开发中，如果你有意试用，可以通过两个途径获取：
 
-    * 检出源代码本地安装： **需要确保本地的python环境为3.6.x**
+    * 从Anaconda安装
 
-        1. 从https://github.com/SuperMap/iclient-python下载代码或者复制git地址，通过git客户端复制代码到本地
-        2. 打开命令行，进入到代码文件夹内
-        3. 执行命令pip install -r requirements.txt安装依赖
-        4. 执行命令python setup.py install进行安装
-        5. 执行命令pip list，检查iclientpy是否已经安装
-        6. 执行命令jupyter nbextension install --py --symlink --sys-prefix iclientpy为jupyter安装扩展
-        7. 执行命令jupyter nbextension enable --py --sys-prefix iclientpy启动扩展
+        1. 如果没有Anaconda环境，参考  :ref:`iClientPy从零开始` 进行安装，已经存在Anaconda环境，跳过该步骤
+        2. 配置清华源（也可是国内其他镜像源）以及第三方库的依赖源
+
+            ::
+
+                conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/
+                conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/
+                conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/
+                conda config --set show_channel_urls yes
+
+        3. 执行命令：conda install -c http://iclientpy.supermap.io/conda/channel iclientpy （第一次安装耗时会比较久）
+        4. 执行命令在jupyter notebook中启用iclientpy
+
+            ::
+
+                jupyter nbextension install --py --symlink --sys-prefix iclientpy
+                jupyter nbextension enable --py --sys-prefix iclientpy
 
     * 从docker镜像启动
 

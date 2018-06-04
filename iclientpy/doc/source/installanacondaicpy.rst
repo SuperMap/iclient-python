@@ -1,7 +1,7 @@
-iClientPy初探
+iClientPy从零开始
 ===============================
 
-1. 从 `链接 <https://www.anaconda.com/download/#windows>`_ 下载Windows版本Anaconda安装包，选择Python 3.6版本
+1. 从 `链接 <https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/>`_ 下载Anaconda3安装包，建议使用最新的
 2. 双击安装包进入安装想到进行安装
 
     .. image:: _static/anaconda_init.png
@@ -19,7 +19,11 @@ iClientPy初探
 
     .. image:: _static/anaconda_path.png
 
-7. 选择是否将Anaconda加入PATH环境变量中，将Anaconda加入环境变量，可以方便的在命令行里面直接使用Anaconda所包含命令，否则，需要从开始菜单中Anaconda Prompt中进入命令行才能使用Anaconda包含命令
+7. 选择是否将Anaconda加入PATH环境变量中，可参考如下方式进行选择：
+
+        * 打开cmd窗口，执行命令 python -V
+        * 如能正常输出python版本信息，则不建议加入环境变量，否则建议加入环境变量
+
 8. 选择是否将Anaconda注册为默认的python环境
 9. 点击Install
 
@@ -30,11 +34,11 @@ iClientPy初探
 
     .. image:: _static/anaconda_vscode.png
 
-12. 根据需要，选择是否学习Anaconda，点击finish
+12. 将所有复选框勾选去掉，点击finish
 
     .. image:: _static/anaconda_finish.png
 
-13. 根据第7步的选择，打开cmd或者Anaconda Prompt，执行命令conda -V python -V，检查是否安装成功
+13. 根据第7步的选择，打开cmd或者Anaconda Prompt，执行命令conda -V 和 python -V，检查是否安装成功
 14. 配置清华源以及第三库依赖源：在上一步打开窗口中执行：
 
     ::
