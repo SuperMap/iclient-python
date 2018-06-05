@@ -29,7 +29,8 @@ def main(cmd):
         return
     if cmd == 'index':
         paths = [os.path.join(channel_dir, dir) for dir in os.listdir(channel_dir)]
-        paths.append(channel_dir)
+        paths.insert(0, channel_dir)
+        paths.insert(0, os.path.join(channel_dir, 'noarch'))
         all_path = ' '.join(paths)
         get_ipython().system('conda index {all_path}')
         return
