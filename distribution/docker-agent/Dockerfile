@@ -19,7 +19,8 @@ RUN . /opt/conda/etc/profile.d/conda.sh && conda activate base \
     && conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/ \
     && conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/ \
     && conda config --set show_channel_urls yes \
-    && conda install -y teamcity-messages pyinstaller ipython conda-build=3.0.27 sphinx==1.7.2 coverage
+    && conda install -y pyinstaller ipython conda-build=3.0.27 sphinx==1.7.2 coverage \
+	&& pip install teamcity-messages
 	
 RUN apt-get update \
 && apt-get install -y nodejs npm \
