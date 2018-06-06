@@ -17,7 +17,7 @@ requirements:
     build:
         - pytest 3.5.1 py36_0
         - pytest-runner 4.2 py36_0
-        - python 3.6.5 h0c2934d_0
+        - python 3.6.5
         - python-dateutil 2.7.3 py36_0
         - python-utils 2.3.0 py36_0
         - sphinx
