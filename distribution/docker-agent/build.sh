@@ -1,2 +1,2 @@
 #!/bin/bash -e
-docker build -t supermap/iclientpy-teamcity-agent .
+docker build -t supermap/iclientpy-teamcity-agent:20180606 .
