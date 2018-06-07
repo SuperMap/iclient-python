@@ -2,14 +2,13 @@ from notebook.notebookapp import main as nbmain
 from os.path import join as pjoin, abspath, dirname, exists
 import argparse
 import sys
+import shutil
 
 
 def get_parser():
     parser = argparse.ArgumentParser(epilog='for more information , visit<http://iclientpy.supermap.io/>.', description="""
-                Online启动示范代码
+                iclientpy使用引导
             """)
-    parser.add_argument('-u', '--user', dest='username', help='用户名')
-    parser.add_argument('-p', '--password', dest='password', help='密码')
     parser.add_argument('--dir', dest='notebook_dir', default='.', help='notebook目录')
     parser.add_argument('--ip', dest='ip', default='localhost', help='notebook服务ip')
     parser.add_argument('--port', dest='port', default=8888, type=int, help='notebook服务端口')
@@ -26,11 +25,6 @@ def main(argv=sys.argv[1:]):
         notebook_dir = d['notebook_dir']
         ip = d['ip']
         port = d['port']
-        param = []
-        if "username" in d:
-            param.append(d["username"])
-        if "password" in d:
-            param.append(d["password"])
 
         if notebook_dir == '.':
             if not exists(pjoin(notebook_dir, "iclientpy")):
@@ -40,11 +34,14 @@ def main(argv=sys.argv[1:]):
                 while exists(pjoin(notebook_dir, "iclientpy-%s" % i)):
                     i += 1
                 notebook_dir = ".\iclientpy-%s" % i
-        with open(pjoin(abspath(dirname(__file__)), 'online_template.ipynb'), mode='r', encoding='utf8') as src:
-            with open(pjoin(notebook_dir, 'preliminary_online.ipynb'), mode='w+', encoding='utf8') as tar:
-                for line in src.readlines():
-                    line = line.replace('{param}', ','.join(["'" + p + "'" for p in param]))
-                    tar.write(line)
+
+        current_path = abspath(dirname(__file__))
+        sample_path = pjoin(current_path, '..', 'sample')
+        shutil.copytree(sample_path, notebook_dir)
+        template_path = pjoin(current_path, 'iclientpy_template.ipynb')
+        tgt_path = pjoin(notebook_dir, 'iclientpy_start.ipynb')
+        shutil.copy(template_path, tgt_path)
+
         sys.argv = sys.argv[:1]
         nbmain(notebook_dir=notebook_dir, ip=ip, port=port)
     except SystemExit as err:

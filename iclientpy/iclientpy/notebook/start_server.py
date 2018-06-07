@@ -1,6 +1,6 @@
 from notebook.notebookapp import main as nbmain
 from iclientpy.server import Server
-from os.path import join as pjoin, abspath, dirname
+from os.path import join as pjoin, abspath, dirname, exists
 import argparse
 import sys
 
@@ -51,6 +51,14 @@ def main(argv=sys.argv[1:]):
             first_map_name = map_name
             break
 
+        if notebook_dir == '.':
+            if not exists(pjoin(notebook_dir, "iclientpy")):
+                notebook_dir = '.\iclientpy'
+            else:
+                i = 1
+                while exists(pjoin(notebook_dir, "iclientpy-%s" % i)):
+                    i += 1
+                notebook_dir = ".\iclientpy-%s" % i
         with open(pjoin(abspath(dirname(__file__)), 'server_template.ipynb'), mode='r', encoding='utf8') as src:
             with open(pjoin(notebook_dir, 'preliminary_server.ipynb'), mode='w+', encoding='utf8') as tar:
                 for line in src.readlines():

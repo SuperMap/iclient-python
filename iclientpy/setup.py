@@ -159,8 +159,7 @@ setup_args = {
             'iclientpy/static/index.js.map',
             'iclientpy/static/lib.js',
         ] + glob('iclientpy/static/*.png') + glob('iclientpy/static/*.svg') + glob(
-            'iclientpy/jupyter/chinageojson.json') + glob(
-            'iclientpy/notebook/*.ipynb')),
+            'iclientpy/jupyter/chinageojson.json') + glob('iclientpy/notebook/*.ipynb') + glob('iclientpy/sample/*'))
     ],
     'install_requires': [
         'ipywidgets==7.0.0',
@@ -184,7 +183,8 @@ setup_args = {
             'icpy-tokentool = iclientpy.rest.cmd.obaintoken:main',
             'icpy-initserver = iclientpy.rest.cmd.initserver:main',
             'icpy-serverstart = iclientpy.notebook.start_server:main',
-            'icpy-onlinestart = iclientpy.notebook.start_online:main'
+            'icpy-onlinestart = iclientpy.notebook.start_online:main',
+            'icpy-iclientpystart = iclientpy.notebook.start_iclientpy:main'
         ],
     },
     'author': 'SuperMap',
@@ -207,4 +207,17 @@ setup_args = {
     ],
 }
 
+
+def copy_sample():
+    import shutil
+    from os.path import join as pjoin, dirname, abspath, exists
+    current_path = abspath(dirname(__file__))
+    src_path = pjoin(current_path, 'sample')
+    tgt_path = pjoin(current_path, 'iclientpy', 'sample')
+    if exists(tgt_path):
+        shutil.rmtree(tgt_path)
+    shutil.copytree(src_path, tgt_path)
+
+
+copy_sample()
 setup(**setup_args)

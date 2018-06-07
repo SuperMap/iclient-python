@@ -15,7 +15,14 @@ iClientPy正在开发中，如果你有意试用，可以通过两个途径获�
                 conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/
                 conda config --set show_channel_urls yes
 
-        3. 执行命令：conda install -c http://iclientpy.supermap.io/conda/channel iclientpy （第一次安装耗时会比较久）
+        3. 执行下面命令
+
+            ::
+
+                conda install -c http://iclientpy.supermap.io/conda/channel iclientpy
+
+            **提醒：** 第一次安装耗时会比较久
+
         4. 执行命令在jupyter notebook中启用iclientpy
 
             ::
@@ -25,8 +32,19 @@ iClientPy正在开发中，如果你有意试用，可以通过两个途径获�
 
     * 从docker镜像启动
 
-        1. 执行命令docker pull docker pull registry.cn-beijing.aliyuncs.com/iclientpy/iclientpy-jupyter-notebook拉取最新的iClientPy的jupyterhub镜像
-        2. 执行命令docker run --name {containername} -p {port}:8888 docker pull registry.cn-beijing.aliyuncs.com/iclientpy/iclientpy-jupyter-notebook，{containername}为创建后docker容器名称，{port}为docker宿主机上未被占用端口
+        1. 执行下面命令拉取最新的iClientPy的jupyterhub镜像
+
+            ::
+
+                docker pull docker pull registry.cn-beijing.aliyuncs.com/iclientpy/iclientpy-jupyter-notebook
+
+        2. 执行下面命令
+
+            ::
+
+                docker run --name {containername} -p {port}:8888 docker pull registry.cn-beijing.aliyuncs.com/iclientpy/iclientpy-jupyter-notebook
+
+            其中，{containername}为创建后docker容器名称，{port}为docker宿主机上未被占用端口
         3. 访问http://{ip}:{port}
 
             **注意：** 该服务默认需要token登录，可以通过命令 docker logs {containername}查看notebook日志获取token
