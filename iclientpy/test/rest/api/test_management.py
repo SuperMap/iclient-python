@@ -2,7 +2,8 @@ import httpretty
 from unittest import mock
 from iclientpy.rest.api.management import *
 from iclientpy.rest.decorator import HttpMethod
-from iclientpy.rest.api.management import PostTileJobsItem, TileSize, OutputFormat, TileType, TileSourceInfo
+from iclientpy.rest.api.model import PostTileJobsItem, TileSize, OutputFormat, TileType, TileSourceInfo,ServiceType,MapConfig,MongoDBTilesourceInfo,SMTilesTileSourceInfo, \
+Rectangle2D,Point2D
 from .abstractrest import AbstractRESTTestCase
 
 

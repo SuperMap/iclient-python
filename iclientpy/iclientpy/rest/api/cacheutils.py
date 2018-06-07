@@ -1,5 +1,4 @@
-from .management import TileSourceInfo, SMTilesTileSourceInfo
-from .model import SMTilesMapProviderSetting, FastDFSTileProviderSetting, MongoDBTileProviderSetting, OTSTileProviderSetting, UGCV5TileProviderSetting, GeoPackageMapProviderSetting
+from .model import TileSourceInfo,SMTilesTileSourceInfo,SMTilesMapProviderSetting, FastDFSTileProviderSetting, MongoDBTileProviderSetting, OTSTileProviderSetting, UGCV5TileProviderSetting, GeoPackageMapProviderSetting
 from os import path as ospath
 from io import BufferedIOBase
 import requests

@@ -4,10 +4,10 @@ import uuid
 import os
 from typing import List
 import progressbar
-from iclientpy.rest.api.model import Rectangle2D, Point2D
-from iclientpy.rest.api.management import Management, ServiceType, TileSize, OutputFormat, PostWorkspaceParameter, \
+from iclientpy.rest.api.model import Rectangle2D, Point2D, ServiceType, TileSize, OutputFormat, PostWorkspaceParameter, \
     PostTileJobsItem, BuildState, PostTilesetUpdateJobs, SMTilesTileSourceInfo, TilesetExportJobRunState, TileType, \
     TileSourceInfo
+from iclientpy.rest.api.management import Management
 from iclientpy.rest.api.model import PostFileUploadTasksParam, FileUploadState
 from iclientpy.rest.apifactory import APIFactory
 from .cacheutils import provider_setting_to_tile_source_info
