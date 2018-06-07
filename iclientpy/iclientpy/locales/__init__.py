@@ -8,8 +8,11 @@ __all__ = ['i18n']
 class _Translater:
     def __init__(self):
         import importlib
-        l_module = importlib.import_module(language_module)
-        self._translate = getattr(l_module, locale_member_name)
+        try:
+            l_module = importlib.import_module(language_module)
+            self._translate = getattr(l_module, locale_member_name)
+        except:
+            self._translate = {}
 
     def translate(self, key: str, default_value):
         return self._translate.get(key, default_value)
