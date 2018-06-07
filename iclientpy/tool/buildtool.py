@@ -39,7 +39,7 @@ def main():
     cachetool_dir = os.path.join(rootdir, 'dist', 'cachetool')
     initserver_dir = os.path.join(rootdir, 'dist', 'initserver')
     delete_dirs([icpy_dir, tokentool_dir, cachetool_dir])
-    pyinstaller_cmd = ['pyinstaller', '--clean', '-c', 'icpy.spec']
+    pyinstaller_cmd = ['pyinstaller', '--clean', '-y', '-c', 'icpy.spec']
     subprocess.check_call(pyinstaller_cmd, cwd=rootdir)
     for dir in [tokentool_dir, initserver_dir]:
         for root, dirs, files in os.walk(dir):
