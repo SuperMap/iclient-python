@@ -17,23 +17,81 @@ def __to_geojson_point(s_geo: icp_model.Geometry):
 
 def __from_geojson_point(geo):
     geometry = icp_model.Geometry()
-    geometry.id = 2
     geometry.points = []
-    geometry.parts = None
+    geometry.parts = []
     geometry.partTopo = None
+    geometry.type = icp_model.GeometryType.POINT
     if isinstance(geo, geojson.Point):
-        geometry.type = icp_model.GeometryType.POINT
+        geometry.parts.append(1)
         p = icp_model.Point2D()
         p.x = geo['coordinates'][0]
         p.y = geo['coordinates'][1]
         geometry.points.append(p)
     elif isinstance(geo, geojson.MultiPoint):
-        # TODO 不确定完全可行，后续实际验证
+        for x, y in geo['coordinates']:
+            geometry.parts.append(1)
+            p = icp_model.Point2D()
+            p.x = x
+            p.y = y
+            geometry.points.append(p)
+    return geometry
+
+
+def __from_geojson_line(geo):
+    geometry = icp_model.Geometry()
+    geometry.points = []
+    geometry.parts = []
+    geometry.partTopo = None
+    geometry.type = icp_model.GeometryType.LINE
+    if isinstance(geo, geojson.LineString):
+        geometry.parts.append(len(geo['coordinates']))
         for x, y in geo['coordinates']:
             p = icp_model.Point2D()
             p.x = x
             p.y = y
-        geometry.points.append(p)
+            geometry.points.append(p)
+    elif isinstance(geo, geojson.MultiLineString):
+        for line in geo['coordinates']:
+            geometry.parts.append(len(line))
+            for x, y in line:
+                p = icp_model.Point2D()
+                p.x = x
+                p.y = y
+                geometry.points.append(p)
+    return geometry
+
+
+def __from_geojson_polygon(geo):
+    geometry = icp_model.Geometry()
+    geometry.points = []
+    geometry.parts = []
+    geometry.partTopo = []
+    geometry.type = icp_model.GeometryType.REGION
+    if isinstance(geo, geojson.Polygon):
+        with_holes = len(geo['coordinates']) > 1
+        index = 0
+        for polygon in geo['coordinates']:
+            geometry.parts.append(len(polygon))
+            geometry.partTopo.append(-1 if with_holes and index % 2 == 1 else 1)
+            index += 1
+            for x, y in polygon:
+                p = icp_model.Point2D()
+                p.x = x
+                p.y = y
+                geometry.points.append(p)
+    elif isinstance(geo, geojson.MultiPolygon):
+        for s_polygon in geo['coordinates']:
+            with_holes = len(s_polygon) > 1
+            index = 0
+            for polygon in s_polygon:
+                geometry.parts.append(len(polygon))
+                geometry.partTopo.append(-1 if with_holes and index % 2 == 1 else 1)
+                index += 1
+                for x, y in polygon:
+                    p = icp_model.Point2D()
+                    p.x = x
+                    p.y = y
+                    geometry.points.append(p)
     return geometry
 
 
@@ -43,6 +101,10 @@ def from_geojson_feature(geo):
     s_feature.fieldValues = list(geo['properties'].values())
     if type(geo['geometry']) in (geojson.Point, geojson.MultiPoint):
         s_feature.geometry = __from_geojson_point(geo['geometry'])
+    elif type(geo['geometry']) in (geojson.LineString, geojson.MultiLineString):
+        s_feature.geometry = __from_geojson_line(geo['geometry'])
+    elif type(geo['geometry']) in (geojson.Polygon, geojson.MultiPolygon):
+        s_feature.geometry = __from_geojson_polygon(geo['geometry'])
     return s_feature
 
 
