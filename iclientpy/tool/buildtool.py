@@ -47,10 +47,10 @@ def main():
                 shutil.copy(os.path.join(dir, file), cachetool_dir)
     sysstr = platform.system()
     if (sysstr == "Windows"):
-        tool_file = os.path.join(rootdir, 'tool', 'tool.zip')
+        tool_file = os.path.join(rootdir, 'tool', 'icpy-tools.zip')
         task = window_task
     elif (sysstr == "Linux"):
-        tool_file = os.path.join(rootdir, 'tool', 'tool.tar')
+        tool_file = os.path.join(rootdir, 'tool', 'icpy-tools.tar')
         task = linux_task
     else:
         raise Exception('操作系统暂不支持')

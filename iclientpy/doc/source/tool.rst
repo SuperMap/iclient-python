@@ -1,6 +1,17 @@
 命令行工具
 ======================
-这部分主要介绍iclientpy中所默认提供的命令行工具
+这部分主要介绍iclientpy中所提供的命令行工具
+
+没有你想要的工具的话，点 `这里 <https://github.com/SuperMap/iclient-python/issues>`_ 告诉开发人员。
+
+这些命令行工具可以完成特定的任务。
+安装iClient Python的时候这些命令行工具会一起安装。
+如果只想使用这些命令行工具而不想安装iClient Python，或者是想在没有Python环境的机器上使用这些命令行工具，也可以下载独立运行包。
+
+`点击下载win64命令行工具 <http://iclientpy.supermap.io/downloads/icpy-tools.zip>`_
+
+`点击下载linux64命令行工具 <http://iclientpy.supermap.io/downloads/icpy-tools.tar>`_
+
 
 * token工具_
 * 缓存工具_

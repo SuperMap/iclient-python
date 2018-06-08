@@ -59,7 +59,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'iClientPy'
-copyright = '版权所有 © 2000-2017 北京超图软件股份有限公司 京ICP备11032883号-8 京公网安备11010502008721'
+copyright = '版权所有 © 2000-2018 北京超图软件股份有限公司 京ICP备11032883号-8 京公网安备11010502008721'
 author = 'SuperMap'
 
 # The version info for the project you're documenting, acts as replacement for

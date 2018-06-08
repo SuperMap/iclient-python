@@ -22,9 +22,9 @@ iClientPy 是超图云 GIS 客户端 Python SDK。
 
 2018年6月，敬请期待！
 
-有想要的功能你可以点 `这里 <https://github.com/SuperMap/iclient-python/issues>`_ 告诉开发人员，觉得开发人员太渣渣也可以撸起袖子自己写，iClientPy开源哒。
+有想要的功能你可以点 `这里 <https://github.com/SuperMap/iclient-python/issues>`_ 告诉开发人员，觉得开发人员太渣渣也可以撸起袖子自己写，`iClientPy开源 <https://github.com/SuperMap/iclient-python>`_ 哒。
 
-不懂Python？ :doc:`简单了解一下 </hellopython>`，很简单很好玩很有用很强大。
+不懂Python？ 那也没关系，iClientPy提供了一些不依赖于Python运行环境的命令行小工具， :doc:`去看看 </tool>` 有没有用得上的。
 
 用 iClientPy 能做什么？
 
