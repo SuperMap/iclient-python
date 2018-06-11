@@ -16,6 +16,7 @@ iClientPy: SuperMap iClient Python
    jupyter
    restapi
    tool
+   bigdata
    API 参考 <./api/modules>
 
 iClientPy 是超图云 GIS 客户端 Python SDK。

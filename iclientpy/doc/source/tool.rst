@@ -15,6 +15,7 @@
 
 * token工具_
 * 缓存工具_
+* iServer初始化工具_
 
 token工具
 ******************
@@ -25,7 +26,9 @@ icpy-tokentool
 
 对服务http://localhost:8090/iserver生成一个不做任何客户端验证的60分钟的token
 
-icpy-tokentool -l http://localhost:8090/iserver -u admin -p iserver -c NONE -e 60
+    ::
+
+        icpy-tokentool -l http://localhost:8090/iserver -u admin -p iserver -c NONE -e 60
 
 详细参数：
 
@@ -51,7 +54,9 @@ recache
 
 对服务map-World的World地图进行切图，且新的缓存存储在id是m的存储位置
 
-icpy-cachetool recache -l http://localhost:8090/iserver -t {tokenstr} -c map-World -m World -s m
+    ::
+
+        icpy-cachetool recache -l http://localhost:8090/iserver -t {tokenstr} -c map-World -m World -s m
 
 **注：** {tokenstr}为占位字符串，生成token字符串请参考：token工具_
 
@@ -74,11 +79,15 @@ cache
 
 从本地的工作空间zip压缩包对map-smtiles-World服务的World地图进行全图缓存更新
 
-icpy-cachetool cache -l http://localhost:8090/iserver -t {tokenstr} -c map-smtiles-World -w C:\World.zip -m World -o '-180,90' -b '-180,-90,180,90'
+    ::
+
+        icpy-cachetool cache -l http://localhost:8090/iserver -t {tokenstr} -c map-smtiles-World -w C:\World.zip -m World -o '-180,90' -b '-180,-90,180,90'
 
 从map-World服务对对map-smtiles-World服务的World地图进行全图缓存更新
 
-icpy-cachetool cache -l http://localhost:8090/iserver -t {tokenstr} -c map-smtiles-World -m World -o '-180,90' -b '-180,-90,180,90' --source-component map-World --update
+    ::
+
+        icpy-cachetool cache -l http://localhost:8090/iserver -t {tokenstr} -c map-smtiles-World -m World -o '-180,90' -b '-180,-90,180,90' --source-component map-World --update
 
 **注：** {tokenstr}为占位字符串，生成token字符串请参考：token工具_
 
@@ -104,6 +113,27 @@ icpy-cachetool cache -l http://localhost:8090/iserver -t {tokenstr} -c map-smtil
 --source-component SOURCE_COMPONENT_NAME    缓存更新数据来源服务
 --update    更新服务缓存，与--source-component搭配使用
 -h, --help    查看帮助
+
+
+
+iServer初始化工具
+***************************
+对为进行初始化的iServer服务进行初始化
+
+示例：
+
+对地址是 http://localhost:8090/iserver 的iServer进行初始化，初始化用户名为supermap，密码为supermap
+
+    ::
+
+        icpy-initserver -l http://localhost:8090/iserver -u supermap -p supermap
+
+详细参数：
+
+-l ADDRESS, --uri ADDRESS   服务地址，如：http://localhost:8090/iserver
+-u USERNAME, --user USERNAME    用户名
+-p PASSWORD, --password PASSWORD    密码
+-t TIMEOUT, --timeout TIMEOUT   超时时间，等待iServer启动的超时时间，单位为分钟
 
 
 

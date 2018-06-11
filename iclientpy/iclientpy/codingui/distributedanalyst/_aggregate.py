@@ -145,7 +145,7 @@ def attach(executor: Callable[[PostAgggregatePointsEntity], Any], dataset_and_fi
                        ]
 
         options.prepare_summary_region_aggregate = lambda :SummaryRegion(name, field_names, region_dataset_names, executor)
-        options.prepare_summary_messh_aggregate = lambda :SummaryMesh(name, field_names, executor)
+        options.prepare_summary_mesh_aggregate = lambda :SummaryMesh(name, field_names, executor)
 
 
 from ._runningjob import RunningJob
