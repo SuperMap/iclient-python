@@ -12,7 +12,8 @@ RUN conda install -y python=3.6 && conda clean -yt
 RUN mkdir /iclientpy
 ADD ./sample /iclientpy/sample
 ADD ./iclientpy-conda-package.tar /tmp/
-RUN conda install -c /tmp/channel iclientpy -y \
+RUN conda install json-c=0.12.1 \
+&& conda install -c /tmp/channel iclientpy -y \
 && conda clean -yt \
 && jupyter nbextension install --py --symlink --sys-prefix iclientpy \
 && jupyter nbextension enable --py --sys-prefix iclientpy \
