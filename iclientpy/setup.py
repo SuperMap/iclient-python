@@ -208,16 +208,4 @@ setup_args = {
 }
 
 
-def copy_sample():
-    import shutil
-    from os.path import join as pjoin, dirname, abspath, exists
-    current_path = abspath(dirname(__file__))
-    src_path = pjoin(current_path, 'sample')
-    tgt_path = pjoin(current_path, 'iclientpy', 'sample')
-    if exists(tgt_path):
-        shutil.rmtree(tgt_path)
-    shutil.copytree(src_path, tgt_path)
-
-
-copy_sample()
 setup(**setup_args)
