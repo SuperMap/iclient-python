@@ -19,7 +19,7 @@ iClientPy正在开发中，如果你有意试用，可以通过两个途径获�
 
             ::
 
-                conda install -c http://iclientpy.supermap.io/conda/channel iclientpy
+                conda install -y -c http://iclientpy.supermap.io/conda/channel iclientpy
 
             **提醒：** 第一次安装耗时会比较久
 
