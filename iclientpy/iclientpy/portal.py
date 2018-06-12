@@ -23,6 +23,7 @@ class Portal:
     def search_map(self, owners: List[str] = None, tags: List[str] = None, keywords: List[str] = None):
         """
         查找地图
+
         Args:
             owners: 地图所有者
             tags: 地图标签
@@ -47,6 +48,7 @@ class Portal:
     def get_map(self, map_id: str):
         """
         获取指定id的地图的详细信息
+
         Args:
             map_id: 地图的id
 
@@ -78,6 +80,7 @@ class Portal:
     def upload_data(self, data_name: str, data_content: FileIO, type: DataItemType, callback: Callable = None):
         """
         上传数据
+
         Args:
             data_name: 数据名称
             data_content: 数据流
@@ -102,11 +105,10 @@ class Portal:
     def upload_dataframe_as_json(self, data_name: str, df: DataFrame, callback: Callable = None):
         """
         上传DataFrame为JSON类型数据
+
         Args:
             data_name: 上传后数据名称
             df: DataFrame数据
-
-        Returns:
 
         """
         with StringIO(df.to_json()) as dff:
@@ -116,6 +118,7 @@ class Portal:
     def search_data(self, owners: List[str] = None, tags: List[str] = None, keywords: List[str] = None):
         """
         查找数据
+
         Args:
             owners: 数据所有者
             tags: 数据标签
@@ -131,6 +134,7 @@ class Portal:
     def get_data(self, data_id: str):
         """
         获取数据详细信息
+
         Args:
             data_id: 数据的id
 
@@ -143,6 +147,7 @@ class Portal:
     def get_data_upload_progress(self, data_id: str):
         """
         获取数据上传进度
+
         Args:
             data_id: 数据的id
 
@@ -179,6 +184,7 @@ class Portal:
                    base_layer_type: BaseLayerType = BaseLayerType.DEFAULT, tags: List[str] = None):
         """
         创建地图
+
         Args:
             layers: 地图图层
             epsgCode: 投影编码
@@ -214,6 +220,7 @@ class Portal:
     def delete_map(self, map_id: str):
         """
         删除一个地图
+
         Args:
             map_id:地图id
         """
@@ -232,6 +239,7 @@ class Portal:
     def delete_data(self, data_id: str):
         """
         删除一个数据
+
         Args:
             data_id: 数据的id
         """
@@ -241,6 +249,7 @@ class Portal:
     def delete_datas(self, data_ids: List[str]):
         """
         批量删除多个数据
+
         Args:
             data_ids: 数据的id列表
         """
@@ -251,6 +260,7 @@ class Portal:
     def prepare_geojson_layer(self, data_id: str, layer_name: str):
         """
         根据上传到iportal的geojson数据，生成Layer
+
         Args:
             data_id: 数据在iPortal中的id
             layer_name: 图层名称
@@ -276,6 +286,7 @@ class Portal:
     def search_group(self, owners: List[str] = None, tags: List[str] = None, keywords: List[str] = None):
         """
         查找群组
+
         Args:
             owners: 群组创建者
             tags: 群组标签
@@ -290,6 +301,7 @@ class Portal:
     def get_data_sharesetting(self, data_id: str):
         """
         获取数据的共享权限
+
         Args:
             data_id: 数据的id
 
@@ -303,6 +315,7 @@ class Portal:
     def config_data_sharesetting(self, data_id, entities: List[IportalDataAuthorizeEntity]):
         """
         设置数据的共享权限
+
         Args:
             data_id: 数据的id
             entities: 共享权限的列表
@@ -318,6 +331,7 @@ class Portal:
     def get_map_sharesetting(self, map_id: str):
         """
         返回地图的共享权限
+
         Args:
             map_id: 地图的id
 
@@ -331,11 +345,10 @@ class Portal:
     def config_map_sharesetting(self, map_id: str, entities: List[MapShareSetting]):
         """
         设置地图的共享权限
+
         Args:
             map_id: 地图的id
             entities: 共享权限的列表
-
-        Returns:
 
         """
         maps = self._portal.maps_service()
@@ -351,6 +364,7 @@ class MapShareSettingBuilder:
     def share_to_user(self, user_name: str, type: PermissionType):
         """
         共享地图给指定用户
+
         Args:
             user_name: 用户名
             type: 共享权限
@@ -369,6 +383,7 @@ class MapShareSettingBuilder:
     def share_to_users(self, user_names: List[str], type: PermissionType):
         """
         共享地图给多个用户
+
         Args:
             user_names: 用户名列表
             type: 共享权限
@@ -384,6 +399,7 @@ class MapShareSettingBuilder:
     def share_to_group(self, group_id: str, type: PermissionType):
         """
         共享地图给群组
+
         Args:
             group_id: 群组的id
             type: 共享权限
@@ -402,6 +418,7 @@ class MapShareSettingBuilder:
     def share_to_department(self, department_id: str, type: PermissionType):
         """
         共享地图给指定组织
+
         Args:
             department_id: 组织的id
             type: 共享权限
@@ -420,6 +437,7 @@ class MapShareSettingBuilder:
     def share_to_everyone(self, type: PermissionType):
         """
         共享地图给所有人
+
         Args:
             type: 共享权限
 
@@ -438,6 +456,7 @@ class MapShareSettingBuilder:
     def build(self):
         """
         获得共享信息列表
+
         Returns:
             共享信息列表
         """
@@ -452,6 +471,7 @@ class DataShareSettingBuilder:
     def share_to_user(self, user_name: str, type: DataPermissionType):
         """
         共享数据给指定用户
+
         Args:
             user_name: 用户名
             type: 共享权限
@@ -470,6 +490,7 @@ class DataShareSettingBuilder:
     def share_to_users(self, user_names: List[str], type: DataPermissionType):
         """
         共享数据给多个用户
+
         Args:
             user_names: 用户列表
             type: 共享权限
@@ -485,6 +506,7 @@ class DataShareSettingBuilder:
     def share_to_group(self, group_id: str, type: DataPermissionType):
         """
         共享数据给群组
+
         Args:
             group_id: 群组的id
             type: 共享权限
@@ -503,6 +525,7 @@ class DataShareSettingBuilder:
     def share_to_everyone(self, type: DataPermissionType):
         """
         共享数据给所有人
+
         Args:
             type: 共享权限
 
@@ -521,6 +544,7 @@ class DataShareSettingBuilder:
     def build(self):
         """
         获得共享信息列表
+
         Returns:
             共享信息列表
         """

@@ -33,6 +33,7 @@ class Online:
     def search_map(self, owners: List[str] = None, tags: List[str] = None, keywords: List[str] = None):
         """
         查找地图
+
         Args:
             owners: 地图所有者
             tags: 地图标签
@@ -56,6 +57,7 @@ class Online:
     def get_map(self, map_id: str):
         """
         获取指定id的地图的详细信息
+
         Args:
             map_id: 地图的id
 
@@ -86,6 +88,7 @@ class Online:
     def upload_data(self, data_name: str, data_content: IOBase, type: DataItemType, callback: Callable = None):
         """
         上传数据
+
         Args:
             data_name: 数据名称
             data_content: 数据流
@@ -110,11 +113,10 @@ class Online:
     def upload_dataframe_as_json(self, data_name: str, df: DataFrame, callback: Callable = None):
         """
         上传DataFrame为JSON类型数据
+
         Args:
             data_name: 上传后数据名称
             df: DataFrame数据
-
-        Returns:
 
         """
         with StringIO(df.to_json()) as dff:
@@ -124,6 +126,7 @@ class Online:
     def search_data(self, owners: List[str] = None, tags: List[str] = None, keywords: List[str] = None):
         """
         查找数据
+
         Args:
             owners: 数据所有者
             tags: 数据标签
@@ -139,6 +142,7 @@ class Online:
     def get_data(self, data_id: str):
         """
         获取数据详细信息
+
         Args:
             data_id: 数据的id
 
@@ -151,6 +155,7 @@ class Online:
     def get_data_upload_progress(self, data_id: str):
         """
         获取数据上传进度
+
         Args:
             data_id: 数据的id
 
@@ -299,6 +304,7 @@ class Online:
                    base_layer_type: OnlineBaseLayerType = OnlineBaseLayerType.DEFAULT, tags: List[str] = None):
         """
         创建地图
+
         Args:
             layers: 地图图层
             epsgCode: 投影编码
@@ -334,6 +340,7 @@ class Online:
     def delete_map(self, map_id: str):
         """
         删除一个地图
+
         Args:
             map_id:地图id
         """
@@ -352,6 +359,7 @@ class Online:
     def delete_data(self, data_id: str):
         """
         删除一个数据
+
         Args:
             data_id: 数据的id
         """
@@ -371,6 +379,7 @@ class Online:
     def prepare_geojson_layer(self, data_id: str, layer_name: str):
         """
         根据上传到Online的geojson数据，生成Layer
+
         Args:
             data_id: 数据在Online中的id
             layer_name: 图层名称
@@ -396,6 +405,7 @@ class Online:
     def share_data(self, data_id: str, is_public: bool):
         """
         共享数据
+
         Args:
             data_id: 数据id
             is_public: 是否公开
@@ -417,6 +427,7 @@ class Online:
     def share_map(self, map_id: str, is_public: bool):
         """
         共享地图
+
         Args:
             map_id: 地图id
             is_public: 是否公开

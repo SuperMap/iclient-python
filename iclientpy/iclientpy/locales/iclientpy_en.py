@@ -1,6 +1,7 @@
 iclientpy_locale = {
     "iclientpy.online.Online.search_map": """
         search map
+        
         Args:
             owners: map owner
             tags: map tags
@@ -11,6 +12,7 @@ iclientpy_locale = {
         """,
     "iclientpy.online.Online.get_map": """
         get map by map's id
+        
         Args:
             map_id: map's id
 
@@ -19,6 +21,7 @@ iclientpy_locale = {
         """,
     "iclientpy.online.Online.upload_data": """
         upload data
+        
         Args:
             data_name: data name
             data_content: data stream
@@ -30,15 +33,15 @@ iclientpy_locale = {
         """,
     "iclientpy.online.Online.upload_dataframe_as_json": """
         upload DataFrame as json type data
+        
         Args:
             data_name: data name
             df: DataFrame content
 
-        Returns:
-
         """,
     "iclientpy.online.Online.search_data": """
         search data
+        
         Args:
             owners: data owner
             tags: data tags
@@ -49,6 +52,7 @@ iclientpy_locale = {
         """,
     "iclientpy.online.Online.get_data": """
         get data info by data id
+        
         Args:
             data_id: data id
 
@@ -57,6 +61,7 @@ iclientpy_locale = {
         """,
     "iclientpy.online.Online.get_data_upload_progress": """
         get data upload progress
+        
         Args:
             data_id: data id
 
@@ -65,6 +70,7 @@ iclientpy_locale = {
         """,
     "iclientpy.online.Online.create_map": """
         create map
+        
         Args:
             layers: map layers
             epsgCode: epsg code
@@ -79,16 +85,19 @@ iclientpy_locale = {
         """,
     "iclientpy.online.Online.delete_map": """
         delete map
+        
         Args:
             map_id:map id
         """,
     "iclientpy.online.Online.delete_maps": """
         delete multi map
+        
         Args:
             map_ids: map id list
         """,
     "iclientpy.online.Online.delete_data": """
         delete data
+        
         Args:
             data_id: data id
         """,
@@ -99,6 +108,7 @@ iclientpy_locale = {
         """,
     "iclientpy.online.Online.prepare_geojson_layer": """
         prepare layer by geojson
+        
         Args:
             data_id: geojson data id
             layer_name: layer name
@@ -108,12 +118,14 @@ iclientpy_locale = {
         """,
     "iclientpy.online.Online.share_data": """
         share data
+        
         Args:
             data_id: data id 
             is_public: public or not
         """,
     "iclientpy.online.Online.share_map": """
         share map 
+        
         Args:
             map_id: map id 
             is_public: public or not
