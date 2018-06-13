@@ -16,7 +16,9 @@ class HttpMethod(Enum):
 
 class REST:
     """
+
     REST请求的封装，用于封装Python API参数与rest请求之间的对应关系，比如：查询字符串，请求体之类
+
     """
 
     def __init__(self, func, method, uri: str, entityKW: str = None, queryKWs: List[str] = None,
@@ -106,6 +108,7 @@ class REST:
     def get_fileKW(self) -> str:
         """
         获取请求的文件的key，用于post请求发送文件
+
         Returns:
             返回文件的key
         """
@@ -114,15 +117,16 @@ class REST:
     def get_splice_url(self) -> bool:
         """
         获取url是否拼接标识
+
         Returns:
             返回url是否拼接标识
         """
         return self._splice_url
 
     def get_fixed_queryKWs(self):
-
         """
         获取固定的查询参数
+
         Returns:
             返回固定查询参数
         """

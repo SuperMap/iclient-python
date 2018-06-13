@@ -49,7 +49,7 @@ class GeoLines(AbstractMap):
 
     def compute_size(self, index):
         val_div = (self.total_array[index] - self.min_total) / (
-        self.max_total - self.min_total if self.max_total - self.min_total > 0 else 1)
+            self.max_total - self.min_total if self.max_total - self.min_total > 0 else 1)
         return int(self.size_sub * val_div + self.min_size)
 
     def _ipython_display_(self, **kwargs):
@@ -128,11 +128,13 @@ class GeoLines(AbstractMap):
             },
             "series": series
         }
-        map = icp.MapView()
-        map.fit_bounds = self.compute_bounds(self._all_feature, lat_key=lambda d: d["properties"]["cp"][1],
-                                             lng_key=lambda d: d["properties"]["cp"][0])
-        layer = icp.EchartsLayer(option=option)
-        map.add_layer(layer)
-        self.map = map
-        self.layer = layer
-        map._ipython_display_(**kwargs)
+        if self._url is None:
+            self.map = icp.MapView()
+        else:
+            default_tile = icp.TileMapLayer(url=self._url)
+            self.map = icp.MapView(default_tiles=default_tile, crs=self._crs)
+        self.layer = icp.EchartsLayer(option=option)
+        self.map.fit_bounds = self.compute_bounds(self._all_feature, lat_key=lambda d: d["properties"]["cp"][1],
+                                                  lng_key=lambda d: d["properties"]["cp"][0])
+        self.map.add_layer(self.layer)
+        self.map._ipython_display_(**kwargs)

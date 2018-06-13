@@ -301,7 +301,9 @@ def _get_proxy_from_arguments():
 
 class APIFactory:
     """
+
     服务api的工厂类，生产服务的api
+
     """
 
     def __init__(self, base_url: str, username: str = None, passwd: str = None, token: str = None, proxies=None):
@@ -369,6 +371,7 @@ class APIFactory:
                                    version: str = 'v1') -> DistributedAnalyst:
         """
         返回分布式分析服务的api
+
         Args:
             service_name:服务名称，默认为distributedanalyst/rest
             version:版本，默认为v1
@@ -383,6 +386,7 @@ class APIFactory:
     def datacatalog_service(self, service_name: str = 'datacatalog/rest') -> Datacatalog:
         """
         返回数据目录服务api
+
         Args:
             service_name:服务名称，默认为datacatalog/rest
 
@@ -407,6 +411,7 @@ class iPortalAPIFactory:
             passwd: 服务需要登录的密码
             token: 服务可以访问的token
             proxies: 设置代理服务器地址
+
         """
         self._base_url = base_url + 'web' if base_url.endswith('/') else base_url + '/web'
         self._proxies = proxies if proxies is not None else _get_proxy_from_arguments()
@@ -416,6 +421,7 @@ class iPortalAPIFactory:
     def datas_service(self) -> DatasService:
         """
         获取iPortal MyDatas服务
+
         Returns:
             iPortal MyDatas服务
         """
@@ -424,6 +430,7 @@ class iPortalAPIFactory:
     def maps_service(self) -> MapsService:
         """
         获取iPortal Maps服务
+
         Returns:
             iPortal Maps服务
         """
@@ -432,6 +439,7 @@ class iPortalAPIFactory:
     def groups_service(self) -> GroupsService:
         """
         获取iPortal Groups群组服务
+
         Returns:
             iPortal Groups群组服务
         """
@@ -440,6 +448,7 @@ class iPortalAPIFactory:
     def mydepartments_service(self) -> MyDepartments:
         """
         获取iPortal MyDepartments服务
+
         Returns:
             iPortal MyDepartments服务
         """
@@ -481,6 +490,7 @@ class OnlineAPIFactory:
     def datas_service(self) -> OnlineDatasService:
         """
         获取Online数据服务
+
         Returns:
             Online数据服务
         """
@@ -489,6 +499,7 @@ class OnlineAPIFactory:
     def maps_service(self) -> OnlineMapsService:
         """
         获取Online地图服务
+
         Returns:
             Online地图服务
         """
