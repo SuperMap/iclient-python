@@ -13,7 +13,7 @@ RUN conda config --add channels http://mirrortsinghua:8081/repository/tuna_conda
 && conda config --add channels http://mirrortsinghua:8081/repository/tuna_conda-forge/anaconda/cloud/conda-forge/ \
 && conda config --set show_channel_urls yes \
 && conda install -y python=3.6 \
-&& conda install json-c=0.12.1 \
+&& conda install -y json-c=0.12.1 \
 && conda install -c /tmp/channel iclientpy -y \
 && conda clean -yt \
 && jupyter nbextension install --py --symlink --sys-prefix iclientpy \
