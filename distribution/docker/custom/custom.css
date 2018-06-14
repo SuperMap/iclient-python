@@ -1,6 +1,7 @@
 #ipython_notebook img{
 display:block;
 background: url(/custom/supermap_logo.png) no-repeat;
+background-size: contain;
 width: 124px;
 height: 35px;
 padding-left: 124px;
