@@ -6,7 +6,6 @@ class MapvMap(AbstractMap):
     def __init__(self, data, **kwargs):
         self._data = data
         self._layer_kwargs = kwargs
-        super(MapvMap, self).__init__(**kwargs)
 
     def _ipython_display_(self, **kwargs):
         if self._url is None:

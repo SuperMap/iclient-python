@@ -1,18 +1,11 @@
-from ipywidgets import Widget
 from iclientpy import Layer, Map
 
 
-class AbstractMap(Widget):
+class AbstractMap:
     layer: Layer = None
     map: Map = None
     _url: str = None
     _crs: str = None
-
-    def __init__(self, **kwargs):
-        super(AbstractMap, self).__init__(**kwargs)
-
-    def add_to_map(self, map: Map):
-        self.map = map
 
     def set_base_map_options(self, url: str, crs: str = 'EPSG3857'):
         self._url = url

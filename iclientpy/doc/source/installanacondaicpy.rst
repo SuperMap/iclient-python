@@ -40,7 +40,7 @@ iClientPy从零开始
 
     .. image:: _static/anaconda_finish.png
 
-11. 根据第7步的选择，打开cmd或者Anaconda Prompt，执行命令conda -V 和 python -V，检查是否安装成功
+11. 根据第7步的选择，从菜单栏打开Anaconda Prompt，执行命令conda -V 和 python -V，检查是否安装成功
 12. 配置清华源以及第三库依赖源：在上一步打开窗口中执行：
 
     ::
@@ -58,9 +58,11 @@ iClientPy从零开始
 
     **提醒：** 第一次安装耗时会比较久
 
-14. 打开命令行，执行命令，进入iclientpy引导使用的notebook
+14. 在已经打开的Anaconda Prompt中，执行命令，进入iclientpy引导使用的notebook
 
     ::
 
         icpy-iclientpystart
+
+15. 在上一步执行过后，会在浏览器中打开一个网页(如果没有打开，手动访问http://localhost:8888)，点击iclientpy_start.ipynb，开始了解，使用iclientpy
 
