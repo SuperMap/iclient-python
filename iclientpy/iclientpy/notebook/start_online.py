@@ -1,5 +1,6 @@
 from notebook.notebookapp import main as nbmain
 from os.path import join as pjoin, abspath, dirname, exists
+from os import mkdir
 import argparse
 import sys
 
@@ -40,6 +41,8 @@ def main(argv=sys.argv[1:]):
                 while exists(pjoin(notebook_dir, "iclientpy-%s" % i)):
                     i += 1
                 notebook_dir = ".\iclientpy-%s" % i
+        if not exists(notebook_dir):
+            mkdir(notebook_dir)
         with open(pjoin(abspath(dirname(__file__)), 'online_template.ipynb'), mode='r', encoding='utf8') as src:
             with open(pjoin(notebook_dir, 'preliminary_online.ipynb'), mode='w+', encoding='utf8') as tar:
                 for line in src.readlines():

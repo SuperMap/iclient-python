@@ -16,6 +16,11 @@
 * token工具_
 * 缓存工具_
 * iServer初始化工具_
+* iServer示范notebook_
+* Online示范notebook_
+* iclientpy引导notebook_
+
+**注意：** iServer示范notebook、Online示范notebook、iclientpy引导notebook需要在完成安装iclientpy后才能使用，不包含在单独提供的命令行工具
 
 token工具
 ******************
@@ -136,8 +141,64 @@ iServer初始化工具
 -t TIMEOUT, --timeout TIMEOUT   超时时间，等待iServer启动的超时时间，单位为分钟
 
 
+iServer示范notebook
+*************************
+启动iServer的示范notebook
+
+示例：
+
+启动iServer的示例notebook，iServer地址为http://localhost:8090/iserver，用户名为supermap，密码为supermap，绑定notebook的ip为localhost，端口为8889
+
+    ::
+
+        icpy-serverstart -l http://localhost:8090/iserver -u supermap -p supermap --ip localhost --port 8889
+
+详细参数：
+
+-l ADDRESS, --uri ADDRESS   服务地址，如：http://localhost:8090/iserver
+-u USERNAME, --user USERNAME    用户名
+-p PASSWORD, --password PASSWORD    密码
+--dir NOTEBOOK_DIR  notebook目录
+--ip IP     notebook服务ip
+--port PORT     notebook服务端口
+
+Online示范notebook
+***************************
+启动Online的示范notebook
+
+示例：
+
+启动Online的示例notebook，Online的用户名为supermap，密码为supermap，绑定notebook的ip为localhost，端口为8889
+
+    ::
+
+        icpy-onlinestart -u supermap -p supermap --ip localhost --port 8889
+
+详细参数：
+
+-u USERNAME, --user USERNAME    用户名
+-p PASSWORD, --password PASSWORD    密码
+--dir NOTEBOOK_DIR  notebook目录
+--ip IP     notebook服务ip
+--port PORT     notebook服务端口
 
 
+iclientpy引导notebook
+***************************
+启动iclientpy引导使用的notebook
+
+示例：
+
+启动iclientpy示例，绑定notebook的ip为localhost，端口为8889
+
+    ::
+
+        icpy-iclientpystart --ip localhost --port 8889
+
+详细参数：
+  --dir NOTEBOOK_DIR    notebook目录
+  --ip IP   notebook服务ip
+  --port PORT   notebook服务端口
 
 
 
