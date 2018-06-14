@@ -1,8 +1,10 @@
 FROM jupyter/scipy-notebook:latest
 MAINTAINER iclientpy@supermap.com
+
 RUN mkdir -p /home/jovyan/.jupyter/custom
 ADD ./custom /home/jovyan/.jupyter/custom
 ADD pip.conf /home/jovyan/.pip/pip.conf
+ADD ./sample /home/jovyan/work
 
 ADD ./iclientpy-conda-package.tar /tmp/
 RUN conda config --add channels http://mirrortsinghua:8081/repository/tuna_conda-forge/anaconda/pkgs/free/ \
