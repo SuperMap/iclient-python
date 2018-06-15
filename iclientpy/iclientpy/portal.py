@@ -1,7 +1,7 @@
 import types
 from typing import List, Callable
 from enum import Enum
-from io import FileIO, StringIO
+from io import IOBase, StringIO
 from pandas import DataFrame
 from iclientpy.rest.apifactory import iPortalAPIFactory
 from iclientpy.rest.api.model import DataItemType, PostMyDatasItem, Layer, LayerType, SourceType, PostMapsItem, Point2D, \
@@ -77,7 +77,7 @@ class Portal:
             callback(read, total)
 
     @typeassert
-    def upload_data(self, data_name: str, data_content: FileIO, type: DataItemType, callback: Callable = None):
+    def upload_data(self, data_name: str, data_content: IOBase, type: DataItemType, callback: Callable = None):
         """
         上传数据
 
@@ -396,7 +396,7 @@ class MapShareSettingBuilder:
         return self
 
     @typeassert
-    def share_to_group(self, group_id: str, type: PermissionType):
+    def share_to_group(self, group_id: int, type: PermissionType):
         """
         共享地图给群组
 

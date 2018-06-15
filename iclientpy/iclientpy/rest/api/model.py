@@ -2977,4 +2977,55 @@ class OnlineMapShareSetting:
     entities: List[MapShareSetting]
 
 
+@default_init
+class CreateNodeResult:
+    isSucceed: bool
+    msg: str
+    resultId: str
+    taskId: str
+
+
+@default_init
+class NodeBaseInfo:
+    id: str
+    name: str
+
+
+@default_init
+class BatchMethodResult:
+    failures: List[NodeBaseInfo]
+    isSucceed: bool
+    msg: str
+    success: List[NodeBaseInfo]
+
+
+@default_init
+class CreateServerEntity:
+    description: str
+    ips: List[str]
+    nodeCount: int
+    nodeName: str
+    nodeSpec: str
+    password: str
+    physicalMachineName: str
+    userName: str
+
+
+@default_init
+class NodeInfo:
+    address: str
+    hasAgent: bool
+    id: str
+    isCreate: bool
+    isMonitored: bool
+    name: str
+    owner: str
+    status: str
+    type: str
+
+@default_init
+class NodeInfoList:
+    list:List[NodeInfo]
+
+
 _datset_info_parser_builder.build_and_regist()

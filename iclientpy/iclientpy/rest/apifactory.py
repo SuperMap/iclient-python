@@ -23,6 +23,7 @@ from .api.mydepartments import MyDepartments
 from .api.servicespage import ServicesPage
 from .api.onlinemapsservice import OnlineMapsService
 from .api.onlinedatasservice import OnlineDatasService
+from .api.node_service import NodeService
 
 default_session_cookie_name = 'JSESSIONID'
 
@@ -129,7 +130,7 @@ class RestInvocationHandlerImpl(RestInvocationHandler):
             HttpMethod.PUT: requests.put,
             HttpMethod.DELETE: requests.delete
         }
-        response = requests_methods[rest.get_method()](*args, **kwargs)
+        response = requests_methods[rest.get_method()](*args, **kwargs, headers={'Content-Type': 'application/json'})
         response.raise_for_status()
         return rest.get_json_deserializer()(response.text)
 
@@ -453,6 +454,33 @@ class iPortalAPIFactory:
             iPortal MyDepartments服务
         """
         return create(MyDepartments, self._handler)
+
+
+class iManagerAPIFactory:
+    def __init__(self, base_url: str, username: str = None, passwd: str = None, token: str = None, proxies=None):
+        """
+
+        Args:
+            base_url: 服务的地址
+            username: 服务需要登录的用户名
+            passwd: 服务需要登录的密码
+            token: 服务可以访问的token
+            proxies: 设置代理服务器地址
+
+        """
+        self._base_url = base_url
+        self._proxies = proxies if proxies is not None else _get_proxy_from_arguments()
+        auth = create_auth(self._base_url + '/security/tokens.json', username, passwd, token, proxies=self._proxies)
+        self._handler = RestInvocationHandlerImpl(self._base_url, auth, proxies=self._proxies)
+
+    def node_service(self):
+        """
+        获取iManager 节点服务
+
+        Returns:
+            iManager 节点服务
+        """
+        return create(NodeService, self._handler)
 
 
 def create_sso_auth(url: str, username: str, passwd: str, token: str, proxies=None) -> AuthBase:

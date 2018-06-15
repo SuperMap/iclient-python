@@ -246,7 +246,7 @@ class PortalTestCase(TestCase):
 class MapShareSettingBuilderTestCase(TestCase):
     def test_builder(self):
         result = MapShareSettingBuilder().share_to_user("user", PermissionType.READ).share_to_department(
-            'department_id', PermissionType.READ).share_to_group('group_id',
+            'department_id', PermissionType.READ).share_to_group(123,
                                                                  PermissionType.READWRITE).share_to_everyone(
             PermissionType.READ).share_to_users(['user1', 'user2'], PermissionType.READWRITE).build()
         self.assertEqual(result[0].entityName, 'user')
@@ -255,7 +255,7 @@ class MapShareSettingBuilderTestCase(TestCase):
         self.assertEqual(result[1].entityId, 'department_id')
         self.assertEqual(result[1].permissionType, PermissionType.READ.value)
         self.assertEqual(result[1].entityType, EntityType.DEPARTMENT)
-        self.assertEqual(result[2].entityId, 'group_id')
+        self.assertEqual(result[2].entityId, 123)
         self.assertEqual(result[2].permissionType, PermissionType.READWRITE.value)
         self.assertEqual(result[2].entityType, EntityType.IPORTALGROUP)
         self.assertEqual(result[3].entityName, 'GUEST')
