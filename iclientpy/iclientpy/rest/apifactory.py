@@ -1,3 +1,4 @@
+import os
 import argparse
 import inspect
 import sys
@@ -5,7 +6,7 @@ from enum import Enum
 import requests
 from requests.auth import AuthBase
 import json
-
+from functools import partial
 from .api.management import Management
 from .api.restdata import DataService
 from .api.restmap import MapService
@@ -132,7 +133,18 @@ class RestInvocationHandlerImpl(RestInvocationHandler):
         }
         response = requests_methods[rest.get_method()](*args, **kwargs, headers={'Content-Type': 'application/json'})
         response.raise_for_status()
-        return rest.get_json_deserializer()(response.text)
+        text = response.text
+        result = rest.get_json_deserializer()(text)
+        from json.decoder import JSONDecodeError
+        try:
+            json_dict = json.loads(text)
+            html = json.dumps(json_dict, indent=2, sort_keys=True).replace(' ', '&nbsp;')
+            setattr(result, '_repr_html_', partial(html.replace, '\n', '<br/>'))
+        except AttributeError:
+            pass
+        except JSONDecodeError:
+            pass
+        return result
 
     def get(self, rest, uri, args, kwargs):
         """

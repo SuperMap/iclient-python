@@ -62,7 +62,15 @@ def to_json_str(obj):
     Returns:
         字符串，Python对象转成的json字符串
     """
-    return obj.name if isinstance(obj, Enum) else json.dumps(to_dict_or_list(obj))
+    if hasattr(obj, '_repr_html_'):
+        _repr_html_ = getattr(obj, '_repr_html_')
+        delattr(obj, '_repr_html_')
+        result =  obj.name if isinstance(obj, Enum) else json.dumps(to_dict_or_list(obj))
+        setattr(obj, '_repr_html_', _repr_html_)
+        return result
+    else:
+        return obj.name if isinstance(obj, Enum) else json.dumps(to_dict_or_list(obj))
+
 
 
 def import_root_module_to_local(kls, local_dict = None):
