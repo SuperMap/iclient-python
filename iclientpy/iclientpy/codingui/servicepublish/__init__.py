@@ -12,7 +12,7 @@ class PrepareWorkspacePublish:
     _post_entity: PostWorkspaceParameter
     _service_types_options: NamedObjects
     _executor: Callable[[PostWorkspaceParameter], Any]
-    _workspace_info: List[str]
+    _workspace_info: dict
     _mng: Management
 
     def __init__(self, post_workspace: Callable, mng: Management):
@@ -21,19 +21,20 @@ class PrepareWorkspacePublish:
         self._service_types_options = NamedObjects()
         self._init_servicetype([ServiceType.RESTMAP, ServiceType.RESTDATA])
         self._executor = post_workspace
-        self._workspace_info = []
+        self._workspace_info = {}
         self._mng = mng
 
     def _attach_file_explorer(self, file_workspace):
         class SelectableFile(File):
             def select(self_file):
                 file_workspace.set_path(self_file.path)
-        file_workspace.get_file_explorer = lambda : RemoteFileBrowser(mng=self._mng,file_clz=SelectableFile)
+
+        file_workspace.get_file_explorer = lambda: RemoteFileBrowser(mng=self._mng, file_clz=SelectableFile)
 
     def use_file_workspace(self):
         self._clear_workspace_info()
         workspace = NamedObjects()
-        workspace['set_path'] = partial(self._add_workspace_info)
+        workspace['set_path'] = partial(self._add_workspace_info, 'path')
         setattr(self, 'workspace', workspace)
         self._attach_file_explorer(workspace)
         return self
@@ -85,16 +86,16 @@ class PrepareWorkspacePublish:
         setattr(self, 'workspace', workspace)
         return self
 
-    def _add_workspace_info(self, info: str):
-        self._workspace_info.append(info)
+    def _add_workspace_info(self, key: str, info: str):
+        self._workspace_info[key] = info
         return self
 
     def _add_workspace_info_kv(self, key, value):
-        self._workspace_info.append(key + '=' + value)
+        self._workspace_info[key] = (key, value)
         return self
 
     def _clear_workspace_info(self):
-        self._workspace_info = []
+        self._workspace_info.clear()
 
     def allow_edit(self):
         self._post_entity.isDataEditable = True
@@ -126,11 +127,13 @@ class PrepareWorkspacePublish:
         return self._service_types_options
 
     def __repr__(self):
-        self._post_entity.workspaceConnectionInfo = ';'.join(self._workspace_info)
+        self._post_entity.workspaceConnectionInfo = ';'.join(
+            ['='.join(value) if isinstance(value, tuple) else value for key, value in self._workspace_info.items()])
         return json.dumps(json.loads(to_json_str(self._post_entity)), indent=2, sort_keys=True)
 
     def execute(self):
-        self._post_entity.workspaceConnectionInfo = ';'.join(self._workspace_info)
+        self._post_entity.workspaceConnectionInfo = ';'.join(
+            ['='.join(value) if isinstance(value, tuple) else value for key, value in self._workspace_info.items()])
         return self._executor(self._post_entity)
 
 
@@ -154,5 +157,7 @@ class PostWorkspaceExecutor:
             service_addr = item.serviceAddress
             service_name = service_addr[
                            service_addr.rfind('/services/') + len('/services/'):]
-            result[service_name] = ui_class_register.new_service_ui_from_service_type(service_name=service_name, service_type=item.serviceType, api_factory=self._api_factory)
+            result[service_name] = ui_class_register.new_service_ui_from_service_type(service_name=service_name,
+                                                                                      service_type=item.serviceType,
+                                                                                      api_factory=self._api_factory)
         return result
