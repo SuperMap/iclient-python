@@ -14,10 +14,12 @@ iClientPy: SuperMap iClient Python
    geticlientpy
    installanacondaicpy
    jupyter
-   restapi
    tool
    bigdata
+   publishservice
+   importgeodataframe
    i18n
+   restapi
    API 参考 <./api/modules>
 
 iClientPy 是超图云 GIS 客户端 Python SDK。
