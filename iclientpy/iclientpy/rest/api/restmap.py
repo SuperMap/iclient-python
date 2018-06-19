@@ -25,6 +25,10 @@ class MapService:
     def get_map(self, map: str) -> GetMapResult:
         pass
 
+    @get('/maps/{map}', fixed_queryKWs={'prjCoordSys': '{"epsgCode":4326}'})
+    def get_map_4326(self, map: str) -> GetMapResult:
+        pass
+
     @get('/maps')
     def get_map_resources(self) -> List[ChildResourceInfo]:
         pass
