@@ -36,7 +36,12 @@ class RunningJob:
                 bounds = map_info.bounds
                 default_tiles = icp.TileMapLayer(
                     url=service_info.serviceAddress + '/maps/' + map_name)
+                if map_info.prjCoordSys.epsgCode == 4326:
+                    fit_bounds = [[bounds.leftBottom.y, bounds.leftBottom.x], [bounds.rightTop.y, bounds.rightTop.x]]
+                else:
+                    bounds4326 = map_service.get_map_4326(map_name).bounds
+                    fit_bounds = [[bounds4326.leftBottom.y, bounds4326.leftBottom.x], [bounds4326.rightTop.y, bounds4326.rightTop.x]]
                 map = icp.MapView(default_tiles=default_tiles, crs='EPSG' + str(map_info.prjCoordSys.epsgCode),
-                                  fit_bounds=[[bounds.leftBottom.y, bounds.leftBottom.x],[bounds.rightTop.y, bounds.rightTop.x]])
+                                  fit_bounds=fit_bounds)
                 map._ipython_display_(**kwargs)
         return job
