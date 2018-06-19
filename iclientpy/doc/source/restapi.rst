@@ -93,7 +93,7 @@ DataService
         api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
         ds = api.data_service('data-World/rest')
         entity=[...]
-        result = ds.get_features(datasourceName='World',datasetName='Countries',entity=entity)
+        result = ds.post_features(datasourceName='World',datasetName='Countries',entity=entity)
 
 Management
 *************
