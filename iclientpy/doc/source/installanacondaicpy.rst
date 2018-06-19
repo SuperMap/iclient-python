@@ -1,7 +1,13 @@
 iClientPy从零开始
 ===============================
 
-1. 根据系统版本从下面链接地址下载Anaconda3安装包
+iClientPy的一些第三方依赖需要c++库，pip安装的时候不会安装所需的c++库，会导致这些第三方依赖安装不完整，导致iClientPy无法正常使用。
+
+所以我们建议在Anaconda（`https://www.anaconda.com/ <https://www.anaconda.com/>`_）环境中通过Conda安装iClientPy。
+
+建议版本Anaconda3 5.1.0及以上。
+
+1. 因为Anaconda网站在国外，直接从Anaconda官网下载速度较慢，可以从清华大学开源软件镜像站下载安装包。根据系统版本从下面链接地址下载Anaconda3安装包
 
     `win64链接 <https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-5.1.0-Windows-x86_64.exe>`_
 
