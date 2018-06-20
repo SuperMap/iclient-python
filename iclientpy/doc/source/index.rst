@@ -1,26 +1,5 @@
-.. iclientpy documentation master file, created by
-   sphinx-quickstart on Thu Dec 21 17:29:33 2017.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 iClientPy: SuperMap iClient Python
 =====================================
-
-.. toctree::
-   :maxdepth: 3
-   :hidden:
-
-   guide
-   geticlientpy
-   installanacondaicpy
-   jupyter
-   tool
-   bigdata
-   publishservice
-   importgeodataframe
-   i18n
-   restapi
-   API 参考 <./api/modules>
 
 iClientPy 是超图云 GIS 客户端 Python SDK。
 
@@ -44,7 +23,7 @@ iClientPy 是超图云 GIS 客户端 Python SDK。
 
 .. image:: _static/codingui_aggregate_region.gif
 
-`在线试试 <http://jupyter.supermap.io>`_
+`在线试试 <http://jupyter.supermap.io>`_ (用户名和密码任意)
 
 
 
