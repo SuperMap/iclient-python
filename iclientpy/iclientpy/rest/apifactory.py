@@ -131,7 +131,10 @@ class RestInvocationHandlerImpl(RestInvocationHandler):
             HttpMethod.PUT: requests.put,
             HttpMethod.DELETE: requests.delete
         }
-        response = requests_methods[rest.get_method()](*args, **kwargs, headers={'Content-Type': 'application/json'})
+        headers = {'Content-Type': 'application/json'}
+        if 'files' in kwargs:
+            headers = {}
+        response = requests_methods[rest.get_method()](*args, **kwargs, headers=headers)
         response.raise_for_status()
         text = response.text
         result = rest.get_json_deserializer()(text)

@@ -10,6 +10,7 @@
    首页 <index>
    guide
    geticlientpy
+   geticlientpysourcecode
    installanacondaicpy
    jupyter
    tool
