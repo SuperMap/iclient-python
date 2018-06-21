@@ -159,7 +159,8 @@ setup_args = {
             'iclientpy/static/index.js.map',
             'iclientpy/static/lib.js',
         ] + glob('iclientpy/static/*.png') + glob('iclientpy/static/*.svg') + glob(
-            'iclientpy/jupyter/chinageojson.json') + glob('iclientpy/notebook/*.ipynb') + glob('iclientpy/sample/*'))
+            'iclientpy/jupyter/chinageojson.json') + glob('iclientpy/notebook/*.ipynb') + glob(
+            'iclientpy/sample/sample/*') + glob('iclientpy/sample/*.ipynb'))
     ],
     'install_requires': [
         'ipywidgets==7.0.0',
@@ -206,6 +207,5 @@ setup_args = {
         'Programming Language :: Python :: 3.6',
     ],
 }
-
 
 setup(**setup_args)
