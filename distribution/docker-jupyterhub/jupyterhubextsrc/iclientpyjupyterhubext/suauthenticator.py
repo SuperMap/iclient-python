@@ -28,7 +28,7 @@ class SuAuthenticator(PAMAuthenticator):
         if not SuAuthenticator.system_user_exists(username):
             encPass = crypt.crypt(password, "22")
             os.system("useradd -p " + encPass + " -d " + "/home/" + username + " -m " + username)
-            os.system("cp -r /iclientpy/sample /home/" + username)
+            os.system("cp -r /iclientpy/sample/* /home/" + username)
             os.system("chown " + username + ":" + username + " -R /home/" + username)
         try:
             pamela.authenticate(username, password, service=self.service)
