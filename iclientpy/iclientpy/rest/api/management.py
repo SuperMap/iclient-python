@@ -76,7 +76,7 @@ class Management:
     def post_fileuploadtasks(self, entity: PostFileUploadTasksParam) -> PostUploadTasksResult:
         pass
 
-    @post('/manager/filemanager/uploadtasks/{id}', queryKWs=['toFile', 'overwrite', 'unzip'], fileKW='file', content_type=None)
+    @post('/manager/filemanager/uploadtasks/{id}', queryKWs=['toFile', 'overwrite', 'unzip'], fileKW='file')
     def post_fileuploadtask(self, id: str, file: FileIO, toFile: str, overwrite: bool = False,
                             unzip: bool = False) -> PostFileUploadTaskResult:
         pass

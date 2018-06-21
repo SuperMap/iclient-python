@@ -34,7 +34,7 @@ class OnlineDatasService:
     def delete_data(self, data_id: str) -> MethodResult:
         pass
 
-    @post('/mycontent/datas/{data_id}/upload', fileKW='file', content_type=None)
+    @post('/mycontent/datas/{data_id}/upload', fileKW='file')
     def upload_data(self, data_id: str, file: FileIO) -> MyDatasMethodResult:
         pass
 

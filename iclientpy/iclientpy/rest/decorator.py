@@ -22,7 +22,7 @@ class REST:
     """
 
     def __init__(self, func, method, uri: str, entityKW: str = None, queryKWs: List[str] = None,
-                 fixed_queryKWs: dict = {}, splice_url: bool = True, json_deserializer=None, fileKW: str = None, content_type: str = None):
+                 fixed_queryKWs: dict = {}, splice_url: bool = True, json_deserializer=None, fileKW: str = None):
         """
         初始化REST类，存放实际调用的rest请求的相关信息
 
@@ -47,7 +47,6 @@ class REST:
         self._fixed_querKWs = fixed_queryKWs
         self._json_deserializer = json_deserializer if json_deserializer is not None else deserializer(
             inspect.getfullargspec(self._original).annotations.get('return', None))
-        self._content_type = content_type
 
     def __call__(self, *args, **kwargs):
         return self.__wrapped__(*args, **kwargs)
@@ -133,12 +132,9 @@ class REST:
         """
         return self._fixed_querKWs
 
-    def get_content_type(self):
-        return self._content_type
-
 
 def rest(method: HttpMethod, uri, entityKW: str = None, queryKWs: List[str] = None, splice_url: bool = True,
-         fixed_queryKWs: dict = {}, json_deserializer=None, fileKW: str = None, content_type: str='application/json'):
+         fixed_queryKWs: dict = {}, json_deserializer=None, fileKW: str = None):
     """
     rest请求的封装方法
 
@@ -155,19 +151,91 @@ def rest(method: HttpMethod, uri, entityKW: str = None, queryKWs: List[str] = No
     class RESTWrapper(REST):
         def __init__(self, func):
             super().__init__(func, method, uri, entityKW=entityKW, queryKWs=queryKWs, fixed_queryKWs=fixed_queryKWs,
-                             splice_url=splice_url, json_deserializer=json_deserializer, fileKW=fileKW, content_type = content_type);
+                             splice_url=splice_url, json_deserializer=json_deserializer, fileKW=fileKW);
 
     return RESTWrapper
 
-from functools import partial
+
+def head(uri: str, entityKW: str = None, queryKWs: List[str] = None, splice_url: bool = True,
+         fixed_queryKWs: dict = {}):
+    """
+    head请求的装饰器，可以在方法上直接通过@head方式使用
+
+    Args:
+        uri: 请求的uri
+        entityKW: 请求的请求体的key
+        queryKWs: 请求的查询字符串的key
+
+    Returns:
+        封装了请求的REST类
+    """
+    return rest(HttpMethod.HEAD, uri, entityKW=entityKW, queryKWs=queryKWs, splice_url=splice_url,
+                fixed_queryKWs=fixed_queryKWs)
 
 
-head = partial(rest, HttpMethod.HEAD)
+def post(uri: str, entityKW: str = None, queryKWs: List[str] = None, fileKW: str = None, splice_url: bool = True,
+         fixed_queryKWs: dict = {}):
+    """
+    post请求的装饰器，可以在方法上直接通过@post方式使用
 
-post = partial(rest, HttpMethod.POST)
+    Args:
+        uri: 请求的uri
+        entityKW: 请求的请求体的key
+        queryKWs: 请求的查询字符串的key
+        fileKW: 请求的文件的key
 
-get = partial(rest, HttpMethod.GET)
+    Returns:
+        封装了请求的REST类
+    """
+    return rest(HttpMethod.POST, uri, entityKW=entityKW, queryKWs=queryKWs, splice_url=splice_url,
+                fixed_queryKWs=fixed_queryKWs, fileKW=fileKW)
 
-put = partial(rest, HttpMethod.PUT)
 
-delete = partial(rest, HttpMethod.DELETE)
+def get(uri: str, entityKW: str = None, queryKWs: List[str] = None, fixed_queryKWs: dict = {}, splice_url: bool = True,
+        *args, **kwargs):
+    """
+    get请求的装饰器，可以在方法上直接通过@get方式使用
+
+    Args:
+        uri: 请求的uri
+        entityKW: 请求的请求体的key
+        queryKWs: 请求的查询字符串的key
+
+    Returns:
+        封装了请求的REST类
+    """
+    return rest(HttpMethod.GET, uri, entityKW=entityKW, queryKWs=queryKWs, splice_url=splice_url,
+                fixed_queryKWs=fixed_queryKWs, *args, **kwargs)
+
+
+def put(uri: str, entityKW: str = None, queryKWs: List[str] = None, fixed_queryKWs: dict = {}, splice_url: bool = True):
+    """
+    put请求的装饰器，可以在方法上直接通过@put方式使用
+
+    Args:
+        uri: 请求的uri
+        entityKW: 请求的请求体的key
+        queryKWs: 请求的查询字符串的key
+
+    Returns:
+        封装了请求的REST类
+    """
+    return rest(HttpMethod.PUT, uri, entityKW=entityKW, queryKWs=queryKWs, splice_url=splice_url,
+                fixed_queryKWs=fixed_queryKWs)
+
+
+def delete(uri: str, entityKW: str = None, queryKWs: List[str] = None, fixed_queryKWs: dict = {},
+           splice_url: bool = True):
+    """
+    delete请求的装饰器，可以在方法上直接通过@delete方式使用
+
+    Args:
+        uri: 请求的uri
+        entityKW: 请求的请求体的key
+        queryKWs: 请求的查询字符串的key
+
+    Returns:
+        封装了请求的REST类
+    """
+    return rest(HttpMethod.DELETE, uri, entityKW=entityKW, queryKWs=queryKWs, splice_url=splice_url,
+                fixed_queryKWs=fixed_queryKWs)
