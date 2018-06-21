@@ -3,7 +3,6 @@ sure==1.4.7
 requests==2.18.4
 httpretty==0.8.14
 typing==3.6.2
-Sphinx==1.6.5
 pandas==0.20.3
 geojson==2.3.0
 setuptools==36.5.0
