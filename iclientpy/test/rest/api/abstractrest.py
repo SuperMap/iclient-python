@@ -21,7 +21,8 @@ class AbstractREST(object):
         if not hasattr(self, 'factory'):
             loginuri = self.loginuri if hasattr(self, 'loginuri') else self.baseuri + '/web/login.json'
             httpretty.register_uri(httpretty.POST, loginuri, status=201,
-                                   set_cookie='JSESSIONID=958322873908FF9CA99B5CB443ADDD5C')
+                                   set_cookie='JSESSIONID=958322873908FF9CA99B5CB443ADDD5C',
+                                   body='{"referer":"/iportal/","reason":null,"succeed":true}')
             self.factory = iPortalAPIFactory(self.baseuri, self.username, self.password)
 
     @httpretty.activate
@@ -50,7 +51,8 @@ class AbstractREST(object):
             loginuri = self.loginuri if hasattr(self,
                                                 'loginuri') else self.baseuri + '/services/security/login.json'
             httpretty.register_uri(httpretty.POST, loginuri, status=201,
-                                   set_cookie='JSESSIONID=958322873908FF9CA99B5CB443ADDD5C')
+                                   set_cookie='JSESSIONID=958322873908FF9CA99B5CB443ADDD5C',
+                                   body='{"referer":"/iserver/","reason":null,"succeed":true}')
             self.factory = APIFactory(self.baseuri, self.username, self.password)
 
     def init_api(self, method, *args, **kwargs):

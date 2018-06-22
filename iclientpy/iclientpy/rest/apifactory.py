@@ -6,6 +6,7 @@ from enum import Enum
 import requests
 from requests.auth import AuthBase
 import json
+from typing import Callable
 from functools import partial
 from .api.management import Management
 from .api.restdata import DataService
@@ -275,7 +276,14 @@ class RestInvocationHandlerImpl(RestInvocationHandler):
         return methods[rest.get_method()](rest, uri, args, kwargs)
 
 
-def create_auth(login_url: str, username: str, passwd: str, token: str, proxies=None) -> AuthBase:
+def _default_check_login_status(response):
+    result = json.loads(response.content)
+    if result['succeed'] == False:
+        raise Exception('登录失败，请确保用户名和密码输入正确')
+
+
+def create_auth(login_url: str, username: str, passwd: str, token: str, proxies=None,
+                check: Callable = _default_check_login_status) -> AuthBase:
     """
     登录服务，并将记录登录信息的CookieAuth/TokenAuth返回，用于授权需要访问权限的api
 
@@ -285,6 +293,7 @@ def create_auth(login_url: str, username: str, passwd: str, token: str, proxies=
         passwd: 登录的密码
         token: 登录的token
         proxies: 设置请求的代理
+        check: 检查登录状态的回调函数
 
     Returns:
         返回CookieAuth/TokenAuth，存放登录信息
@@ -294,8 +303,11 @@ def create_auth(login_url: str, username: str, passwd: str, token: str, proxies=
         # TODO session超时处理，定时刷新保证不超时，以及超时检测重新登录
         response = requests.post(login_url, json={'username': username, 'password': passwd}, proxies=proxies)
         response.raise_for_status()
+        if check:
+            check(response)
         value = response.cookies[default_session_cookie_name]
         return CookieAuth(value)
+
     elif token is not None:
         return TokenAuth(token)
 
@@ -485,7 +497,13 @@ class iManagerAPIFactory:
         """
         self._base_url = base_url
         self._proxies = proxies if proxies is not None else _get_proxy_from_arguments()
-        auth = create_auth(self._base_url + '/security/tokens.json', username, passwd, token, proxies=self._proxies)
+
+        def _check_imanager_login_status(response):
+            if response.status_code == 600:
+                raise Exception('登录失败，请确保用户名和密码输入正确')
+
+        auth = create_auth(self._base_url + '/security/tokens.json', username, passwd, token, proxies=self._proxies,
+                           check=_check_imanager_login_status)
         self._handler = RestInvocationHandlerImpl(self._base_url, auth, proxies=self._proxies)
 
     def node_service(self):

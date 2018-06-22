@@ -14,7 +14,8 @@ class TestUpdateTileSet(TestCase):
         # do login
         loginuri = base_uri + '/services/security/login.json'
         httpretty.register_uri(httpretty.POST, loginuri, status=201,
-                               set_cookie='JSESSIONID=958322873908FF9CA99B5CB443ADDD5C')
+                               set_cookie='JSESSIONID=958322873908FF9CA99B5CB443ADDD5C',
+                               body='{"referer":"/iserver/","reason":null,"succeed":true}')
         # do post tile jobs
         post_tile_jobs_body = '{"postResultType":"CreateChild","newResourceID":"d7bff309-8f7f-48bb-9c4f-bf9b9224fb41","succeed":true,"customResult":{"id":"d7bff309-8f7f-48bb-9c4f-bf9b9224fb41","state":null,"targetTilesetInfo":{"filePath":"/etc/icloud/SuperMapiServer/webapps/iserver/output/sqlite/World_1152242556_256X256_PNG.smtiles","name":"smtiles_tileset_1596041633"},"info":{"originalPoint":{"x":-180,"y":90},"fileVerificationMode":"FILESIZE","cacheRegions":null,"utfGridParameter":null,"resolutions":[1.4062499999999996,0.7041106029214795,0.35205530146073977,0.17602765073036988,0.08801382536518494,0.04400691268259247,0.022003456341296235,0.011001728170648107,0.005500864085324063,0.002750432042662044],"dataConnectionString":"str","transparent":false,"tileVersionDescription":null,"realspaceParameter":null,"createStandardMBTiles":false,"epsgCode":4326,"createNewTileVersion":false,"mapName":"World","convertToPng8":true,"refMapRestAdress":null,"scaleDenominators":[5.91658710909131E8,2.96244033181848E8,1.48122016590924E8,7.4061008295462E7,3.7030504147731E7,1.85152520738655E7,9257626.03693275,4628813.01846637,2314406.50923319,1157203.2546166],"cacheVersion":null,"parentTileVersion":null,"format":"PNG","cacheBounds":{"top":90,"left":-180,"bottom":-90,"leftBottom":{"x":-180,"y":-90},"right":180,"rightTop":{"x":180,"y":90}},"storeConfig":{"innerTileSourceInfo":{"outputPath":"/etc/icloud/SuperMapiServer/webapps/iserver/output/sqlite","type":"SMTiles"},"tileStorageServers":[],"type":"Remote","token":null},"dataPreProcessInfo":null,"actualTileVersion":null,"taskAssignmentType":"DEFAULT","tileType":"Image","autoAvoidEffectEnabled":false,"useLocal":true,"tileSize":"SIZE_256","compressionQuality":0.75,"storageType":null,"vectorBounds":null,"vectorParameter":null}},"newResourceLocation":"http://192.168.20.158:8090/iserver/manager/tileservice/jobs/d7bff309-8f7f-48bb-9c4f-bf9b9224fb41.json"}'
         httpretty.register_uri(httpretty.POST, base_uri + "/manager/tileservice/jobs.json", body=post_tile_jobs_body,
@@ -36,7 +37,8 @@ class TestUpdateTileSet(TestCase):
         # do login
         loginuri = base_uri + '/services/security/login.json'
         httpretty.register_uri(httpretty.POST, loginuri, status=201,
-                               set_cookie='JSESSIONID=958322873908FF9CA99B5CB443ADDD5C')
+                               set_cookie='JSESSIONID=958322873908FF9CA99B5CB443ADDD5C',
+                               body='{"referer":"/iserver/","reason":null,"succeed":true}')
         # do post workspace
         httpretty.register_uri(httpretty.POST, base_uri + "/manager/workspaces.json",
                                body='[{"serviceType": "RESTMAP", "serviceAddress": "' + base_uri + '/services/data-world2/rest' + '"}]',
@@ -94,7 +96,8 @@ class TestUpdateTileSet(TestCase):
         # do login
         loginuri = base_uri + '/services/security/login.json'
         httpretty.register_uri(httpretty.POST, loginuri, status=201,
-                               set_cookie='JSESSIONID=958322873908FF9CA99B5CB443ADDD5C')
+                               set_cookie='JSESSIONID=958322873908FF9CA99B5CB443ADDD5C',
+                               body='{"referer":"/iserver/","reason":null,"succeed":true}')
         # do post workspace
         httpretty.register_uri(httpretty.POST, base_uri + "/manager/workspaces.json",
                                body='[{"serviceType": "RESTMAP", "serviceAddress": "' + base_uri + '/services/data-world2/rest' + '"}]',
@@ -138,7 +141,8 @@ class TestUpdateTileSet(TestCase):
         # do login
         loginuri = base_uri + '/services/security/login.json'
         httpretty.register_uri(httpretty.POST, loginuri, status=201,
-                               set_cookie='JSESSIONID=958322873908FF9CA99B5CB443ADDD5C')
+                               set_cookie='JSESSIONID=958322873908FF9CA99B5CB443ADDD5C',
+                               body='{"referer":"/iserver/","reason":null,"succeed":true}')
         # do post workspace
         httpretty.register_uri(httpretty.POST, base_uri + "/manager/workspaces.json",
                                body='[{"serviceType": "RESTMAP", "serviceAddress": "' + base_uri + '/services/data-world2/rest' + '"}]',
