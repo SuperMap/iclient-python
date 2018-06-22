@@ -32,22 +32,17 @@ def main(argv=sys.argv[1:]):
             param.append(d["username"])
         if "password" in d:
             param.append(d["password"])
-
         if notebook_dir == '.':
-            if not exists(pjoin(notebook_dir, "iclientpy")):
-                notebook_dir = '.\iclientpy'
-            else:
-                i = 1
-                while exists(pjoin(notebook_dir, "iclientpy-%s" % i)):
-                    i += 1
-                notebook_dir = ".\iclientpy-%s" % i
+            notebook_dir = '.\iclientpy'
         if not exists(notebook_dir):
             mkdir(notebook_dir)
-        with open(pjoin(abspath(dirname(__file__)), 'online_template.ipynb'), mode='r', encoding='utf8') as src:
-            with open(pjoin(notebook_dir, 'preliminary_online.ipynb'), mode='w+', encoding='utf8') as tar:
-                for line in src.readlines():
-                    line = line.replace('{param}', ','.join(["'" + p + "'" for p in param]))
-                    tar.write(line)
+        if not exists(pjoin(notebook_dir, "preliminary_online.ipynb")):
+            with open(pjoin(abspath(dirname(__file__)), 'online_template.ipynb'), mode='r',
+                      encoding='utf8') as src:
+                with open(pjoin(notebook_dir, 'preliminary_online.ipynb'), mode='w+', encoding='utf8') as tar:
+                    for line in src.readlines():
+                        line = line.replace('{param}', ','.join(["'" + p + "'" for p in param]))
+                        tar.write(line)
         sys.argv = sys.argv[:1]
         nbmain(notebook_dir=notebook_dir, ip=ip, port=port)
     except SystemExit as err:

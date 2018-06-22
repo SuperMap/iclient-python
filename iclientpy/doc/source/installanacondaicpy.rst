@@ -70,5 +70,5 @@ iClientPy的一些第三方依赖需要c++库，pip安装的时候不会安装�
 
         icpy-iclientpystart
 
-15. 在上一步执行过后，会在浏览器中打开一个网页(如果没有打开，手动访问http://localhost:8888)，点击iclientpy_start.ipynb，开始了解，使用iclientpy
+15. 在上一步执行过后，会在浏览器中打开一个网页(如果没有打开，手动访问http://localhost:8888)，点击first_notebook.ipynb，开始了解，使用iclientpy
 

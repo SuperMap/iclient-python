@@ -1,5 +1,6 @@
 from notebook.notebookapp import main as nbmain
 from os.path import join as pjoin, abspath, dirname, exists
+from os import listdir
 import argparse
 import sys
 import shutil
@@ -25,23 +26,12 @@ def main(argv=sys.argv[1:]):
         notebook_dir = d['notebook_dir']
         ip = d['ip']
         port = d['port']
-
         if notebook_dir == '.':
-            if not exists(pjoin(notebook_dir, "iclientpy")):
-                notebook_dir = '.\iclientpy'
-            else:
-                i = 1
-                while exists(pjoin(notebook_dir, "iclientpy-%s" % i)):
-                    i += 1
-                notebook_dir = ".\iclientpy-%s" % i
-
-        current_path = abspath(dirname(__file__))
-        sample_path = pjoin(current_path, '..', 'sample')
-        shutil.copytree(sample_path, notebook_dir)
-        template_path = pjoin(current_path, 'iclientpy_template.ipynb')
-        tgt_path = pjoin(notebook_dir, 'iclientpy_start.ipynb')
-        shutil.copy(template_path, tgt_path)
-
+            notebook_dir = '.\iclientpy'
+        if not exists(notebook_dir):
+            current_path = abspath(dirname(__file__))
+            sample_path = pjoin(current_path, '..', 'sample')
+            shutil.copytree(sample_path, notebook_dir)
         sys.argv = sys.argv[:1]
         nbmain(notebook_dir=notebook_dir, ip=ip, port=port)
     except SystemExit as err:
