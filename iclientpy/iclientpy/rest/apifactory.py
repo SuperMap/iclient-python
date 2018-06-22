@@ -508,6 +508,8 @@ def create_sso_auth(url: str, username: str, passwd: str, token: str, proxies=No
         params.update(json.loads(lt_res.content))
         params.update({"username": username, "password": passwd})
         ticket_res = session.post(SSO_URL, params=params, proxies=proxies, allow_redirects=False)
+        if ticket_res.status_code != 302:
+            raise Exception("登录失败，请确保用户名和密码输入正确")
         url = ticket_res.headers["location"]
         online_res = session.get(url, proxies=proxies, allow_redirects=False)
         online_jsessionid = online_res.cookies[default_session_cookie_name]
