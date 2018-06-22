@@ -12,6 +12,7 @@ build:
     string: py36_0
     always_include_files:
         - ../../../iclientpy/static
+    script: python setup.py install --single-version-externally-managed --record=record.txt
 
 requirements:
     build:
