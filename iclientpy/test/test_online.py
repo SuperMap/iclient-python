@@ -4,6 +4,7 @@ from iclientpy.rest.api.model import GetMapsResult, ViewerMap, MethodResult, MyD
     DataItemType, MyDataUploadProcess, Layer, GetMyDatasResult
 from io import FileIO
 from pandas import DataFrame
+import requests_mock
 
 
 class MockOnlineAPIFactory:
@@ -14,8 +15,21 @@ class MockOnlineAPIFactory:
 
 @mock.patch("iclientpy.online.OnlineAPIFactory", MockOnlineAPIFactory)
 class OnlineTestCase(TestCase):
+
+    @classmethod
+    def setUpClass(clz):
+        with requests_mock.Mocker() as m:
+            m.register_uri('GET', 'https://sso.supermap.com/login',
+                           text='{"lt":"LT-11506-wDwBEJsE2dWoVoKOfIDBZyRt0qk35k-sso.supermap.com","execution":"e1s1","_eventId":"submit"}',
+                           cookies={'JSESSIONID': '958322873908FF9CA99B5CB443ADDD5C'})
+            m.register_uri('POST', 'https://sso.supermap.com/login',
+                           headers={'location': 'https://www.supermapol.com/shiro-cas'}, status_code=302)
+            m.register_uri('GET', 'https://www.supermapol.com/shiro-cas',
+                           cookies={'JSESSIONID': '958322873908FF9CA99B5CB443ADDD5C'})
+            clz.online = Online('test', 'test')
+
     def test_search_map(self):
-        online = Online('test', 'test')
+        online = self.online
         online._online = mock.MagicMock()
         result = GetMapsResult()
         result.content = []
@@ -26,7 +40,7 @@ class OnlineTestCase(TestCase):
         self.assertEqual(result, [])
 
     def test_get_map(self):
-        online = Online('test', 'test')
+        online = self.online
         online._online = mock.MagicMock()
         m = ViewerMap()
         maps_service = mock.MagicMock()
@@ -36,7 +50,7 @@ class OnlineTestCase(TestCase):
         self.assertEqual(result, m)
 
     def test_upload_data(self):
-        online = Online('test', 'test')
+        online = self.online
         online._online = mock.MagicMock()
         data_services = mock.MagicMock()
         mdmr = MyDatasMethodResult()
@@ -61,7 +75,7 @@ class OnlineTestCase(TestCase):
         self.assertEqual(result, 'data_id')
 
     def test_upload_dataframe_as_json(self):
-        online = Online('test', 'test')
+        online = self.online
         online._online = mock.MagicMock()
         online.upload_data = mock.MagicMock(return_value='data_id')
         df = mock.MagicMock()
@@ -71,7 +85,7 @@ class OnlineTestCase(TestCase):
         self.assertEqual(result, 'data_id')
 
     def test_get_datas(self):
-        online = Online('test', 'test')
+        online = self.online
         online._online = mock.MagicMock()
         data_services = mock.MagicMock()
         res = GetMyDatasResult()
@@ -82,7 +96,7 @@ class OnlineTestCase(TestCase):
         self.assertEqual(result, [])
 
     def test_get_data(self):
-        online = Online('test', 'test')
+        online = self.online
         online._online = mock.MagicMock()
         data = DataItem()
         data_services = mock.MagicMock()
@@ -92,7 +106,7 @@ class OnlineTestCase(TestCase):
         self.assertEqual(result, data)
 
     def test_get_data_upload_progress(self):
-        online = Online('test', 'test')
+        online = self.online
         online._online = mock.MagicMock()
         data_services = mock.MagicMock()
         online._online.datas_service = mock.MagicMock(return_value=data_services)
@@ -104,7 +118,7 @@ class OnlineTestCase(TestCase):
         self.assertEqual(result, (10, 100))
 
     def test_create_map(self):
-        online = Online('test', 'test')
+        online = self.online
         online._online = mock.MagicMock()
         maps_service = mock.MagicMock()
         online._online.maps_service = mock.MagicMock(return_value=maps_service)
@@ -115,14 +129,15 @@ class OnlineTestCase(TestCase):
         self.assertEqual(result, 'map_id')
 
     def test_prepare_geojson_layer(self):
-        online = Online('test', 'test')
+        online = self.online
+        online._online._base_url = 'https://www.supermapol.com'
         data_id = 'data_id'
         result = online.prepare_geojson_layer(data_id, 'layer')
         self.assertEqual(result.url, 'https://www.supermapol.com/datas/data_id/content.json')
         self.assertEqual(result.title, 'layer')
 
     def test_share_data_public(self):
-        online = Online('test', 'test')
+        online = self.online
         online._online = mock.MagicMock()
         data_services = mock.MagicMock()
         online._online.datas_service = mock.MagicMock(return_value=data_services)
@@ -133,7 +148,7 @@ class OnlineTestCase(TestCase):
         data_services.put_sharesetting.assert_called_once()
 
     def test_share_data_private(self):
-        online = Online('test', 'test')
+        online = self.online
         online._online = mock.MagicMock()
         data_services = mock.MagicMock()
         online._online.datas_service = mock.MagicMock(return_value=data_services)
@@ -144,7 +159,7 @@ class OnlineTestCase(TestCase):
         data_services.put_sharesetting.assert_called_once()
 
     def test_share_map_public(self):
-        online = Online('test', 'test')
+        online = self.online
         online._online = mock.MagicMock()
         maps_service = mock.MagicMock()
         online._online.maps_service = mock.MagicMock(return_value=maps_service)
@@ -155,7 +170,7 @@ class OnlineTestCase(TestCase):
         maps_service.put_map_sharesetting.assert_called_once()
 
     def test_share_map_private(self):
-        online = Online('test', 'test')
+        online = self.online
         online._online = mock.MagicMock()
         maps_service = mock.MagicMock()
         online._online.maps_service = mock.MagicMock(return_value=maps_service)
@@ -166,7 +181,7 @@ class OnlineTestCase(TestCase):
         maps_service.put_map_sharesetting.assert_called_once()
 
     def test_delete_map(self):
-        online = Online('test', 'test')
+        online = self.online
         online._online = mock.MagicMock()
         maps_service = mock.MagicMock()
         online._online.maps_service = mock.MagicMock(return_value=maps_service)
@@ -177,7 +192,7 @@ class OnlineTestCase(TestCase):
         maps_service.delete_maps.assert_called_once_with(['map_id'])
 
     def test_delete_maps(self):
-        online = Online('test', 'test')
+        online = self.online
         online._online = mock.MagicMock()
         maps_service = mock.MagicMock()
         online._online.maps_service = mock.MagicMock(return_value=maps_service)
@@ -188,7 +203,7 @@ class OnlineTestCase(TestCase):
         maps_service.delete_maps.assert_called_once_with(['map_id'])
 
     def test_delete_data(self):
-        online = Online('test', 'test')
+        online = self.online
         online._online = mock.MagicMock()
         data_services = mock.MagicMock()
         online._online.datas_service = mock.MagicMock(return_value=data_services)
@@ -199,7 +214,7 @@ class OnlineTestCase(TestCase):
         data_services.delete_data.assert_called_once_with('data_id')
 
     def test_delete_datas(self):
-        online = Online('test', 'test')
+        online = self.online
         online._online = mock.MagicMock()
         data_services = mock.MagicMock()
         online._online.datas_service = mock.MagicMock(return_value=data_services)

@@ -8,6 +8,7 @@ from iclientpy.rest.api.model import DataItemType, PostMyDatasItem, Layer, Layer
     Rectangle2D, PrjCoordSys, Status, OnlineMapShareSetting, OnlineDataShareSetting, MapShareSetting, PermissionType, \
     EntityType, IportalDataAuthorizeEntity, DataPermissionType
 from iclientpy.typeassert import typeassert
+from IPython.display import display
 
 
 class OnlineBaseLayerType(Enum):
@@ -25,9 +26,33 @@ class OnlineBaseLayerType(Enum):
     BAIDU = 'BAIDU'
 
 
+def _online_notebook_login(username, passwd):
+    import requests
+    import json
+    from ipywidgets import HTML, Layout
+    if username is not None and passwd is not None:
+        SSO_URL = 'https://sso.supermap.com/login'
+        params = {'format': 'json'}
+        params.update({'service': 'https://www.supermapol.com/shiro-cas'})
+        session = requests.session()
+        lt_res = session.get(SSO_URL, params=params, allow_redirects=False)
+        params.update(json.loads(lt_res.content))
+        params.update({"username": username, "password": passwd})
+        ticket_res = session.post(SSO_URL, params=params, allow_redirects=False)
+        if ticket_res.status_code != 302:
+            raise Exception("登录失败，请确保用户名和密码输入正确")
+        url = ticket_res.headers["location"]
+        layout = Layout()
+        layout.visibility = 'hidden'
+        layout.width = '0px'
+        layout.height = '0px'
+        return HTML(value='<iframe src="' + url + '">', layout=layout)
+
+
 class Online:
     def __init__(self, username: str = None, password: str = None):
         self._online = OnlineAPIFactory('https://www.supermapol.com', username, password)
+        display(_online_notebook_login(username, password))
 
     @typeassert
     def search_map(self, owners: List[str] = None, tags: List[str] = None, keywords: List[str] = None):
