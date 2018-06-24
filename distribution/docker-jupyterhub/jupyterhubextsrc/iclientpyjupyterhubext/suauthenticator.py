@@ -11,7 +11,8 @@ except Exception as e:
 
 
 class SuAuthenticator(PAMAuthenticator):
-    def system_user_exists(username):
+    @staticmethod
+    def system_user_exists_by_name(username):
         """Check if the user exists on the system"""
         try:
             import pwd
@@ -25,7 +26,7 @@ class SuAuthenticator(PAMAuthenticator):
     def authenticate(self, handler, data):
         username = data['username']
         password = data['password']
-        if not SuAuthenticator.system_user_exists(username):
+        if not SuAuthenticator.system_user_exists_by_name(username):
             encPass = crypt.crypt(password, "22")
             os.system("useradd -p " + encPass + " -d " + "/home/" + username + " -m " + username)
             os.system("cp -r /iclientpy/sample/* /home/" + username)
