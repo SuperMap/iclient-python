@@ -94,7 +94,7 @@ class Online:
         _url = self._online._base_url + "/../apps/viewer/"
 
         def _repr_html_(self, **kwargs):
-            return "<iframe src='" + _url + str(self.id) + "' style='width: 100%; height: 600px;'/>"
+            return "<a href='{url}' target='_blank'>到SuperMap Online查看</a><iframe src='{url}' style='width: 100%; height: 600px;'/>".format(url = _url + str(self.id))
 
         content._repr_html_ = types.MethodType(_repr_html_, content)
         return content
