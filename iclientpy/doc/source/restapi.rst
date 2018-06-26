@@ -290,7 +290,7 @@ MapService
     获取地图当前状态的基本信息
     ::
         api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
-        map_s = api.security_service()
+        map_s = api.map_service('map-World')
         map_name = 'World'
         result = map_s.get_map(map_name)
 
@@ -302,7 +302,7 @@ SecurityService
     输入用户信息申请 Token。
     ::
         api = APIFactory('http://localhost:8090/iserver', {name}, {password})
-        sec = api.map_service('map-World')
+        sec = api.security_service()
         param = PostTokenParameter()
         result = sec.post_tokens(param)
 

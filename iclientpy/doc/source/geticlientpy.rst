@@ -36,16 +36,16 @@ iClientPy正在开发中，如果你有意试用，可以通过两个途径获�
 
             ::
 
-                docker pull docker pull registry.cn-beijing.aliyuncs.com/iclientpy/iclientpy-jupyter-notebook
+                docker pull registry.cn-beijing.aliyuncs.com/iclientpy/iclientpy-jupyter-notebook
 
         2. 执行下面命令
 
             ::
 
-                docker run --name {containername} -p {port}:8888 docker pull registry.cn-beijing.aliyuncs.com/iclientpy/iclientpy-jupyter-notebook
+                docker run --name iclientpy -p 8888:8888 registry.cn-beijing.aliyuncs.com/iclientpy/iclientpy-jupyter-notebook
 
-            其中，{containername}为创建后docker容器名称，{port}为docker宿主机上未被占用端口
-        3. 访问http://{ip}:{port}
+            其中，iclientpy为创建后docker容器名称，可以修改。第一个8888为docker宿主机上的端口，如果被占用可以为未被占用端口。
+        3. 访问http://{宿主机ip}:8888
 
             **注意：** 该服务默认需要token登录，可以通过命令 docker logs {containername}查看notebook日志获取token
 
