@@ -25,7 +25,7 @@ api的工厂类，所有的api从这个类中生产
     生成iServer的数据服务类的api的方法。
     ::
 
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
+        api = APIFactory('http://localhost:8090/iserver')
         ds = api.data_service('data-World/rest')
 
 * management
@@ -39,11 +39,11 @@ api的工厂类，所有的api从这个类中生产
 
 * map_service
 
-    返回指定地图服务的相关数据的api
+    返回指定地图服务的api
     ::
 
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
-        mng = api.map_service('map-World')
+        api = APIFactory('http://localhost:8090/iserver')
+        mng = api.map_service('map-World/rest')
 
 
 * security_service
@@ -51,7 +51,7 @@ api的工厂类，所有的api从这个类中生产
     返回安全类服务的api
     ::
 
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
+        api = APIFactory('http://localhost:8090/iserver')
         mng = api.security_service()
 
 * distributedanalyst_service
@@ -59,7 +59,7 @@ api的工厂类，所有的api从这个类中生产
     返回分布式分析服务的api
     ::
 
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
+        api = APIFactory('http://localhost:8090/iserver')
         mng = api.distributedanalyst_service()
 
 * datacatalog_service
@@ -67,7 +67,7 @@ api的工厂类，所有的api从这个类中生产
     返回数据目录服务api
     ::
 
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
+        api = APIFactory('http://localhost:8090/iserver')
         mng = api.datacatalog_service()
 
 
@@ -81,7 +81,7 @@ DataService
     获取要素（feature）信息集合。
     ::
 
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
+        api = APIFactory('http://localhost:8090/iserver')
         ds = api.data_service('data-World/rest')
         result = ds.get_features(datasourceName='World',datasetName='Countries',fromIndex=0,toIndex=3)
 
@@ -90,7 +90,7 @@ DataService
     添加、删除、修改要素集中的要素。
     ::
 
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
+        api = APIFactory('http://localhost:8090/iserver')
         ds = api.data_service('data-World/rest')
         entity=[...]
         result = ds.post_features(datasourceName='World',datasetName='Countries',entity=entity)
@@ -313,7 +313,7 @@ DistributedAnalyst
 
     获取点聚合分析作业列表
     ::
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
+        api = APIFactory('http://localhost:8090/iserver')
         dis = api.distributedanalyst_service()
         result = dis.get_aggregatepoints()
 
@@ -321,7 +321,7 @@ DistributedAnalyst
 
     创建点聚合分析作业
     ::
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
+        api = APIFactory('http://localhost:8090/iserver')
         dis = api.distributedanalyst_service()
         param = PostAgggregatePointsEntity()
         result = dis.post_aggregatepoints(param)
@@ -330,7 +330,7 @@ DistributedAnalyst
 
     获取指定id的点聚合分析作业
     ::
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
+        api = APIFactory('http://localhost:8090/iserver')
         dis = api.distributedanalyst_service()
         job_id = 'job_id'
         result = dis.get_aggregatepoints_job(job_id)
@@ -339,7 +339,7 @@ DistributedAnalyst
 
     获取要素连接作业列表
     ::
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
+        api = APIFactory('http://localhost:8090/iserver')
         dis = api.distributedanalyst_service()
         result = dis.get_featurejoin()
 
@@ -347,7 +347,7 @@ DistributedAnalyst
 
     创建要素连接作业
     ::
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
+        api = APIFactory('http://localhost:8090/iserver')
         dis = api.distributedanalyst_service()
         param = PostFeatureJoinEntity()
         result = dis.post_featurejoin(param)
@@ -356,7 +356,7 @@ DistributedAnalyst
 
     获取指定的要素连接作业
     ::
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
+        api = APIFactory('http://localhost:8090/iserver')
         dis = api.distributedanalyst_service()
         job_id = 'job_id'
         result = dis.get_featurejoin_job(job_id)
@@ -365,7 +365,7 @@ DistributedAnalyst
 
     获取缓冲区分析作业列表
     ::
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
+        api = APIFactory('http://localhost:8090/iserver')
         dis = api.distributedanalyst_service()
         result = dis.get_buffers()
 
@@ -373,7 +373,7 @@ DistributedAnalyst
 
     创建缓冲区分析作业
     ::
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
+        api = APIFactory('http://localhost:8090/iserver')
         dis = api.distributedanalyst_service()
         param = PostBuffersEntity()
         rsult = dis.post_buffers(param)
@@ -382,7 +382,7 @@ DistributedAnalyst
 
     获取指定的缓冲区分析作业
     ::
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
+        api = APIFactory('http://localhost:8090/iserver')
         dis = api.distributedanalyst_service()
         job_id = 'job_id'
         result = dis.get_buffers_job(job_id)
@@ -391,7 +391,7 @@ DistributedAnalyst
 
     获取密度分析作业列表
     ::
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
+        api = APIFactory('http://localhost:8090/iserver')
         dis = api.distributedanalyst_service()
         result = dis.get_density()
 
@@ -399,7 +399,7 @@ DistributedAnalyst
 
     创建密度分析作业
     ::
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
+        api = APIFactory('http://localhost:8090/iserver')
         dis = api.distributedanalyst_service()
         param = PostDensityentity()
         result = dis.post_density(param)
@@ -408,7 +408,7 @@ DistributedAnalyst
 
     获取指定的密度分析作业
     ::
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
+        api = APIFactory('http://localhost:8090/iserver')
         dis = api.distributedanalyst_service()
         job_id = 'job_id'
         result = dis.get_density_job(job_id)
@@ -417,7 +417,7 @@ DistributedAnalyst
 
     获取叠加分析作业列表
     ::
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
+        api = APIFactory('http://localhost:8090/iserver')
         dis = api.distributedanalyst_service()
         result = dis.get_overlay()
 
@@ -425,7 +425,7 @@ DistributedAnalyst
 
     创建叠加分析作业列表
     ::
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
+        api = APIFactory('http://localhost:8090/iserver')
         dis = api.distributedanalyst_service()
         param = PostOverlayEntity()
         result = dis.post_overlay(param)
@@ -434,7 +434,7 @@ DistributedAnalyst
 
     获取指定的叠加分析作业
     ::
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
+        api = APIFactory('http://localhost:8090/iserver')
         dis = api.distributedanalyst_service()
         job_id = 'job_id'
         result = dis.get_overlay_job(job_id)
@@ -443,7 +443,7 @@ DistributedAnalyst
 
     获取单对象空间查询分析作业列表
     ::
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
+        api = APIFactory('http://localhost:8090/iserver')
         dis = api.distributedanalyst_service()
         result = dis.get_query()
 
@@ -451,7 +451,7 @@ DistributedAnalyst
 
     创建单对象空间查询分析作业列表
     ::
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
+        api = APIFactory('http://localhost:8090/iserver')
         dis = api.distributedanalyst_service()
         param = PostQueryEntity()
         result = dis.post_query(param)
@@ -460,7 +460,7 @@ DistributedAnalyst
 
     获取指定的单对象空间查询分析作业
     ::
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
+        api = APIFactory('http://localhost:8090/iserver')
         dis = api.distributedanalyst_service()
         job_id = 'job_id'
         result = dis.get_query_job(job_id)
@@ -469,7 +469,7 @@ DistributedAnalyst
 
     获取属性汇总统计分析作业列表
     ::
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
+        api = APIFactory('http://localhost:8090/iserver')
         dis = api.distributedanalyst_service()
         result = dis.get_summary_attributes()
 
@@ -477,7 +477,7 @@ DistributedAnalyst
 
     创建属性汇总统计分析作业列表
     ::
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
+        api = APIFactory('http://localhost:8090/iserver')
         dis = api.distributedanalyst_service()
         param = PostSummaryAttributesEntity()
         result = dis.post_summary_attributes(param)
@@ -486,7 +486,7 @@ DistributedAnalyst
 
     获取指定的属性汇总统计分析作业
     ::
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
+        api = APIFactory('http://localhost:8090/iserver')
         dis = api.distributedanalyst_service()
         job_id = 'job_id'
         result = dis.get_summary_attributes_job(job_id)
@@ -495,7 +495,7 @@ DistributedAnalyst
 
     获取区域汇总分析作业列表
     ::
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
+        api = APIFactory('http://localhost:8090/iserver')
         dis = api.distributedanalyst_service()
         result = dis.get_summary_region()
 
@@ -503,7 +503,7 @@ DistributedAnalyst
 
     创建区域汇总分析作业列表
     ::
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
+        api = APIFactory('http://localhost:8090/iserver')
         dis = api.distributedanalyst_service()
         param = PostSummaryRegionEntity()
         result = dis.post_summary_region(param)
@@ -512,7 +512,7 @@ DistributedAnalyst
 
     获取指定的区域汇总分析作业
     ::
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
+        api = APIFactory('http://localhost:8090/iserver')
         dis = api.distributedanalyst_service()
         job_id = 'job_id'
         result = dis.get_summary_region_job(job_id)
@@ -521,7 +521,7 @@ DistributedAnalyst
 
     获取拓扑检查作业列表
     ::
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
+        api = APIFactory('http://localhost:8090/iserver')
         dis = api.distributedanalyst_service()
         result = dis.get_topologyvalidator()
 
@@ -529,7 +529,7 @@ DistributedAnalyst
 
     创建拓扑检查作业列表
     ::
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
+        api = APIFactory('http://localhost:8090/iserver')
         dis = api.distributedanalyst_service()
         param = PostTopologyValidatorEntity()
         result = dis.post_topologyvalidator(param)
@@ -538,7 +538,7 @@ DistributedAnalyst
 
     获取指定的拓扑检查作业
     ::
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
+        api = APIFactory('http://localhost:8090/iserver')
         dis = api.distributedanalyst_service()
         job_id = 'job_id'
         result = dis.get_topologyvalidator_job(job_id)
@@ -547,7 +547,7 @@ DistributedAnalyst
 
     获取矢量裁剪分析作业列表
     ::
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
+        api = APIFactory('http://localhost:8090/iserver')
         dis = api.distributedanalyst_service()
         result = dis.get_vector_clip()
 
@@ -555,7 +555,7 @@ DistributedAnalyst
 
     创建矢量裁剪分析作业列表
     ::
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
+        api = APIFactory('http://localhost:8090/iserver')
         dis = api.distributedanalyst_service()
         param = PostVectorClipEntity()
         result = dis.post_vector_clip(param)
@@ -564,7 +564,7 @@ DistributedAnalyst
 
     获取指定的矢量裁剪分析作业
     ::
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
+        api = APIFactory('http://localhost:8090/iserver')
         dis = api.distributedanalyst_service()
         job_id = 'job_id'
         result = dis.get_vector_clip_job(job_id)
@@ -576,7 +576,7 @@ Datacatalog
 
     获取关系数据源中所有数据集的信息
     ::
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
+        api = APIFactory('http://localhost:8090/iserver')
         dat =  api.datacatalog_service()
         result = dat.get_relationship_datasets()
 
@@ -584,7 +584,7 @@ Datacatalog
 
     获取关系数据集的详细信息
     ::
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
+        api = APIFactory('http://localhost:8090/iserver')
         dat =  api.datacatalog_service()
         dataset_name = 'dataset'
         result = dat.get_relationship_dataset(dataset_name)
@@ -593,7 +593,7 @@ Datacatalog
 
     获取关系数据集的字段列表信息
     ::
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
+        api = APIFactory('http://localhost:8090/iserver')
         dat =  api.datacatalog_service()
         dataset_name = 'dataset'
         result = dat.get_relationship_dataset_fields(dataset_name)
@@ -602,7 +602,7 @@ Datacatalog
 
     获取关系数据集中某一字段详细信息
     ::
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
+        api = APIFactory('http://localhost:8090/iserver')
         dat =  api.datacatalog_service()
         dataset_name = 'dataset'
         field_name = 'field'
@@ -612,7 +612,7 @@ Datacatalog
 
     获取共享文件数据源中所有数据集的信息
     ::
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
+        api = APIFactory('http://localhost:8090/iserver')
         dat =  api.datacatalog_service()
         result = dat.get_sharefile()
 
@@ -620,7 +620,7 @@ Datacatalog
 
     获取共享文件数据集的详细信息
     ::
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
+        api = APIFactory('http://localhost:8090/iserver')
         dat =  api.datacatalog_service()
         dataset_name = 'dataset'
         result = dat.get_sharefile_dataset(dataset_name)
@@ -629,7 +629,7 @@ Datacatalog
 
     获取共享文件数据集的字段列表信息
     ::
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
+        api = APIFactory('http://localhost:8090/iserver')
         dat =  api.datacatalog_service()
         dataset_name = 'dataset'
         result = dat.get_sharefile_dataset_fields(dataset_name)
@@ -638,7 +638,7 @@ Datacatalog
 
     获取共享文件数据集中某一字段详细信息
     ::
-        api = APIFactory('http://localhost:8090/iserver',token={tokenstr})
+        api = APIFactory('http://localhost:8090/iserver')
         dat =  api.datacatalog_service()
         dataset_name = 'dataset'
         field_name = 'field'
