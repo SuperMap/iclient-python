@@ -51,7 +51,7 @@ def run():
     uninstall_develop()
     install_develop()
     install_nbextension()
-    nbmain(notebook_dir=rootdir)
+    nbmain(notebook_dir=rootdir, token='', password='')
 
 
 if __name__ == '__main__':

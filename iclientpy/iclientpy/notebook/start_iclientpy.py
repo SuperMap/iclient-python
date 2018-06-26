@@ -33,7 +33,7 @@ def main(argv=sys.argv[1:]):
             sample_path = pjoin(current_path, '..', 'sample')
             shutil.copytree(sample_path, notebook_dir)
         sys.argv = sys.argv[:1]
-        nbmain(notebook_dir=notebook_dir, ip=ip, port=port)
+        nbmain(notebook_dir=notebook_dir, ip=ip, port=port, token='', password='')
     except SystemExit as err:
         return err.code
     return 0
