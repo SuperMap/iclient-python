@@ -24,8 +24,8 @@ RUN conda config --add channels http://mirrortsinghua:8081/repository/tuna_conda
 ADD pip.conf /root/.pip/pip.conf
 ADD *.whl /tmp/
 RUN pip install /tmp/*.whl
-ADD supermap_logo.png /opt/conda/share/jupyter/hub/static/images/jupyter.png
-ADD supermap_logo.png /opt/conda/share/jupyter/hub/static/images/jupyterhub-80.png
+ADD supermap_logo.png /opt/conda/share/jupyterhub/static/images/jupyter.png
+ADD supermap_logo.png /opt/conda/share/jupyterhub/static/images/jupyterhub-80.png
 
 RUN conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/ \
 && conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/ \
