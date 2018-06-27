@@ -1571,7 +1571,7 @@ class FeatureJoinJobSettting(DistributeAnalysisSetting):
 
 class AreaUnit(Enum):
     SquareMeter = 'SquareMeter'
-    SquareKileMeter = 'SquareKileMeter'
+    SquareKiloMeter = 'SquareKiloMeter'
     Hectare = 'Hectare'
     Are = 'Are'
     Acre = 'Acre'
