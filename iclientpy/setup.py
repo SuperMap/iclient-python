@@ -181,6 +181,7 @@ setup_args = {
     'entry_points': {
         'console_scripts': [
             'icpy-cachetool = iclientpy.rest.cmd.updatecache:main',
+            'icpy-cacheutil = iclientpy.rest.cmd.cache:main',
             'icpy-tokentool = iclientpy.rest.cmd.obaintoken:main',
             'icpy-initserver = iclientpy.rest.cmd.initserver:main',
             'icpy-serverstart = iclientpy.notebook.start_server:main',

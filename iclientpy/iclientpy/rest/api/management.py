@@ -1,14 +1,16 @@
-from typing import Dict,List
+from typing import Dict, List
 from ..decorator import post, get, put, delete, head
-from .model import PostWorkspaceParameter, GetWorkspaceResultItem,PostWorkspaceResultItem,MethodResult,PostTileJobsItem,PostTileJobsResultItem,GetTileJobResultItem,BuildState, \
-PostTilesetUpdateJobs,PostTilesetUpdateJobsResultItem,GetTilesetExportJobResultItem,MngServiceInfo,GetFileUploadResult,PostFileUploadTasksParam,PostUploadTasksResult,PostFileUploadTaskResult, \
-GetFileUploadTaskResult,RestMngFileListItem,DataStoreSetting,RestMngTileStorageInfo
+from .model import PostWorkspaceParameter, GetWorkspaceResultItem, PostWorkspaceResultItem, MethodResult, \
+    PostTileJobsItem, PostTileJobsResultItem, GetTileJobResultItem, BuildState, \
+    PostTilesetUpdateJobs, PostTilesetUpdateJobsResultItem, GetTilesetExportJobResultItem, MngServiceInfo, \
+    GetFileUploadResult, PostFileUploadTasksParam, PostUploadTasksResult, PostFileUploadTaskResult, \
+    GetFileUploadTaskResult, RestMngFileListItem, DataStoreSetting, RestMngTileStorageInfo
 from .abstracttypefields import mng_service_info_deserializer
 from io import FileIO
 
 
 class Management:
-    @post('/manager/workspaces', 'param')
+    @post('/manager/workspaces', entityKW='param')
     def post_workspaces(self, param: PostWorkspaceParameter) -> List[PostWorkspaceResultItem]:
         pass
 
@@ -94,5 +96,5 @@ class Management:
         pass
 
     @get('/manager/datastores/{id}')
-    def get_datastore(self, id:str) -> RestMngTileStorageInfo:
+    def get_datastore(self, id: str) -> RestMngTileStorageInfo:
         pass
