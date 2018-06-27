@@ -63,7 +63,8 @@ def cache_remoteworkspace(address: str, username: str, password: str, component_
                           original_point: tuple, cache_bounds: tuple, scale: List[float] = None,
                           tile_size: TileSize = TileSize.SIZE_256, tile_type: TileType = TileType.Image,
                           format: OutputFormat = OutputFormat.PNG, epsg_code: int = -1, storageid: str = None,
-                          storageconfig: TileSourceInfo = None, token: str = None, quite: bool = False):
+                          storageconfig: TileSourceInfo = None, token: str = None, quite: bool = False,
+                          job_tile_source_type: str = 'SMTiles'):
     if len(original_point) is not 2:
         raise Exception("切图原点坐标长度错误")
     tem_original_point = Point2D()
@@ -90,7 +91,7 @@ def cache_remoteworkspace(address: str, username: str, password: str, component_
 
     if storageconfig is None:
         storageconfig = SMTilesTileSourceInfo()
-        storageconfig.type = 'SMTiles'
+        storageconfig.type = job_tile_source_type
         storageconfig.outputPath = '../webapps/iserver/output/sqlite_' + uuid.uuid1().__str__()
 
     if not quite:
@@ -131,7 +132,8 @@ def cache_localworkspace(address: str, username: str, password: str, w_loc: str,
                          w_servicetypes: List[ServiceType] = [ServiceType.RESTMAP],
                          tile_size: TileSize = TileSize.SIZE_256, tile_type: TileType = TileType.Image,
                          format: OutputFormat = OutputFormat.PNG, epsg_code: int = -1, storageid: str = None,
-                         storageconfig: TileSourceInfo = None, token: str = None, quite: bool = False):
+                         storageconfig: TileSourceInfo = None, token: str = None, quite: bool = False,
+                         job_tile_source_type: str = 'SMTiles'):
     if len(original_point) is not 2:
         raise Exception("切图原点坐标长度错误")
     tem_original_point = Point2D()
@@ -150,16 +152,16 @@ def cache_localworkspace(address: str, username: str, password: str, w_loc: str,
     mng = api.management()
     if scale is None or len(scale) is 0:
         raise Exception('未指定比例尺')
-    if storageid is not None:
-        storage_info = mng.get_datastore(storageid)
-        for info in storage_info.tilesetInfos:
-            if info.metaData.mapName == map_name:
-                storageconfig = storage_info.tileSourceInfo
-
-    if storageconfig is None:
-        storageconfig = SMTilesTileSourceInfo()
-        storageconfig.type = 'SMTiles'
-        storageconfig.outputPath = '../webapps/iserver/output/sqlite_' + uuid.uuid1().__str__()
+    # if storageid is not None:
+    #     storage_info = mng.get_datastore(storageid)
+    #     for info in storage_info.tilesetInfos:
+    #         if info.metaData.mapName == map_name:
+    #             storageconfig = storage_info.tileSourceInfo
+    #
+    # if storageconfig is None:
+    #     storageconfig = SMTilesTileSourceInfo()
+    #     storageconfig.type = jobTileSourceType
+    #     storageconfig.outputPath = '../webapps/iserver/output/sqlite_' + uuid.uuid1().__str__()
 
     if not quite:
         confirmResult = confirm(address=address, username=username, password=password,
@@ -185,7 +187,8 @@ def cache_localworkspace(address: str, username: str, password: str, w_loc: str,
     cache_remoteworkspace(address=address, username=username, password=password, component_name=wkn, map_name=map_name,
                           original_point=original_point, cache_bounds=cache_bounds, scale=scale, tile_size=tile_size,
                           tile_type=tile_type, format=format, epsg_code=epsg_code, storageid=storageid,
-                          storageconfig=storageconfig, token=token, quite=True)
+                          storageconfig=storageconfig, token=token, quite=True,
+                          job_tile_source_type=job_tile_source_type)
 
 
 def _get_tile_source_info_from_service(mng: Management, name: str) -> TileSourceInfo:

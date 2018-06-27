@@ -39,6 +39,9 @@ def get_parser():
     cache_local_optional_group.add_argument('--epsgcode', dest='epsg_code', help='投影')
     cache_local_optional_group.add_argument('--storageid', dest='storageid', help='存储的id')
     cache_local_optional_group.add_argument('--quite', dest='quite', action='store_true', help='不需要确认，直接运行')
+    cache_local_optional_group.add_argument('--jobtilesourcetype', dest='job_tile_source_type',
+                                            choices=['SMTiles', 'MBTiles', 'UGCV5', 'GeoPackage'], default='SMTiles',
+                                            help='存储类型，仅在输出到本地存储路径时生效，Mongo，OTS与FastDFS时不生效，Mongo，OTS与FastDFS应直接设置storageid')
 
     cache_remote_parser = sub_parsers.add_parser('cache_remote')  # type: argparse.ArgumentParser
     cache_remote_parser.set_defaults(func=cache_remote)
@@ -62,6 +65,9 @@ def get_parser():
     cache_remote_optional_group.add_argument('--epsgcode', dest='epsg_code', help='投影')
     cache_remote_optional_group.add_argument('--storageid', dest='storageid', help='存储id')
     cache_remote_optional_group.add_argument('--quite', dest='quite', action='store_true', help='不需要确认，直接运行')
+    cache_remote_optional_group.add_argument('--jobtilesourcetype', dest='job_tile_source_type',
+                                             choices=['SMTiles', 'MBTiles', 'UGCV5', 'GeoPackage'], default='SMTiles',
+                                             help='存储类型，仅在输出到本地存储路径时生效，Mongo，OTS与FastDFS时不生效，Mongo，OTS与FastDFS应直接设置storageid')
     return parser
 
 
