@@ -16,6 +16,17 @@ cachetool_a = Analysis(['iclientpy/rest/cmd/updatecache.py'],
              win_no_prefer_redirects=False,
              win_private_assemblies=False,
              cipher=block_cipher)
+cacheutil_a = Analysis(['iclientpy/rest/cmd/cache.py'],
+             pathex=['.'],
+             binaries=[],
+             datas=[],
+             hiddenimports=[],
+             hookspath=[],
+             runtime_hooks=[],
+             excludes=[],
+             win_no_prefer_redirects=False,
+             win_private_assemblies=False,
+             cipher=block_cipher)
 tokentool_a = Analysis(['iclientpy/rest/cmd/obaintoken.py'],
              pathex=['.'],
              binaries=[],
@@ -40,7 +51,7 @@ initserver_a = Analysis(['iclientpy/rest/cmd/initserver.py'],
              cipher=block_cipher)
 		
 		
-MERGE( (cachetool_a, 'cachetool', 'cachetool'), (tokentool_a, 'tokentool', 'tokentool'), (initserver_a,'initserver','initserver') )
+MERGE( (cachetool_a, 'cachetool', 'cachetool'), (cacheutil_a, 'cacheutil', 'cacheutil'), (tokentool_a, 'tokentool', 'tokentool'), (initserver_a,'initserver','initserver') )
 
 
 cachetool_pyz = PYZ(cachetool_a.pure, cachetool_a.zipped_data, cipher=block_cipher)
@@ -60,6 +71,22 @@ cachetool_coll = COLLECT(cachetool_exe,
                upx=True,
                name='cachetool')
 
+cacheutil_pyz = PYZ(cacheutil_a.pure, cacheutil_a.zipped_data, cipher=block_cipher)
+cacheutil_exe = EXE(cacheutil_pyz,
+          cacheutil_a.scripts,
+          exclude_binaries=True,
+          name='icpy-cachetool',
+          debug=False,
+          strip=False,
+          upx=True,
+          console=True )
+cacheutil_coll = COLLECT(cacheutil_exe,
+               cacheutil_a.binaries,
+               cacheutil_a.zipfiles,
+               cacheutil_a.datas,
+               strip=False,
+               upx=True,
+               name='cacheutil')
 			   
 tokentool_pyz = PYZ(tokentool_a.pure, tokentool_a.zipped_data, cipher=block_cipher)
 tokentool_exe = EXE(tokentool_pyz,

@@ -37,11 +37,12 @@ def main():
     icpy_dir = os.path.join(rootdir, 'build', 'icpy')
     tokentool_dir = os.path.join(rootdir, 'dist', 'tokentool')
     cachetool_dir = os.path.join(rootdir, 'dist', 'cachetool')
+    cacheutil_dir = os.path.join(rootdir, 'dist', 'cacheutil')
     initserver_dir = os.path.join(rootdir, 'dist', 'initserver')
     delete_dirs([icpy_dir, tokentool_dir, cachetool_dir])
     pyinstaller_cmd = ['pyinstaller', '--clean', '-y', '-c', 'icpy.spec']
     subprocess.check_call(pyinstaller_cmd, cwd=rootdir)
-    for dir in [tokentool_dir, initserver_dir]:
+    for dir in [tokentool_dir, initserver_dir, cacheutil_dir]:
         for root, dirs, files in os.walk(dir):
             for file in files:
                 shutil.copy(os.path.join(dir, file), cachetool_dir)
