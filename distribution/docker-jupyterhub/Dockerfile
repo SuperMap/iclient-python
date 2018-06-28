@@ -4,6 +4,7 @@ MAINTAINER iclientpy@supermap.com
 RUN mkdir /iclientpy
 ADD ./sample /iclientpy/sample
 ADD jupyterhub_config.py /srv/jupyterhub/
+ADD supermap_logo.png /srv/jupyterhub/
 
 ADD ./iclientpy-conda-package.tar /tmp/
 RUN conda config --set show_channel_urls yes \
@@ -16,8 +17,6 @@ RUN conda config --set show_channel_urls yes \
 ADD pip.conf /root/.pip/pip.conf
 ADD *.whl /tmp/
 RUN pip install /tmp/*.whl
-ADD supermap_logo.png /opt/conda/share/jupyterhub/static/images/jupyter.png
-ADD supermap_logo.png /opt/conda/share/jupyterhub/static/images/jupyterhub-80.png
 
 RUN conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/ \
 && conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/ \

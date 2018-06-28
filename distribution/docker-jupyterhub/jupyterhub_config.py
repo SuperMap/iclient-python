@@ -8,3 +8,4 @@ c.JupyterHub.services = [
 ]
 c.JupyterHub.spawner_class = 'jupyterhub.spawner.LocalProcessSpawner'
 c.Spawner.cmd = ['jupyterhub-singleuser']
+c.JupyterHub.logo_file = '/srv/jupyterhub/supermap_logo.png'
