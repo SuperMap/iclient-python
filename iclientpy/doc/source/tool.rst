@@ -76,9 +76,9 @@ recache
 -s STORAGEID, --storageid STORAGEID    存储的id
 -h, --help    查看帮助
 
-cache
+updatecache
 ----------------------
-指明切图参数进行切图
+已经发布为服务的切片，更新切片数据
 
 示例：
 
@@ -86,13 +86,13 @@ cache
 
     ::
 
-        icpy-cachetool cache -l http://localhost:8090/iserver -t {tokenstr} -c map-smtiles-World -w C:\World.zip -m World -o '-180,90' -b '-180,-90,180,90'
+        icpy-cachetool updatecache -l http://localhost:8090/iserver -t {tokenstr} -c map-smtiles-World -w C:\World.zip -m World -o '-180,90' -b '-180,-90,180,90'
 
 从map-World服务对对map-smtiles-World服务的World地图进行全图缓存更新
 
     ::
 
-        icpy-cachetool cache -l http://localhost:8090/iserver -t {tokenstr} -c map-smtiles-World -m World -o '-180,90' -b '-180,-90,180,90' --source-component map-World --update
+        icpy-cachetool updatecache -l http://localhost:8090/iserver -t {tokenstr} -c map-smtiles-World -m World -o '-180,90' -b '-180,-90,180,90' --source-component map-World --update
 
 **注：** {tokenstr}为占位字符串，生成token字符串请参考：token工具_
 
@@ -118,6 +118,74 @@ cache
 --source-component SOURCE_COMPONENT_NAME    缓存更新数据来源服务
 --update    更新服务缓存，与--source-component搭配使用
 -h, --help    查看帮助
+
+cacheworkspace
+-------------------
+对本地的工作空间进行切图
+
+示例：
+
+从本地工作空间zip压缩包进行切图，以C:\\World.zip，World地图为例，切图原点-180,90，切图范围：-180,-90,180,90，比例尺：4000000,8000000，存储id为m
+
+    ::
+
+        icpy-cachetool cacheworkspace -l http://localhost:8090/iserver -t {tokenstr} -w C:/World.zip -m World -o '-180,90' -b '-180,-90,180,90' -s 4000000,8000000 --storageid m --quite
+
+**注：** {tokenstr}为占位字符串，生成token字符串请参考：token工具_
+
+详细参数：
+
+-l ADDRESS, --uri ADDRESS       服务地址，如：http://localhost:8090/iserver
+-u USERNAME, --user USERNAME        用户名
+-p PASSWORD, --password PASSWORD        密码
+-t TOKEN, --token TOKEN     用于身份验证的token
+-w W_LOC, --w-loc W_LOC     工作空间路径
+-m MAP_NAME, --map-name MAP_NAME        切图地图名称
+-s SCALE, --scale SCALE     缓存比例尺分母，如：8000000,4000000,2000000
+-o ORIGINAL_POINT, --original-point ORIGINAL_POINT      切图原点，需以单引号开始和结束，如：'-180,90'
+-b CACHE_BOUNDS, --bounds CACHE_BOUNDS      缓存范围，需以单引号开始和结束，如：'-180,-90,0,0'
+--tile-size TILE_SIZE       切片大小
+--tile-type TILE_TYPE       切片类型
+--format FORMAT       切片输出格式
+--epsgcode EPSG_CODE        投影
+--storageid STORAGEID       存储的id
+--quite     不需要确认，直接运行
+--jobtilesourcetype JOBTILESOURCETYPE          存储类型，可取四个值：SMTiles,MBTiles,UGCV5,GeoPackage。仅在输出到本地存储路径时生效，Mongo，OTS与FastDFS时不生效，Mongo，OTS与FastDFS应直接设置storageid
+
+
+cacheservice
+-------------------
+对已经发布为地图服务的地图进行切图
+
+示例：
+
+对map-World服务进行切图，以World地图为例，切图原点-180,90，切图范围：-180,-90,180,90，比例尺：4000000,8000000，存储类型为UGCV5
+
+    ::
+
+        icpy-cachetool cacheservice -l http://localhost:8090/iserver -t {tokenstr} -c map-World -m World -o '-180,90' -b '-180,-90,180,90' -s 4000000,8000000 --jobtilesourcetype UGCV5 --quite
+
+**注：** {tokenstr}为占位字符串，生成token字符串请参考：token工具_
+
+详细参数：
+
+-l ADDRESS, --uri ADDRESS       服务地址，如：http://localhost:8090/iserver
+-u USERNAME, --user USERNAME        用户名
+-p PASSWORD, --password PASSWORD        密码
+-t TOKEN, --token TOKEN     用于身份验证的token
+-c COMPONENT_NAME, --component-name COMPONENT_NAME      服务名称
+-m MAP_NAME, --map-name MAP_NAME        切图地图名称
+-o ORIGINAL_POINT, --original-point ORIGINAL_POINT      切图原点，需以单引号开始和结束，如：'-180,90'
+-b CACHE_BOUNDS, --bounds CACHE_BOUNDS      缓存范围，需以单引号开始和结束，如：'-180,-90,0,0'
+-s SCALE, --scale SCALE     缓存比例尺分母，如：8000000,4000000,2000000
+--service-type W_SERVICETYPE        工作空间服务类型
+--tile-size TILE_SIZE       切片大小
+--tile-type TILE_TYPE       切片类型
+--format FORMAT     切片输出格式
+--epsgcode EPSG_CODE        投影
+--storageid STORAGEID       存储id
+--quite     不需要确认，直接运行
+--jobtilesourcetype JOBTILESOURCETYPE          存储类型，可取四个值：SMTiles,MBTiles,UGCV5,GeoPackage。仅在输出到本地存储路径时生效，Mongo，OTS与FastDFS时不生效，Mongo，OTS与FastDFS应直接设置storageid
 
 
 

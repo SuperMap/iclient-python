@@ -59,12 +59,12 @@ def confirm(**d):
     return input('')
 
 
-def cache_remoteworkspace(address: str, username: str, password: str, component_name: str, map_name: str,
-                          original_point: tuple, cache_bounds: tuple, scale: List[float] = None,
-                          tile_size: TileSize = TileSize.SIZE_256, tile_type: TileType = TileType.Image,
-                          format: OutputFormat = OutputFormat.PNG, epsg_code: int = -1, storageid: str = None,
-                          storageconfig: TileSourceInfo = None, token: str = None, quite: bool = False,
-                          job_tile_source_type: str = 'SMTiles'):
+def cache_service(address: str, username: str, password: str, component_name: str, map_name: str,
+                  original_point: tuple, cache_bounds: tuple, scale: List[float] = None,
+                  tile_size: TileSize = TileSize.SIZE_256, tile_type: TileType = TileType.Image,
+                  format: OutputFormat = OutputFormat.PNG, epsg_code: int = -1, storageid: str = None,
+                  storageconfig: TileSourceInfo = None, token: str = None, quite: bool = False,
+                  job_tile_source_type: str = 'SMTiles'):
     if len(original_point) is not 2:
         raise Exception("切图原点坐标长度错误")
     tem_original_point = Point2D()
@@ -127,13 +127,13 @@ def cache_remoteworkspace(address: str, username: str, password: str, component_
         raise Exception('切图失败')
 
 
-def cache_localworkspace(address: str, username: str, password: str, w_loc: str, map_name: str, original_point: tuple,
-                         cache_bounds: tuple, scale: List[float] = None,
-                         w_servicetypes: List[ServiceType] = [ServiceType.RESTMAP],
-                         tile_size: TileSize = TileSize.SIZE_256, tile_type: TileType = TileType.Image,
-                         format: OutputFormat = OutputFormat.PNG, epsg_code: int = -1, storageid: str = None,
-                         storageconfig: TileSourceInfo = None, token: str = None, quite: bool = False,
-                         job_tile_source_type: str = 'SMTiles'):
+def cache_workspace(address: str, username: str, password: str, w_loc: str, map_name: str, original_point: tuple,
+                    cache_bounds: tuple, scale: List[float] = None,
+                    w_servicetypes: List[ServiceType] = [ServiceType.RESTMAP],
+                    tile_size: TileSize = TileSize.SIZE_256, tile_type: TileType = TileType.Image,
+                    format: OutputFormat = OutputFormat.PNG, epsg_code: int = -1, storageid: str = None,
+                    storageconfig: TileSourceInfo = None, token: str = None, quite: bool = False,
+                    job_tile_source_type: str = 'SMTiles'):
     if len(original_point) is not 2:
         raise Exception("切图原点坐标长度错误")
     tem_original_point = Point2D()
@@ -184,11 +184,11 @@ def cache_localworkspace(address: str, username: str, password: str, w_loc: str,
     pwr = mng.post_workspaces(post_param)
     wkn = re.findall('services/[^/]*', pwr[0].serviceAddress)[0].lstrip('services/')
 
-    cache_remoteworkspace(address=address, username=username, password=password, component_name=wkn, map_name=map_name,
-                          original_point=original_point, cache_bounds=cache_bounds, scale=scale, tile_size=tile_size,
-                          tile_type=tile_type, format=format, epsg_code=epsg_code, storageid=storageid,
-                          storageconfig=storageconfig, token=token, quite=True,
-                          job_tile_source_type=job_tile_source_type)
+    cache_service(address=address, username=username, password=password, component_name=wkn, map_name=map_name,
+                  original_point=original_point, cache_bounds=cache_bounds, scale=scale, tile_size=tile_size,
+                  tile_type=tile_type, format=format, epsg_code=epsg_code, storageid=storageid,
+                  storageconfig=storageconfig, token=token, quite=True,
+                  job_tile_source_type=job_tile_source_type)
 
 
 def _get_tile_source_info_from_service(mng: Management, name: str) -> TileSourceInfo:

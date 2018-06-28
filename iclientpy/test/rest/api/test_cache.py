@@ -2,7 +2,7 @@ from unittest import TestCase
 import httpretty
 import mock
 import os
-from iclientpy.rest.api.cache import cache_remoteworkspace, cache_localworkspace
+from iclientpy.rest.api.cache import cache_service, cache_workspace
 
 
 class CacheTestCache(TestCase):
@@ -42,10 +42,10 @@ class CacheTestCache(TestCase):
         httpretty.register_uri(httpretty.GET,
                                base_uri + '/manager/filemanager/uploadtasks/38efbec5de2846d1bd499866637aec46_74d0dd27cf454fe1875f0b94490e7280.json',
                                body=get_fileuploadtask_body, status=200)
-        cache_localworkspace(base_uri, 'admin', 'iserver',
-                             os.path.join(os.path.dirname(os.path.abspath(__file__)), "World.zip"), 'World', (-180, 90),
-                             (-180, -90, 180, 90),
-                             scale=[4000000, 8000000, 16000000, 32000000, 64000000, 125000000, 250000000], quite=True)
+        cache_workspace(base_uri, 'admin', 'iserver',
+                        os.path.join(os.path.dirname(os.path.abspath(__file__)), "World.zip"), 'World', (-180, 90),
+                        (-180, -90, 180, 90),
+                        scale=[4000000, 8000000, 16000000, 32000000, 64000000, 125000000, 250000000], quite=True)
 
     @httpretty.activate
     def test_cache_remote(self):
@@ -69,5 +69,5 @@ class CacheTestCache(TestCase):
         httpretty.register_uri(httpretty.GET,
                                base_uri + '/manager/tileservice/jobs/d7bff309-8f7f-48bb-9c4f-bf9b9224fb41.json',
                                body=get_tile_jobs_body, status=200)
-        cache_remoteworkspace(base_uri, 'admin', 'iserver', 'data-World', 'World', (-180, 90), (-180, -90, 180, 90),
-                              scale=[4000000, 8000000, 16000000, 32000000, 64000000, 125000000, 250000000], quite=True)
+        cache_service(base_uri, 'admin', 'iserver', 'data-World', 'World', (-180, 90), (-180, -90, 180, 90),
+                      scale=[4000000, 8000000, 16000000, 32000000, 64000000, 125000000, 250000000], quite=True)

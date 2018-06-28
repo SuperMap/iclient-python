@@ -1,13 +1,13 @@
 from unittest import TestCase, mock
-from iclientpy.rest.cmd.updatecache import main, cache, recache
+from iclientpy.rest.cmd.updatecache import main, update_cache, recache, cache_local_workspace, cache_remote_service
 import argparse
 
 
 class TestUpdateCache(TestCase):
-    @mock.patch('iclientpy.rest.cmd.updatecache.cache')
-    def test_main_cache(self, mock_method: mock.MagicMock):
+    @mock.patch('iclientpy.rest.cmd.updatecache.update_cache')
+    def test_main_updatecache(self, mock_method: mock.MagicMock):
         main(
-            r"cache -l http://localhost:8090/iserver --user admin --password iServer123  --component-name cache-World -w ..\..\..\data\WorldNew\World.sxwu -m World -o '-180,90' -b 0,0,180,90 -s 4000000,8000000 --rw=False --quite"
+            r"updatecache -l http://localhost:8090/iserver --user admin --password iServer123  --component-name cache-World -w ..\..\..\data\WorldNew\World.sxwu -m World -o '-180,90' -b 0,0,180,90 -s 4000000,8000000 --rw=False --quite"
                 .split(' '))
 
         args = mock_method.call_args[0][0]  # type:   argparse.Namespace
@@ -31,7 +31,7 @@ class TestUpdateCache(TestCase):
                  'scale': '4000000.0, 8000000.0', 'remote_workspace': False, 'quite': True,
                  'update': False, 'func': 'f'}
         ns = argparse.Namespace(**param)
-        cache(ns)
+        update_cache(ns)
         args = mock_method.call_args[1]
         self.assertEqual(args, {'address': 'http://localhost:8090/iserver', 'username': 'admin',
                                 'password': 'iServer123', 'component_name': 'cache-World',
@@ -56,3 +56,76 @@ class TestUpdateCache(TestCase):
         self.assertEqual(args, {'address': 'http://localhost:8090/iserver', 'username': 'admin',
                                 'password': 'iServer123', 'component_name': 'cache-World',
                                 'map_name': 'World'})
+
+    @mock.patch('iclientpy.rest.cmd.updatecache.cache_local_workspace')
+    def test_main_cache_workspace(self, mock_method: mock.MagicMock):
+        main(
+            r"cacheworkspace -l http://192.168.20.182:8090/iserver -u admin -p Supermap123 -w C:/Users/liu/Desktop/World.zip -m World -o '-180,90' -b '-180,-90,180,90' -s 4000000,8000000,16000000,32000000,64000000,125000000,250000000 --quite --jobtilesourcetype UGCV5"
+                .split(' '))
+
+        args = mock_method.call_args[0][0]  # type:   argparse.Namespace
+
+        kwargs = args._get_kwargs()
+        del kwargs[4]  # 删除func
+        self.assertEqual(kwargs,
+                         [('address', 'http://192.168.20.182:8090/iserver'), ('cache_bounds', "'-180,-90,180,90'"),
+                          ('epsg_code', None), ('format', None), ('job_tile_source_type', 'UGCV5'),
+                          ('map_name', 'World'), ('original_point', "'-180,90'"), ('password', 'Supermap123'),
+                          ('quite', True), ('scale', '4000000,8000000,16000000,32000000,64000000,125000000,250000000'),
+                          ('storageid', None), ('tile_size', None), ('tile_type', None), ('token', None),
+                          ('username', 'admin'), ('w_loc', 'C:/Users/liu/Desktop/World.zip')])
+
+    @mock.patch('iclientpy.rest.cmd.updatecache.cache_workspace')
+    def test_cache_workspace(self, mock_method: mock.MagicMock):
+        param = {'address': 'http://192.168.20.182:8090/iserver', 'username': 'admin', 'password': 'Supermap123',
+                 'w_loc': 'C:/Users/liu/Desktop/World.zip', 'map_name': 'World',
+                 'scale': "4000000.0, 8000000.0, 16000000.0, 32000000.0, 64000000.0, 125000000.0, 250000000.0",
+                 'original_point': "-180.0, 90.0", 'cache_bounds': "-180.0, -90.0, 180.0, 90.0", 'quite': True,
+                 'job_tile_source_type': 'SMTiles', 'func': 'f'}
+        ns = argparse.Namespace(**param)
+        cache_local_workspace(ns)
+        args = mock_method.call_args[1]
+        self.assertEqual(args, {'address': 'http://192.168.20.182:8090/iserver', 'username': 'admin',
+                                'password': 'Supermap123', 'w_loc': 'C:/Users/liu/Desktop/World.zip',
+                                'map_name': 'World',
+                                'scale': [4000000.0, 8000000.0, 16000000.0, 32000000.0, 64000000.0, 125000000.0,
+                                          250000000.0], 'original_point': (-180.0, 90.0),
+                                'cache_bounds': (-180.0, -90.0, 180.0, 90.0), 'quite': True,
+                                'job_tile_source_type': 'SMTiles'})
+
+    @mock.patch('iclientpy.rest.cmd.updatecache.cache_remote_service')
+    def test_main_cache_service(self, mock_method: mock.MagicMock):
+        main(
+            r"cacheservice -l http://192.168.20.182:8090/iserver -u admin -p Supermap123 -c map-World -m World -o '-180,90' -b '-180,-90,180,90' -s 4000000,8000000,16000000,32000000,64000000,125000000,250000000 --quite".split(
+                ' '))
+        mock_method.assert_called_once()
+        args = mock_method.call_args[0][0]  # type:   argparse.Namespace
+
+        kwargs = args._get_kwargs()
+        del kwargs[5]  # 删除func
+        self.assertEqual(kwargs,
+                         [('address', 'http://192.168.20.182:8090/iserver'), ('cache_bounds', "'-180,-90,180,90'"),
+                          ('component_name', 'map-World'), ('epsg_code', None), ('format', None),
+                          ('job_tile_source_type', 'SMTiles'), ('map_name', 'World'), ('original_point', "'-180,90'"),
+                          ('password', 'Supermap123'), ('quite', True),
+                          ('scale', '4000000,8000000,16000000,32000000,64000000,125000000,250000000'),
+                          ('storageid', None), ('tile_size', None), ('tile_type', None), ('token', None),
+                          ('username', 'admin'), ('w_servicetype', None)])
+
+    @mock.patch('iclientpy.rest.cmd.updatecache.cache_service')
+    def test_cache_service(self, mock_method: mock.MagicMock):
+        param = {'address': 'http://192.168.20.182:8090/iserver', 'username': 'admin', 'password': 'Supermap123',
+                 'component_name': 'map-World', 'map_name': 'World', 'original_point': "-180.0, 90.0",
+                 'cache_bounds': "-180.0, -90.0, 180.0, 90.0",
+                 'scale': "4000000.0, 8000000.0, 16000000.0, 32000000.0, 64000000.0, 125000000.0, 250000000.0",
+                 'quite': True, 'job_tile_source_type': 'UGCV5', 'func': 'f'}
+        ns = argparse.Namespace(**param)
+        cache_remote_service(ns)
+        args = mock_method.call_args[1]
+        self.assertEqual(args, {'address': 'http://192.168.20.182:8090/iserver', 'username': 'admin',
+                                'password': 'Supermap123',
+                                'component_name': 'map-World', 'map_name': 'World', 'original_point': (-180.0, 90.0),
+                                'cache_bounds': (-180.0, -90.0, 180.0, 90.0),
+                                'scale': [4000000.0, 8000000.0, 16000000.0, 32000000.0, 64000000.0, 125000000.0,
+                                          250000000.0],
+                                'quite': True, 'job_tile_source_type': 'UGCV5'})
