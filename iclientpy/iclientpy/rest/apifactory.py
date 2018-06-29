@@ -133,7 +133,7 @@ class RestInvocationHandlerImpl(RestInvocationHandler):
             HttpMethod.DELETE: requests.delete
         }
         headers = {'Content-Type': 'application/json'}
-        if 'files' in kwargs:
+        if 'files' in kwargs and kwargs['files']:
             headers = {}
         response = requests_methods[rest.get_method()](*args, **kwargs, headers=headers)
         response.raise_for_status()
