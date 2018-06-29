@@ -3,7 +3,7 @@ iClientPy: SuperMap iClient Python
 
 iClientPy 是超图云 GIS 客户端 Python SDK。
 
-2018年6月，敬请期待！
+即将发布，敬请期待！
 
 有想要的功能你可以点 `这里 <https://github.com/SuperMap/iclient-python/issues>`_ 告诉开发人员，觉得开发人员太渣渣也可以撸起袖子自己写，`iClientPy开源 <https://github.com/SuperMap/iclient-python>`_ 哒。
 
