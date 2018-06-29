@@ -45,7 +45,7 @@ class CacheTestCache(TestCase):
         cache_workspace(base_uri, 'admin', 'iserver',
                         os.path.join(os.path.dirname(os.path.abspath(__file__)), "World.zip"), 'World', (-180, 90),
                         (-180, -90, 180, 90),
-                        scale=[4000000, 8000000, 16000000, 32000000, 64000000, 125000000, 250000000], quite=True)
+                        scale=[4000000, 8000000, 16000000, 32000000, 64000000, 125000000, 250000000], quiet=True)
 
     @httpretty.activate
     def test_cache_remote(self):
@@ -70,4 +70,4 @@ class CacheTestCache(TestCase):
                                base_uri + '/manager/tileservice/jobs/d7bff309-8f7f-48bb-9c4f-bf9b9224fb41.json',
                                body=get_tile_jobs_body, status=200)
         cache_service(base_uri, 'admin', 'iserver', 'data-World', 'World', (-180, 90), (-180, -90, 180, 90),
-                      scale=[4000000, 8000000, 16000000, 32000000, 64000000, 125000000, 250000000], quite=True)
+                      scale=[4000000, 8000000, 16000000, 32000000, 64000000, 125000000, 250000000], quiet=True)

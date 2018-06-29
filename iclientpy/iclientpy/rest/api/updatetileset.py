@@ -117,7 +117,7 @@ def update_smtilestileset(address: str, username: str, password: str, component_
                           tile_size: TileSize = TileSize.SIZE_256, tile_type: TileType = TileType.Image,
                           format: OutputFormat = OutputFormat.PNG, epsgcode: int = -1, storageid: str = None,
                           storageconfig: TileSourceInfo = None, remote_workspace: bool = False,
-                          quite: bool = False, source_component_name: str = '', update: bool = False,
+                          quiet: bool = False, source_component_name: str = '', update: bool = False,
                           tile_version: str = None, token: str = None):
     if len(original_point) is not 2:
         raise Exception("切图原点坐标长度错误")
@@ -152,7 +152,7 @@ def update_smtilestileset(address: str, username: str, password: str, component_
         storageconfig.type = 'SMTiles'
         storageconfig.outputPath = '../webapps/iserver/output/sqlite_' + uuid.uuid1().__str__()
 
-    if not quite:
+    if not quiet:
         confirmResult = confirm(address=address, username=username, password=password, component_name=component_name,
                                 w_loc=w_loc, map_name=map_name, original_point=original_point,
                                 cache_bounds=cache_bounds, scale=scale, w_servicetype=w_servicetypes,

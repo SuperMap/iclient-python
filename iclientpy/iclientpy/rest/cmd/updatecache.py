@@ -86,7 +86,7 @@ def get_parser():
     updatecache_optional_group.add_argument('--storageid', dest='storageid', help='存储id')
     updatecache_optional_group.add_argument('-rw', dest='remote_workspace', action='store_true',
                                             help='输入的工作空间地址是远程iServer所在服务器上的地址，不需要上传工作空间。')
-    updatecache_optional_group.add_argument('--quite', dest='quite', action='store_true', help='不需要确认，直接运行')
+    updatecache_optional_group.add_argument('--quiet', dest='quiet', action='store_true', help='不需要确认，直接运行')
     updatecache_optional_group.add_argument('--source-component', dest='source_component_name', help='缓存更新数据来源服务')
     updatecache_optional_group.add_argument('--update', dest='update', action='store_true', help='更新服务缓存')
 
@@ -111,7 +111,10 @@ def get_parser():
     cache_workspace_optional_group.add_argument('--format', dest='format', help='切片输出格式')
     cache_workspace_optional_group.add_argument('--epsgcode', dest='epsg_code', help='投影')
     cache_workspace_optional_group.add_argument('--storageid', dest='storageid', help='存储的id')
-    cache_workspace_optional_group.add_argument('--quite', dest='quite', action='store_true', help='不需要确认，直接运行')
+    cache_workspace_optional_group.add_argument('--output', dest='output', help='结果输出路径')
+    cache_workspace_optional_group.add_argument('--remote-workspace', dest='remote_workspace', action='store_true',
+                                                help='是否是远程工作空间路径')
+    cache_workspace_optional_group.add_argument('--quiet', dest='quiet', action='store_true', help='不需要确认，直接运行')
     cache_workspace_optional_group.add_argument('--jobtilesourcetype', dest='job_tile_source_type',
                                                 choices=['SMTiles', 'MBTiles', 'UGCV5', 'GeoPackage'],
                                                 default='SMTiles',
@@ -132,13 +135,13 @@ def get_parser():
                                              help='缓存范围，需以单引号开始和结束，如：\'-180,-90,0,0\'')
     cache_service_require_group.add_argument('-s', '--scale', dest='scale', help='缓存比例尺分母，如：8000000,4000000,2000000')
     cache_service_optional_group = cache_service_parser.add_argument_group('可选参数')
-    cache_service_optional_group.add_argument('--service-type', dest='w_servicetype', help='工作空间服务类型')
     cache_service_optional_group.add_argument('--tile-size', dest='tile_size', help='切片大小')
     cache_service_optional_group.add_argument('--tile-type', dest='tile_type', help='切片类型')
     cache_service_optional_group.add_argument('--format', dest='format', help='切片输出格式')
     cache_service_optional_group.add_argument('--epsgcode', dest='epsg_code', help='投影')
     cache_service_optional_group.add_argument('--storageid', dest='storageid', help='存储id')
-    cache_service_optional_group.add_argument('--quite', dest='quite', action='store_true', help='不需要确认，直接运行')
+    cache_service_optional_group.add_argument('--output', dest='output', help='结果输出路径')
+    cache_service_optional_group.add_argument('--quiet', dest='quiet', action='store_true', help='不需要确认，直接运行')
     cache_service_optional_group.add_argument('--jobtilesourcetype', dest='job_tile_source_type',
                                               choices=['SMTiles', 'MBTiles', 'UGCV5', 'GeoPackage'], default='SMTiles',
                                               help='存储类型，仅在输出到本地存储路径时生效，Mongo，OTS与FastDFS时不生效，Mongo，OTS与FastDFS应直接设置storageid')

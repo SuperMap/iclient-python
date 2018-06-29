@@ -36,6 +36,7 @@ field_and_desc = {
     'tile_type': '切片类型',
     'format': '切片输出格式',
     'epsg_code': '投影',
+    'output': '输出路径'
 }
 
 
@@ -63,8 +64,8 @@ def cache_service(address: str, username: str, password: str, component_name: st
                   original_point: tuple, cache_bounds: tuple, scale: List[float] = None,
                   tile_size: TileSize = TileSize.SIZE_256, tile_type: TileType = TileType.Image,
                   format: OutputFormat = OutputFormat.PNG, epsg_code: int = -1, storageid: str = None,
-                  storageconfig: TileSourceInfo = None, token: str = None, quite: bool = False,
-                  job_tile_source_type: str = 'SMTiles'):
+                  storageconfig: TileSourceInfo = None, token: str = None, quiet: bool = False,
+                  job_tile_source_type: str = 'SMTiles', output: str = None):
     if len(original_point) is not 2:
         raise Exception("切图原点坐标长度错误")
     tem_original_point = Point2D()
@@ -92,9 +93,9 @@ def cache_service(address: str, username: str, password: str, component_name: st
     if storageconfig is None:
         storageconfig = SMTilesTileSourceInfo()
         storageconfig.type = job_tile_source_type
-        storageconfig.outputPath = '../webapps/iserver/output/sqlite_' + uuid.uuid1().__str__()
+        storageconfig.outputPath = output if output is not None else '../webapps/iserver/output/icpy_' + uuid.uuid1().__str__()
 
-    if not quite:
+    if not quiet:
         confirmResult = confirm(address=address, username=username, password=password, component_name=component_name,
                                 map_name=map_name, original_point=original_point, cache_bounds=cache_bounds,
                                 scale=scale, tile_size=tile_size, tile_type=tile_type, format=format,
@@ -125,6 +126,8 @@ def cache_service(address: str, username: str, password: str, component_name: st
     gjr = mng.get_tilejob(ptjr.newResourceID)
     if (gjr.state.runState is not BuildState.COMPLETED):
         raise Exception('切图失败')
+    if output is not None:
+        print("切图结果存储路径为：" + output)
 
 
 def cache_workspace(address: str, username: str, password: str, w_loc: str, map_name: str, original_point: tuple,
@@ -132,8 +135,8 @@ def cache_workspace(address: str, username: str, password: str, w_loc: str, map_
                     w_servicetypes: List[ServiceType] = [ServiceType.RESTMAP],
                     tile_size: TileSize = TileSize.SIZE_256, tile_type: TileType = TileType.Image,
                     format: OutputFormat = OutputFormat.PNG, epsg_code: int = -1, storageid: str = None,
-                    storageconfig: TileSourceInfo = None, token: str = None, quite: bool = False,
-                    job_tile_source_type: str = 'SMTiles'):
+                    storageconfig: TileSourceInfo = None, token: str = None, quiet: bool = False,
+                    job_tile_source_type: str = 'SMTiles', output: str = None, remote_workspace: bool = False):
     if len(original_point) is not 2:
         raise Exception("切图原点坐标长度错误")
     tem_original_point = Point2D()
@@ -152,32 +155,26 @@ def cache_workspace(address: str, username: str, password: str, w_loc: str, map_
     mng = api.management()
     if scale is None or len(scale) is 0:
         raise Exception('未指定比例尺')
-    # if storageid is not None:
-    #     storage_info = mng.get_datastore(storageid)
-    #     for info in storage_info.tilesetInfos:
-    #         if info.metaData.mapName == map_name:
-    #             storageconfig = storage_info.tileSourceInfo
-    #
-    # if storageconfig is None:
-    #     storageconfig = SMTilesTileSourceInfo()
-    #     storageconfig.type = jobTileSourceType
-    #     storageconfig.outputPath = '../webapps/iserver/output/sqlite_' + uuid.uuid1().__str__()
 
-    if not quite:
+    if not quiet:
         confirmResult = confirm(address=address, username=username, password=password,
                                 w_loc=w_loc, map_name=map_name, original_point=original_point,
                                 cache_bounds=cache_bounds, scale=scale, w_servicetype=w_servicetypes,
                                 tile_size=tile_size, tile_type=tile_type, format=format, epsg_code=epsg_code,
-                                storageid=storageid, token=token)
+                                storageid=storageid, token=token, output=output)
         if confirmResult.lower() == 'n':
             return
+    if remote_workspace:
+        remote_workspace_file_full_path = w_loc
+    else:
+        param = PostFileUploadTasksParam()
+        pfutsr = mng.post_fileuploadtasks(param)
+        remote_workspace_file_full_path = _upload_workspace_file(mng, w_loc, pfutsr.newResourceID)
+        gfutr = mng.get_fileuploadtask(pfutsr.newResourceID)
+        if gfutr.state is not FileUploadState.COMPLETED:
+            raise Exception('文件上传失败')
+        print("工作空间上传路径为：" + remote_workspace_file_full_path)
 
-    param = PostFileUploadTasksParam()
-    pfutsr = mng.post_fileuploadtasks(param)
-    remote_workspace_file_full_path = _upload_workspace_file(mng, w_loc, pfutsr.newResourceID)
-    gfutr = mng.get_fileuploadtask(pfutsr.newResourceID)
-    if gfutr.state is not FileUploadState.COMPLETED:
-        raise Exception('文件上传失败')
     post_param = PostWorkspaceParameter()
     post_param.workspaceConnectionInfo = remote_workspace_file_full_path
     post_param.servicesTypes = w_servicetypes
@@ -187,8 +184,8 @@ def cache_workspace(address: str, username: str, password: str, w_loc: str, map_
     cache_service(address=address, username=username, password=password, component_name=wkn, map_name=map_name,
                   original_point=original_point, cache_bounds=cache_bounds, scale=scale, tile_size=tile_size,
                   tile_type=tile_type, format=format, epsg_code=epsg_code, storageid=storageid,
-                  storageconfig=storageconfig, token=token, quite=True,
-                  job_tile_source_type=job_tile_source_type)
+                  storageconfig=storageconfig, token=token, quiet=True,
+                  job_tile_source_type=job_tile_source_type, output=output)
 
 
 def _get_tile_source_info_from_service(mng: Management, name: str) -> TileSourceInfo:

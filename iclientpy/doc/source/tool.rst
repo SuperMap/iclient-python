@@ -114,7 +114,7 @@ updatecache
 --epsgcode EPSG_CODE    投影
 --storageid STORAGEID   存储id
 -rw     输入的工作空间地址是远程iServer所在服务器上的地址，不需要上传工作空间。
---quite     不需要确认，直接运行
+--quiet     不需要确认，直接运行
 --source-component SOURCE_COMPONENT_NAME    缓存更新数据来源服务
 --update    更新服务缓存，与--source-component搭配使用
 -h, --help    查看帮助
@@ -129,7 +129,7 @@ cacheworkspace
 
     ::
 
-        icpy-cachetool cacheworkspace -l http://localhost:8090/iserver -t {tokenstr} -w C:/World.zip -m World -o '-180,90' -b '-180,-90,180,90' -s 4000000,8000000 --storageid m --quite
+        icpy-cachetool cacheworkspace -l http://localhost:8090/iserver -t {tokenstr} -w C:/World.zip -m World -o '-180,90' -b '-180,-90,180,90' -s 4000000,8000000 --storageid m --quiet
 
 **注：** {tokenstr}为占位字符串，生成token字符串请参考：token工具_
 
@@ -149,7 +149,9 @@ cacheworkspace
 --format FORMAT       切片输出格式
 --epsgcode EPSG_CODE        投影
 --storageid STORAGEID       存储的id
---quite     不需要确认，直接运行
+--output OUTPUT     结果输出路径
+--remote-workspace      是否是远程工作空间路径
+--quiet     不需要确认，直接运行
 --jobtilesourcetype JOBTILESOURCETYPE          存储类型，可取四个值：SMTiles,MBTiles,UGCV5,GeoPackage。仅在输出到本地存储路径时生效，Mongo，OTS与FastDFS时不生效，Mongo，OTS与FastDFS应直接设置storageid
 
 
@@ -163,7 +165,7 @@ cacheservice
 
     ::
 
-        icpy-cachetool cacheservice -l http://localhost:8090/iserver -t {tokenstr} -c map-World -m World -o '-180,90' -b '-180,-90,180,90' -s 4000000,8000000 --jobtilesourcetype UGCV5 --quite
+        icpy-cachetool cacheservice -l http://localhost:8090/iserver -t {tokenstr} -c map-World -m World -o '-180,90' -b '-180,-90,180,90' -s 4000000,8000000 --jobtilesourcetype UGCV5 --quiet
 
 **注：** {tokenstr}为占位字符串，生成token字符串请参考：token工具_
 
@@ -184,7 +186,8 @@ cacheservice
 --format FORMAT     切片输出格式
 --epsgcode EPSG_CODE        投影
 --storageid STORAGEID       存储id
---quite     不需要确认，直接运行
+--output OUTPUT     结果输出路径
+--quiet     不需要确认，直接运行
 --jobtilesourcetype JOBTILESOURCETYPE          存储类型，可取四个值：SMTiles,MBTiles,UGCV5,GeoPackage。仅在输出到本地存储路径时生效，Mongo，OTS与FastDFS时不生效，Mongo，OTS与FastDFS应直接设置storageid
 
 

@@ -88,7 +88,7 @@ class TestUpdateTileSet(TestCase):
                                body=get_fileuploadtask_body, status=200)
         update_smtilestileset(base_uri, 'admin', 'iserver', 'cache-World',
                               os.path.join(os.path.dirname(os.path.abspath(__file__)), "World.zip"), 'World',
-                              (-180, 90), (-180, -90, 180, 90), quite=True)
+                              (-180, 90), (-180, -90, 180, 90), quiet=True)
 
     @httpretty.activate
     def test_update_smtilestilset_remote_workspace(self):
@@ -133,7 +133,7 @@ class TestUpdateTileSet(TestCase):
                                body=get_mng_service_body, status=200)
         update_smtilestileset(base_uri, 'admin', 'iserver', 'cache-World',
                               os.path.join(os.path.dirname(os.path.abspath(__file__)), "World.zip"), 'World',
-                              (-180, 90), (-180, -90, 180, 90), remote_workspace=True, quite=True)
+                              (-180, 90), (-180, -90, 180, 90), remote_workspace=True, quiet=True)
 
     @httpretty.activate
     def test_update_smtilestilset_storageid(self):
@@ -181,7 +181,7 @@ class TestUpdateTileSet(TestCase):
                                body=get_datastore_body, status=200)
         update_smtilestileset(base_uri, 'admin', 'iserver', 'cache-World',
                               os.path.join(os.path.dirname(os.path.abspath(__file__)), "World.zip"), 'World',
-                              (-180, 90), (-180, -90, 180, 90), storageid='test', remote_workspace=True, quite=True)
+                              (-180, 90), (-180, -90, 180, 90), storageid='test', remote_workspace=True, quiet=True)
 
     @mock.patch('sys.stdout', new_callable=StringIO)
     @mock.patch('builtins.input', side_effect=['Y'])
