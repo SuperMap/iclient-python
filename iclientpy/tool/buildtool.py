@@ -4,26 +4,26 @@ import platform
 import shutil
 import subprocess
 
-
-def writedir2file(path, targetfile):
-    for root, dirs, files in os.walk(path):
-        for file in files:
-            targetfile.write(os.path.join(root, file), os.path.join(root, file)[len(path):])
+_version = os.environ.get('ICLIENTPY_VERSION')
+_build_num = os.environ.get('BUILD_NUMBER')
+_version_postfix = ('_' + _version + '.' +  _build_num) if _version and _build_num else ''
 
 
 def window_task(tool_file, dir):
+    abs_dir = os.path.abspath(dir)
     import zipfile
-    zipf = zipfile.ZipFile(tool_file, 'w', zipfile.ZIP_DEFLATED)
-    writedir2file(dir, zipf)
-    zipf.close()
+    with zipfile.ZipFile(tool_file, 'w', zipfile.ZIP_DEFLATED) as zipf:
+        for root, dirs, files in os.walk(abs_dir):
+            arc_dir = os.path.join('icpy-tools' + _version_postfix, os.path.relpath(root, abs_dir))
+            for file in files:
+                zipf.write(os.path.join(root, file), arcname=os.path.join(arc_dir, file))
 
 
 def linux_task(tool_file, dir):
+
     import tarfile
-    tarf = tarfile.open(tool_file, 'w')
-    tarf.write = tarf.add
-    writedir2file(dir, tarf)
-    tarf.close()
+    with tarfile.open(tool_file, 'w') as tarf:
+        tarf.add(dir, 'icpy-tools' + _version_postfix)
 
 
 def delete_dirs(dirs):
