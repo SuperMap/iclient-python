@@ -56,15 +56,40 @@ class Server:
         return PrepareWorkspacePublish(PostWorkspaceExecutor(self._apifactory), self._apifactory.management())
 
     def get_users(self) -> List[List[str]]:
+        """
+            获取用户列表
+
+        Returns:
+            用户简略信息列表
+        """
         mng = self._apifactory.management()
         return mng.get_users()
 
     def get_user(self, name: str) -> UserInfo:
+        """
+            获取用户信息
+
+        Args:
+            name: 用户名
+
+        Returns:
+            用户详细信息
+        """
         mng = self._apifactory.management()
         return mng.get_user(name)
 
     def create_user(self, name: str, password: str, roles: List[str] = None, description: str = None,
                     user_groups: List[str] = None):
+        """
+            创建用户
+
+        Args:
+            name: 用户名
+            password: 密码
+            roles: 角色
+            description: 描述信息
+            user_groups: 用户组
+        """
         mng = self._apifactory.management()
         entity = UserEntity()
         entity.name = name
@@ -78,6 +103,16 @@ class Server:
 
     def update_user(self, name: str, password: str = None, roles: List[str] = None, description: str = None,
                     user_groups: List[str] = None):
+        """
+            更新用户信息
+
+        Args:
+            name: 用户名
+            password: 密码
+            roles: 角色
+            description: 描述信息
+            user_groups: 用户组
+        """
         mng = self._apifactory.management()
         entity = mng.get_user(name)
         entity.password = password if password is not None else entity.password
@@ -89,27 +124,64 @@ class Server:
             raise Exception('更新用户失败')
 
     def delete_users(self, names: List[str]):
+        """
+            批量删除用户
+
+        Args:
+            names: 用户名列表
+        """
         mng = self._apifactory.management()
         result = mng.put_users(names)
         if not result.succeed:
             raise Exception('删除用户失败')
 
     def delete_user(self, name: str):
+        """
+            删除用户
+
+        Args:
+            name: 用户名
+        """
         mng = self._apifactory.management()
         result = mng.delete_user(name)
         if not result.succeed:
             raise Exception('删除用户失败')
 
     def get_roles(self) -> List[RoleEntity]:
+        """
+            获取所有角色信息
+
+        Returns:
+            角色信息列表
+        """
         mng = self._apifactory.management()
         return mng.get_roles()
 
     def get_role(self, name: str) -> RoleEntity:
+        """
+            获取角色信息
+
+        Args:
+            name: 角色名
+
+        Returns:
+            角色信息
+        """
         mng = self._apifactory.management()
         return mng.get_role(name)
 
     def create_role(self, name: str, users: List[str] = None, description: str = None, user_groups: List[str] = None,
                     permissions: RolePermissions = None):
+        """
+            创建角色
+
+        Args:
+            name: 角色名
+            users: 用户
+            description: 描述信息
+            user_groups: 用户组
+            permissions: 权限
+        """
         mng = self._apifactory.management()
         entity = RoleEntity()
         entity.name = name
@@ -123,6 +195,16 @@ class Server:
 
     def update_role(self, name: str, users: List[str] = None, description: str = None, user_groups: List[str] = None,
                     permissions: RolePermissions = None):
+        """
+            更新角色
+
+        Args:
+            name: 角色名
+            users: 用户
+            description: 描述信息
+            user_groups: 用户组
+            permissions: 权限
+        """
         mng = self._apifactory.management()
         entity = mng.get_role(name)
         entity.userGroups = user_groups if user_groups is not None else entity.userGroups
@@ -134,12 +216,24 @@ class Server:
             raise Exception('更新角色失败')
 
     def delete_role(self, name: str):
+        """
+            删除角色
+
+        Args:
+            name: 角色名
+        """
         mng = self._apifactory.management()
         result = mng.delete_role(name)
         if not result.succeed:
             raise Exception('删除角色失败')
 
     def delete_roles(self, names: List[str]):
+        """
+            批量删除角色
+
+        Args:
+            names: 角色名列表
+        """
         mng = self._apifactory.management()
         result = mng.put_roles(names)
         if not result.succeed:
