@@ -3023,9 +3023,52 @@ class NodeInfo:
     status: str
     type: str
 
+
 @default_init
 class NodeInfoList:
-    list:List[NodeInfo]
+    list: List[NodeInfo]
+
+
+@default_init
+class UserEntity:
+    name: str
+    password: str
+    description: str
+    roles: List[str]
+    userGroups: List[str]
+
+
+@default_init
+class UserInfo:
+    description: str
+    email: str
+    name: str
+    ownRoles: List[str]
+    password: str
+    roles: List[str]
+    userGroups: List[str]
+
+
+@default_init
+class MixedPermissions:
+    permitted: List[str]
+    denied: List[str]
+
+
+@default_init
+class RolePermissions:
+    publishEnabled: bool
+    instanceAccessPermissions: MixedPermissions
+    componentManagerPermissions: MixedPermissions
+
+
+@default_init
+class RoleEntity:
+    description: str
+    name: str
+    premissions: RolePermissions
+    userGroups: List[str]
+    users: List[str]
 
 
 _datset_info_parser_builder.build_and_regist()
