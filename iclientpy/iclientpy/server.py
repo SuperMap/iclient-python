@@ -4,7 +4,8 @@ from iclientpy.codingui.distributedanalyst import get_datas_with_optionms
 from .rest.apifactory import APIFactory
 from .rest.api.servicespage import ServicesPage, ServiceComponentType
 from .codingui.servicespage import get_services_by_component_type
-from .rest.api.model import ServiceMetaInfo, UserEntity, RoleEntity, RolePermissions, UserInfo
+from .rest.api.model import ServiceMetaInfo, UserEntity, RoleEntity, RolePermissions, UserInfo, AuthorizeSetting, \
+    PostAuthorizeEntity, AuthorizeType, ServiceInstance
 from iclientpy.codingui.comon import NamedObjects
 from iclientpy.codingui.servicepublish import PrepareWorkspacePublish, PostWorkspaceExecutor
 from iclientpy.codingui.servicespage import ui_class_register
@@ -238,3 +239,48 @@ class Server:
         result = mng.put_roles(names)
         if not result.succeed:
             raise Exception('删除角色失败')
+
+    def get_instances(self) -> List[ServiceInstance]:
+        """
+            获取所有服务实例
+
+        Returns:
+            服务实例信息列表
+        """
+        mng = self._apifactory.management()
+        return mng.get_instances()
+
+    def get_instance(self, instance_name: str) -> ServiceInstance:
+        """
+            获取服务实例
+
+        Args:
+            instance_name: 实例名称
+
+        Returns:
+            服务实例信息
+        """
+        mng = self._apifactory.management()
+        return mng.get_instance(instance_name)
+
+    def grant_privileges_instances(self, instances_name: List[str], authorize_type: AuthorizeType,
+                                   denied_roles: List[str] = None, permitted_roles: List[str] = None):
+        """
+            为服务示例授权
+
+        Args:
+            instances_name: 服务实例名称列表
+            authorize_type: 验证类型
+            denied_roles: 禁止访问的角色列表
+            permitted_roles: 允许访问的角色列表
+        """
+        mng = self._apifactory.management()
+        entity = PostAuthorizeEntity()
+        entity.instances = instances_name
+        entity.authorizeSetting = AuthorizeSetting()
+        entity.authorizeSetting.type = authorize_type
+        entity.authorizeSetting.deniedRoles = denied_roles
+        entity.authorizeSetting.permittedRoles = permitted_roles
+        result = mng.post_authorize(entity)
+        if not result.succeed:
+            raise Exception('授权失败')

@@ -193,3 +193,19 @@ class ManagementTest(AbstractRESTTestCase):
                        httpretty.Response(body='{"succeed":true}', status=200), role='admin', entity=entity)
         self.check_api('delete_role', self.baseuri + '/manager/security/roles/admin.json', HttpMethod.DELETE,
                        httpretty.Response(body='{"succeed":true}', status=200), role='admin', entity=['admin'])
+
+    def test_instances(self):
+        get_instances_body = '[{"interfaceType":"com.supermap.services.rest.JaxrsServletForJersey","componentType":"com.supermap.services.components.impl.GeometryComponentImpl","name":"geometry/restjsr","componentSetName":null,"authorizeSetting":{"permittedRoles":[],"deniedRoles":[],"type":"PUBLIC"},"id":null,"componentName":"geometry","interfaceName":"restjsr","enabled":true,"status":"OK"},{"interfaceType":"com.supermap.services.rest.RestServlet","componentType":"com.supermap.services.components.impl.MapImpl","name":"map-World/rest","componentSetName":null,"authorizeSetting":{"permittedRoles":[],"deniedRoles":[],"type":"AUTHENTICATED"},"id":null,"componentName":"map-World","interfaceName":"rest","enabled":true,"status":"OK"}]'
+        self.check_api('get_instances', self.baseuri + '/manager/instances.json', HttpMethod.GET,
+                       httpretty.Response(body=get_instances_body, status=200), role='admin')
+
+    def test_instance(self):
+        get_instance_body = '{"interfaceType":"com.supermap.services.rest.RestServlet","componentType":"com.supermap.services.components.impl.MapImpl","name":"map-World/rest","componentSetName":null,"authorizeSetting":{"permittedRoles":[],"deniedRoles":[],"type":"AUTHENTICATED"},"id":null,"componentName":"map-World","interfaceName":"rest","enabled":true,"status":"OK"}'
+        self.check_api('get_instance', self.baseuri + '/manager/instances/map-World/rest.json', HttpMethod.GET,
+                       httpretty.Response(body=get_instance_body, status=200), instance='map-World/rest')
+
+    def test_authorize(self):
+        post_users_body = '{"succeed":true,"postResultType":"CreateChild","newResourceLocation":"null.json"}'
+        entity = PostAuthorizeEntity()
+        self.check_api('post_authorize', self.baseuri + '/manager/instances/authorize.json', HttpMethod.POST,
+                       httpretty.Response(body=post_users_body, status=200), entity=entity)

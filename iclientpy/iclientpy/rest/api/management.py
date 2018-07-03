@@ -5,7 +5,7 @@ from .model import PostWorkspaceParameter, GetWorkspaceResultItem, PostWorkspace
     PostTilesetUpdateJobs, PostTilesetUpdateJobsResultItem, GetTilesetExportJobResultItem, MngServiceInfo, \
     GetFileUploadResult, PostFileUploadTasksParam, PostUploadTasksResult, PostFileUploadTaskResult, \
     GetFileUploadTaskResult, RestMngFileListItem, DataStoreSetting, RestMngTileStorageInfo, UserEntity, UserInfo, \
-    RoleEntity
+    RoleEntity, ServiceInstance, PostAuthorizeEntity
 from .abstracttypefields import mng_service_info_deserializer
 from io import FileIO
 
@@ -146,4 +146,16 @@ class Management:
 
     @delete('/manager/security/roles/{role}')
     def delete_role(self, role: str) -> MethodResult:
+        pass
+
+    @get('/manager/instances')
+    def get_instances(self) -> List[ServiceInstance]:
+        pass
+
+    @get('/manager/instances/{instance}')
+    def get_instance(self, instance: str) -> ServiceInstance:
+        pass
+
+    @post('/manager/instances/authorize', entityKW='entity')
+    def post_authorize(self, entity: PostAuthorizeEntity) -> MethodResult:
         pass

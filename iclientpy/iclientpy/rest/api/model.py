@@ -3071,4 +3071,37 @@ class RoleEntity:
     users: List[str]
 
 
+class AuthorizeType(Enum):
+    AUTHENTICATED = 'AUTHENTICATED'
+    PRIVATE = 'PRIVATE'
+    PUBLIC = 'PUBLIC'
+
+
+@default_init
+class AuthorizeSetting:
+    deniedRoles: List[str]
+    permittedRoles: List[str]
+    type: AuthorizeType
+
+
+@default_init
+class ServiceInstance:
+    authorizeSetting: AuthorizeSetting
+    componentName: str
+    componentSetName: str
+    componentType: str
+    enabled: bool
+    id: str
+    interfaceName: str
+    interfaceType: str
+    name: str
+    status: str
+
+
+@default_init
+class PostAuthorizeEntity:
+    instances: List[str]
+    authorizeSetting: AuthorizeSetting
+
+
 _datset_info_parser_builder.build_and_regist()

@@ -2,7 +2,7 @@ from unittest import TestCase
 from unittest.mock import MagicMock
 from iclientpy.server import Server
 from iclientpy.rest.api.servicespage import ServiceComponentType, ServiceMetaInfo
-from iclientpy.rest.api.model import UserInfo, RoleEntity, MethodResult
+from iclientpy.rest.api.model import UserInfo, RoleEntity, MethodResult, AuthorizeType, ServiceInstance
 
 
 class ServerTest(TestCase):
@@ -246,3 +246,45 @@ class ServerTest(TestCase):
         with self.assertRaises(Exception):
             server.delete_roles(['test'])
         managment.put_roles.assert_called_once()
+
+    def test_get_instances(self):
+        server = self.server
+        server._apifactory = MagicMock()
+        managment = MagicMock()
+        server._apifactory.management = MagicMock(return_value=managment)
+        instances = []
+        managment.get_instances = MagicMock(return_value=instances)
+        result = server.get_instances()
+        self.assertEqual(result, instances)
+
+    def test_get_instance(self):
+        server = self.server
+        server._apifactory = MagicMock()
+        managment = MagicMock()
+        server._apifactory.management = MagicMock(return_value=managment)
+        instance = ServiceInstance()
+        managment.get_instance = MagicMock(return_value=instance)
+        result = server.get_instance('map-World/rest')
+        self.assertEqual(result, instance)
+
+    def test_grant_privileges_instances(self):
+        server = self.server
+        server._apifactory = MagicMock()
+        managment = MagicMock()
+        server._apifactory.management = MagicMock(return_value=managment)
+        re = MethodResult()
+        re.succeed = True
+        managment.post_authorize = MagicMock(return_value=re)
+        server.grant_privileges_instances(['test'], authorize_type=AuthorizeType.AUTHENTICATED)
+        managment.post_authorize.assert_called_once()
+
+    def test_grant_privileges_instances_exception(self):
+        server = self.server
+        server._apifactory = MagicMock()
+        managment = MagicMock()
+        server._apifactory.management = MagicMock(return_value=managment)
+        re = MethodResult()
+        managment.post_authorize = MagicMock(return_value=re)
+        with self.assertRaises(Exception):
+            server.grant_privileges_instances(['test'], authorize_type=AuthorizeType.AUTHENTICATED)
+        managment.post_authorize.assert_called_once()
