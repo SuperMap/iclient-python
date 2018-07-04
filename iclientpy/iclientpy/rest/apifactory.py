@@ -26,6 +26,7 @@ from .api.servicespage import ServicesPage
 from .api.onlinemapsservice import OnlineMapsService
 from .api.onlinedatasservice import OnlineDatasService
 from .api.node_service import NodeService
+from .api.securitymanagement import SecurityManagement, PortalSecurityManagement
 
 default_session_cookie_name = 'JSESSIONID'
 
@@ -360,6 +361,15 @@ class APIFactory:
         """
         return create(Management, self._handler)
 
+    def security_management(self) -> SecurityManagement:
+        """
+        iServer安全的api
+
+        Returns:
+            返回iServer安全的api
+        """
+        return create(SecurityManagement, self._handler)
+
     def data_service(self, service_name: str) -> DataService:
         """
         返回指定服务的相关数据的api
@@ -441,9 +451,9 @@ class iPortalAPIFactory:
             proxies: 设置代理服务器地址
 
         """
-        self._base_url = base_url + 'web' if base_url.endswith('/') else base_url + '/web'
+        self._base_url = base_url if not base_url.endswith('/') else base_url[:-1]
         self._proxies = proxies if proxies is not None else _get_proxy_from_arguments()
-        auth = create_auth(self._base_url + '/login.json', username, passwd, token, proxies=self._proxies)
+        auth = create_auth(self._base_url + '/web/login.json', username, passwd, token, proxies=self._proxies)
         self._handler = RestInvocationHandlerImpl(self._base_url, auth, proxies=self._proxies)
 
     def datas_service(self) -> DatasService:
@@ -481,6 +491,15 @@ class iPortalAPIFactory:
             iPortal MyDepartments服务
         """
         return create(MyDepartments, self._handler)
+
+    def security_management(self) -> PortalSecurityManagement:
+        """
+        获取iPortal安全的api
+
+        Returns:
+            返回iPortal安全的api
+        """
+        return create(PortalSecurityManagement, self._handler)
 
 
 class iManagerAPIFactory:

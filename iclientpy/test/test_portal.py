@@ -2,7 +2,7 @@ from unittest import TestCase, mock
 from iclientpy.portal import Portal, MapShareSettingBuilder, DataShareSettingBuilder
 from iclientpy.rest.api.model import GetMapsResult, ViewerMap, MethodResult, MyDatasMethodResult, DataItem, Status, \
     DataItemType, MyDataUploadProcess, Layer, GetGroupsResult, PermissionType, DataPermissionType, EntityType, \
-    GetMyDatasResult
+    GetMyDatasResult, UserInfo, RoleEntity
 from io import FileIO
 from pandas import DataFrame
 
@@ -241,6 +241,222 @@ class PortalTestCase(TestCase):
         portal.delete_datas(['data_id', 'data_id2'])
         self.assertEqual(data_services.delete_data.call_count, 2)
         self.assertEqual(data_services.delete_data.call_args_list, [mock.call('data_id'), mock.call('data_id2')])
+
+    def test_getusers(self):
+        portal = Portal('http://localhost:8090/iportal', 'admin', 'Supermap123')
+        portal._portal = mock.MagicMock()
+        managment = mock.MagicMock()
+        portal._portal.security_management = mock.MagicMock(return_value=managment)
+        users = []
+        managment.get_users = mock.MagicMock(return_value=users)
+        result = portal.get_users()
+        self.assertEqual(result, users)
+
+    def test_getuser(self):
+        portal = Portal('http://localhost:8090/iportal', 'admin', 'Supermap123')
+        portal._portal = mock.MagicMock()
+        managment = mock.MagicMock()
+        portal._portal.security_management = mock.MagicMock(return_value=managment)
+        user = UserInfo()
+        managment.get_users = mock.MagicMock(return_value=user)
+        result = portal.get_users()
+        self.assertEqual(result, user)
+
+    def test_createuser(self):
+        portal = Portal('http://localhost:8090/iportal', 'admin', 'Supermap123')
+        portal._portal = mock.MagicMock()
+        managment = mock.MagicMock()
+        portal._portal.security_management = mock.MagicMock(return_value=managment)
+        re = MethodResult()
+        re.succeed = True
+        managment.post_users = mock.MagicMock(return_value=re)
+        portal.create_user('test', 'test')
+        managment.post_users.assert_called_once()
+
+    def test_updateuser(self):
+        portal = Portal('http://localhost:8090/iportal', 'admin', 'Supermap123')
+        portal._portal = mock.MagicMock()
+        managment = mock.MagicMock()
+        portal._portal.security_management = mock.MagicMock(return_value=managment)
+        re = MethodResult()
+        re.succeed = True
+        managment.put_user = mock.MagicMock(return_value=re)
+        portal.update_user('test', 'test')
+        managment.put_user.assert_called_once()
+
+    def test_deleteusers(self):
+        portal = Portal('http://localhost:8090/iportal', 'admin', 'Supermap123')
+        portal._portal = mock.MagicMock()
+        managment = mock.MagicMock()
+        portal._portal.security_management = mock.MagicMock(return_value=managment)
+        re = MethodResult()
+        re.succeed = True
+        managment.put_users = mock.MagicMock(return_value=re)
+        portal.delete_users(['test'])
+        managment.put_users.assert_called_once()
+
+    def test_deleteuser(self):
+        portal = Portal('http://localhost:8090/iportal', 'admin', 'Supermap123')
+        portal._portal = mock.MagicMock()
+        managment = mock.MagicMock()
+        portal._portal.security_management = mock.MagicMock(return_value=managment)
+        re = MethodResult()
+        re.succeed = True
+        managment.delete_user = mock.MagicMock(return_value=re)
+        portal.delete_user('test')
+        managment.delete_user.assert_called_once()
+
+    def test_createuser_exception(self):
+        portal = Portal('http://localhost:8090/iportal', 'admin', 'Supermap123')
+        portal._portal = mock.MagicMock()
+        managment = mock.MagicMock()
+        portal._portal.security_management = mock.MagicMock(return_value=managment)
+        re = MethodResult()
+        managment.post_users = mock.MagicMock(return_value=re)
+        with self.assertRaises(Exception):
+            portal.create_user('test', 'test')
+        managment.post_users.assert_called_once()
+
+    def test_updateuser_exception(self):
+        portal = Portal('http://localhost:8090/iportal', 'admin', 'Supermap123')
+        portal._portal = mock.MagicMock()
+        managment = mock.MagicMock()
+        portal._portal.security_management = mock.MagicMock(return_value=managment)
+        re = MethodResult()
+        managment.put_user = mock.MagicMock(return_value=re)
+        with self.assertRaises(Exception):
+            portal.update_user('test', 'test')
+        managment.put_user.assert_called_once()
+
+    def test_deleteusers_exception(self):
+        portal = Portal('http://localhost:8090/iportal', 'admin', 'Supermap123')
+        portal._portal = mock.MagicMock()
+        managment = mock.MagicMock()
+        portal._portal.security_management = mock.MagicMock(return_value=managment)
+        re = MethodResult()
+        managment.put_users = mock.MagicMock(return_value=re)
+        with self.assertRaises(Exception):
+            portal.delete_users(['test'])
+        managment.put_users.assert_called_once()
+
+    def test_deleteuser_exception(self):
+        portal = Portal('http://localhost:8090/iportal', 'admin', 'Supermap123')
+        portal._portal = mock.MagicMock()
+        managment = mock.MagicMock()
+        portal._portal.security_management = mock.MagicMock(return_value=managment)
+        re = MethodResult()
+        managment.delete_user = mock.MagicMock(return_value=re)
+        with self.assertRaises(Exception):
+            portal.delete_user('test')
+        managment.delete_user.assert_called_once()
+
+    def test_getroles(self):
+        portal = Portal('http://localhost:8090/iportal', 'admin', 'Supermap123')
+        portal._portal = mock.MagicMock()
+        managment = mock.MagicMock()
+        portal._portal.security_management = mock.MagicMock(return_value=managment)
+        roles = []
+        managment.get_roles = mock.MagicMock(return_value=roles)
+        result = portal.get_roles()
+        self.assertEqual(result, roles)
+
+    def test_getrole(self):
+        portal = Portal('http://localhost:8090/iportal', 'admin', 'Supermap123')
+        portal._portal = mock.MagicMock()
+        managment = mock.MagicMock()
+        portal._portal.security_management = mock.MagicMock(return_value=managment)
+        role = RoleEntity()
+        managment.get_role = mock.MagicMock(return_value=role)
+        result = portal.get_role('test')
+        self.assertEqual(result, role)
+
+    def test_createrole(self):
+        portal = Portal('http://localhost:8090/iportal', 'admin', 'Supermap123')
+        portal._portal = mock.MagicMock()
+        managment = mock.MagicMock()
+        portal._portal.security_management = mock.MagicMock(return_value=managment)
+        re = MethodResult()
+        re.succeed = True
+        managment.post_roles = mock.MagicMock(return_value=re)
+        portal.create_role('test')
+        managment.post_roles.assert_called_once()
+
+    def test_updaterole(self):
+        portal = Portal('http://localhost:8090/iportal', 'admin', 'Supermap123')
+        portal._portal = mock.MagicMock()
+        managment = mock.MagicMock()
+        portal._portal.security_management = mock.MagicMock(return_value=managment)
+        re = MethodResult()
+        re.succeed = True
+        managment.put_role = mock.MagicMock(return_value=re)
+        portal.update_role('test', description='test')
+        managment.put_role.assert_called_once()
+
+    def test_deleterole(self):
+        portal = Portal('http://localhost:8090/iportal', 'admin', 'Supermap123')
+        portal._portal = mock.MagicMock()
+        managment = mock.MagicMock()
+        portal._portal.security_management = mock.MagicMock(return_value=managment)
+        re = MethodResult()
+        re.succeed = True
+        managment.delete_role = mock.MagicMock(return_value=re)
+        portal.delete_role('test')
+        managment.delete_role.assert_called_once()
+
+    def test_deleteroles(self):
+        portal = Portal('http://localhost:8090/iportal', 'admin', 'Supermap123')
+        portal._portal = mock.MagicMock()
+        managment = mock.MagicMock()
+        portal._portal.security_management = mock.MagicMock(return_value=managment)
+        re = MethodResult()
+        re.succeed = True
+        managment.put_roles = mock.MagicMock(return_value=re)
+        portal.delete_roles(['test'])
+        managment.put_roles.assert_called_once()
+
+    def test_createrole_exception(self):
+        portal = Portal('http://localhost:8090/iportal', 'admin', 'Supermap123')
+        portal._portal = mock.MagicMock()
+        managment = mock.MagicMock()
+        portal._portal.security_management = mock.MagicMock(return_value=managment)
+        re = MethodResult()
+        managment.post_roles = mock.MagicMock(return_value=re)
+        with self.assertRaises(Exception):
+            portal.create_role('test')
+        managment.post_roles.assert_called_once()
+
+    def test_updaterole_exception(self):
+        portal = Portal('http://localhost:8090/iportal', 'admin', 'Supermap123')
+        portal._portal = mock.MagicMock()
+        managment = mock.MagicMock()
+        portal._portal.security_management = mock.MagicMock(return_value=managment)
+        re = MethodResult()
+        managment.put_role = mock.MagicMock(return_value=re)
+        with self.assertRaises(Exception):
+            portal.update_role('test', description='test')
+        managment.put_role.assert_called_once()
+
+    def test_deleterole_exception(self):
+        portal = Portal('http://localhost:8090/iportal', 'admin', 'Supermap123')
+        portal._portal = mock.MagicMock()
+        managment = mock.MagicMock()
+        portal._portal.security_management = mock.MagicMock(return_value=managment)
+        re = MethodResult()
+        managment.delete_role = mock.MagicMock(return_value=re)
+        with self.assertRaises(Exception):
+            portal.delete_role('test')
+        managment.delete_role.assert_called_once()
+
+    def test_deleteroles_exception(self):
+        portal = Portal('http://localhost:8090/iportal', 'admin', 'Supermap123')
+        portal._portal = mock.MagicMock()
+        managment = mock.MagicMock()
+        portal._portal.security_management = mock.MagicMock(return_value=managment)
+        re = MethodResult()
+        managment.put_roles = mock.MagicMock(return_value=re)
+        with self.assertRaises(Exception):
+            portal.delete_roles(['test'])
+        managment.put_roles.assert_called_once()
 
 
 class MapShareSettingBuilderTestCase(TestCase):

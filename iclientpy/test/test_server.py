@@ -35,7 +35,7 @@ class ServerTest(TestCase):
         server = self.server
         server._apifactory = MagicMock()
         managment = MagicMock()
-        server._apifactory.management = MagicMock(return_value=managment)
+        server._apifactory.security_management = MagicMock(return_value=managment)
         users = []
         managment.get_users = MagicMock(return_value=users)
         result = server.get_users()
@@ -45,7 +45,7 @@ class ServerTest(TestCase):
         server = self.server
         server._apifactory = MagicMock()
         managment = MagicMock()
-        server._apifactory.management = MagicMock(return_value=managment)
+        server._apifactory.security_management = MagicMock(return_value=managment)
         user = UserInfo()
         managment.get_users = MagicMock(return_value=user)
         result = server.get_users()
@@ -55,7 +55,7 @@ class ServerTest(TestCase):
         server = self.server
         server._apifactory = MagicMock()
         managment = MagicMock()
-        server._apifactory.management = MagicMock(return_value=managment)
+        server._apifactory.security_management = MagicMock(return_value=managment)
         re = MethodResult()
         re.succeed = True
         managment.post_users = MagicMock(return_value=re)
@@ -66,7 +66,7 @@ class ServerTest(TestCase):
         server = self.server
         server._apifactory = MagicMock()
         managment = MagicMock()
-        server._apifactory.management = MagicMock(return_value=managment)
+        server._apifactory.security_management = MagicMock(return_value=managment)
         re = MethodResult()
         re.succeed = True
         managment.put_user = MagicMock(return_value=re)
@@ -77,7 +77,7 @@ class ServerTest(TestCase):
         server = self.server
         server._apifactory = MagicMock()
         managment = MagicMock()
-        server._apifactory.management = MagicMock(return_value=managment)
+        server._apifactory.security_management = MagicMock(return_value=managment)
         re = MethodResult()
         re.succeed = True
         managment.put_users = MagicMock(return_value=re)
@@ -88,7 +88,7 @@ class ServerTest(TestCase):
         server = self.server
         server._apifactory = MagicMock()
         managment = MagicMock()
-        server._apifactory.management = MagicMock(return_value=managment)
+        server._apifactory.security_management = MagicMock(return_value=managment)
         re = MethodResult()
         re.succeed = True
         managment.delete_user = MagicMock(return_value=re)
@@ -99,7 +99,7 @@ class ServerTest(TestCase):
         server = self.server
         server._apifactory = MagicMock()
         managment = MagicMock()
-        server._apifactory.management = MagicMock(return_value=managment)
+        server._apifactory.security_management = MagicMock(return_value=managment)
         re = MethodResult()
         managment.post_users = MagicMock(return_value=re)
         with self.assertRaises(Exception):
@@ -110,7 +110,7 @@ class ServerTest(TestCase):
         server = self.server
         server._apifactory = MagicMock()
         managment = MagicMock()
-        server._apifactory.management = MagicMock(return_value=managment)
+        server._apifactory.security_management = MagicMock(return_value=managment)
         re = MethodResult()
         managment.put_user = MagicMock(return_value=re)
         with self.assertRaises(Exception):
@@ -121,7 +121,7 @@ class ServerTest(TestCase):
         server = self.server
         server._apifactory = MagicMock()
         managment = MagicMock()
-        server._apifactory.management = MagicMock(return_value=managment)
+        server._apifactory.security_management = MagicMock(return_value=managment)
         re = MethodResult()
         managment.put_users = MagicMock(return_value=re)
         with self.assertRaises(Exception):
@@ -132,7 +132,7 @@ class ServerTest(TestCase):
         server = self.server
         server._apifactory = MagicMock()
         managment = MagicMock()
-        server._apifactory.management = MagicMock(return_value=managment)
+        server._apifactory.security_management = MagicMock(return_value=managment)
         re = MethodResult()
         managment.delete_user = MagicMock(return_value=re)
         with self.assertRaises(Exception):
@@ -143,7 +143,7 @@ class ServerTest(TestCase):
         server = self.server
         server._apifactory = MagicMock()
         managment = MagicMock()
-        server._apifactory.management = MagicMock(return_value=managment)
+        server._apifactory.security_management = MagicMock(return_value=managment)
         roles = []
         managment.get_roles = MagicMock(return_value=roles)
         result = server.get_roles()
@@ -153,7 +153,7 @@ class ServerTest(TestCase):
         server = self.server
         server._apifactory = MagicMock()
         managment = MagicMock()
-        server._apifactory.management = MagicMock(return_value=managment)
+        server._apifactory.security_management = MagicMock(return_value=managment)
         role = RoleEntity()
         managment.get_role = MagicMock(return_value=role)
         result = server.get_role('test')
@@ -163,7 +163,7 @@ class ServerTest(TestCase):
         server = self.server
         server._apifactory = MagicMock()
         managment = MagicMock()
-        server._apifactory.management = MagicMock(return_value=managment)
+        server._apifactory.security_management = MagicMock(return_value=managment)
         re = MethodResult()
         re.succeed = True
         managment.post_roles = MagicMock(return_value=re)
@@ -174,7 +174,7 @@ class ServerTest(TestCase):
         server = self.server
         server._apifactory = MagicMock()
         managment = MagicMock()
-        server._apifactory.management = MagicMock(return_value=managment)
+        server._apifactory.security_management = MagicMock(return_value=managment)
         re = MethodResult()
         re.succeed = True
         managment.put_role = MagicMock(return_value=re)
@@ -185,7 +185,7 @@ class ServerTest(TestCase):
         server = self.server
         server._apifactory = MagicMock()
         managment = MagicMock()
-        server._apifactory.management = MagicMock(return_value=managment)
+        server._apifactory.security_management = MagicMock(return_value=managment)
         re = MethodResult()
         re.succeed = True
         managment.delete_role = MagicMock(return_value=re)
@@ -196,7 +196,7 @@ class ServerTest(TestCase):
         server = self.server
         server._apifactory = MagicMock()
         managment = MagicMock()
-        server._apifactory.management = MagicMock(return_value=managment)
+        server._apifactory.security_management = MagicMock(return_value=managment)
         re = MethodResult()
         re.succeed = True
         managment.put_roles = MagicMock(return_value=re)
@@ -207,7 +207,7 @@ class ServerTest(TestCase):
         server = self.server
         server._apifactory = MagicMock()
         managment = MagicMock()
-        server._apifactory.management = MagicMock(return_value=managment)
+        server._apifactory.security_management = MagicMock(return_value=managment)
         re = MethodResult()
         managment.post_roles = MagicMock(return_value=re)
         with self.assertRaises(Exception):
@@ -218,7 +218,7 @@ class ServerTest(TestCase):
         server = self.server
         server._apifactory = MagicMock()
         managment = MagicMock()
-        server._apifactory.management = MagicMock(return_value=managment)
+        server._apifactory.security_management = MagicMock(return_value=managment)
         re = MethodResult()
         managment.put_role = MagicMock(return_value=re)
         with self.assertRaises(Exception):
@@ -229,7 +229,7 @@ class ServerTest(TestCase):
         server = self.server
         server._apifactory = MagicMock()
         managment = MagicMock()
-        server._apifactory.management = MagicMock(return_value=managment)
+        server._apifactory.security_management = MagicMock(return_value=managment)
         re = MethodResult()
         managment.delete_role = MagicMock(return_value=re)
         with self.assertRaises(Exception):
@@ -240,7 +240,7 @@ class ServerTest(TestCase):
         server = self.server
         server._apifactory = MagicMock()
         managment = MagicMock()
-        server._apifactory.management = MagicMock(return_value=managment)
+        server._apifactory.security_management = MagicMock(return_value=managment)
         re = MethodResult()
         managment.put_roles = MagicMock(return_value=re)
         with self.assertRaises(Exception):

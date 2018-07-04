@@ -63,7 +63,7 @@ class Server:
         Returns:
             用户简略信息列表
         """
-        mng = self._apifactory.management()
+        mng = self._apifactory.security_management()
         return mng.get_users()
 
     def get_user(self, name: str) -> UserInfo:
@@ -76,7 +76,7 @@ class Server:
         Returns:
             用户详细信息
         """
-        mng = self._apifactory.management()
+        mng = self._apifactory.security_management()
         return mng.get_user(name)
 
     def create_user(self, name: str, password: str, roles: List[str] = None, description: str = None,
@@ -91,7 +91,7 @@ class Server:
             description: 描述信息
             user_groups: 用户组
         """
-        mng = self._apifactory.management()
+        mng = self._apifactory.security_management()
         entity = UserEntity()
         entity.name = name
         entity.password = password
@@ -114,7 +114,7 @@ class Server:
             description: 描述信息
             user_groups: 用户组
         """
-        mng = self._apifactory.management()
+        mng = self._apifactory.security_management()
         entity = mng.get_user(name)
         entity.password = password if password is not None else entity.password
         entity.roles = roles if roles is not None else entity.roles
@@ -131,7 +131,7 @@ class Server:
         Args:
             names: 用户名列表
         """
-        mng = self._apifactory.management()
+        mng = self._apifactory.security_management()
         result = mng.put_users(names)
         if not result.succeed:
             raise Exception('删除用户失败')
@@ -143,7 +143,7 @@ class Server:
         Args:
             name: 用户名
         """
-        mng = self._apifactory.management()
+        mng = self._apifactory.security_management()
         result = mng.delete_user(name)
         if not result.succeed:
             raise Exception('删除用户失败')
@@ -155,7 +155,7 @@ class Server:
         Returns:
             角色信息列表
         """
-        mng = self._apifactory.management()
+        mng = self._apifactory.security_management()
         return mng.get_roles()
 
     def get_role(self, name: str) -> RoleEntity:
@@ -168,7 +168,7 @@ class Server:
         Returns:
             角色信息
         """
-        mng = self._apifactory.management()
+        mng = self._apifactory.security_management()
         return mng.get_role(name)
 
     def create_role(self, name: str, users: List[str] = None, description: str = None, user_groups: List[str] = None,
@@ -183,7 +183,7 @@ class Server:
             user_groups: 用户组
             permissions: 权限
         """
-        mng = self._apifactory.management()
+        mng = self._apifactory.security_management()
         entity = RoleEntity()
         entity.name = name
         entity.userGroups = user_groups
@@ -206,7 +206,7 @@ class Server:
             user_groups: 用户组
             permissions: 权限
         """
-        mng = self._apifactory.management()
+        mng = self._apifactory.security_management()
         entity = mng.get_role(name)
         entity.userGroups = user_groups if user_groups is not None else entity.userGroups
         entity.description = description if description is not None else entity.description
@@ -223,7 +223,7 @@ class Server:
         Args:
             name: 角色名
         """
-        mng = self._apifactory.management()
+        mng = self._apifactory.security_management()
         result = mng.delete_role(name)
         if not result.succeed:
             raise Exception('删除角色失败')
@@ -235,7 +235,7 @@ class Server:
         Args:
             names: 角色名列表
         """
-        mng = self._apifactory.management()
+        mng = self._apifactory.security_management()
         result = mng.put_roles(names)
         if not result.succeed:
             raise Exception('删除角色失败')

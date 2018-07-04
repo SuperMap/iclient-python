@@ -5,10 +5,10 @@ from iclientpy.rest.api.model import GetMyDepartmentsResult, GetMyDepartmentsMem
 
 class MyDepartments:
 
-    @get('/mycontent/departments')
+    @get('/web/mycontent/departments')
     def get_mydepartments(self) -> List[GetMyDepartmentsResult]:
         pass
 
-    @get('/mycontent/departments/members')
+    @get('/web/mycontent/departments/members')
     def get_mydepartments_members(self) -> List[GetMyDepartmentsMembersResult]:
         pass

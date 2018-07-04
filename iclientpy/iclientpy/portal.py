@@ -6,7 +6,7 @@ from pandas import DataFrame
 from iclientpy.rest.apifactory import iPortalAPIFactory
 from iclientpy.rest.api.model import DataItemType, PostMyDatasItem, Layer, LayerType, SourceType, PostMapsItem, Point2D, \
     Rectangle2D, PrjCoordSys, MapShareSetting, PermissionType, EntityType, IportalDataAuthorizeEntity, \
-    DataPermissionType, Status
+    DataPermissionType, Status, RoleEntity, UserInfo, UserEntity, RolePermissions
 from iclientpy.typeassert import typeassert
 
 
@@ -354,6 +354,190 @@ class Portal:
         maps = self._portal.maps_service()
         if not maps.put_map_sharesetting(map_id, entities).succeed:
             raise Exception('更新权限失败')
+
+    def get_users(self) -> List[List[str]]:
+        """
+            获取用户列表
+
+        Returns:
+            用户简略信息列表
+        """
+        mng = self._portal.security_management()
+        return mng.get_users()
+
+    def get_user(self, name: str) -> UserInfo:
+        """
+            获取用户信息
+
+        Args:
+            name: 用户名
+
+        Returns:
+            用户详细信息
+        """
+        mng = self._portal.security_management()
+        return mng.get_user(name)
+
+    def create_user(self, name: str, password: str, roles: List[str] = None, description: str = None,
+                    user_groups: List[str] = None):
+        """
+            创建用户
+
+        Args:
+            name: 用户名
+            password: 密码
+            roles: 角色
+            description: 描述信息
+            user_groups: 用户组
+        """
+        mng = self._portal.security_management()
+        entity = UserEntity()
+        entity.name = name
+        entity.password = password
+        entity.roles = roles
+        entity.description = description
+        entity.userGroups = user_groups
+        result = mng.post_users(entity)
+        if not result.succeed:
+            raise Exception('创建用户失败')
+
+    def update_user(self, name: str, password: str = None, roles: List[str] = None, description: str = None,
+                    user_groups: List[str] = None):
+        """
+            更新用户信息
+
+        Args:
+            name: 用户名
+            password: 密码
+            roles: 角色
+            description: 描述信息
+            user_groups: 用户组
+        """
+        mng = self._portal.security_management()
+        entity = mng.get_user(name)
+        entity.password = password if password is not None else entity.password
+        entity.roles = roles if roles is not None else entity.roles
+        entity.description = description if description is not None else entity.description
+        entity.userGroups = user_groups if user_groups is not None else entity.userGroups
+        result = mng.put_user(name, entity)
+        if not result.succeed:
+            raise Exception('更新用户失败')
+
+    def delete_users(self, names: List[str]):
+        """
+            批量删除用户
+
+        Args:
+            names: 用户名列表
+        """
+        mng = self._portal.security_management()
+        result = mng.put_users(names)
+        if not result.succeed:
+            raise Exception('删除用户失败')
+
+    def delete_user(self, name: str):
+        """
+            删除用户
+
+        Args:
+            name: 用户名
+        """
+        mng = self._portal.security_management()
+        result = mng.delete_user(name)
+        if not result.succeed:
+            raise Exception('删除用户失败')
+
+    def get_roles(self) -> List[RoleEntity]:
+        """
+            获取所有角色信息
+
+        Returns:
+            角色信息列表
+        """
+        mng = self._portal.security_management()
+        return mng.get_roles()
+
+    def get_role(self, name: str) -> RoleEntity:
+        """
+            获取角色信息
+
+        Args:
+            name: 角色名
+
+        Returns:
+            角色信息
+        """
+        mng = self._portal.security_management()
+        return mng.get_role(name)
+
+    def create_role(self, name: str, users: List[str] = None, description: str = None, user_groups: List[str] = None,
+                    permissions: RolePermissions = None):
+        """
+            创建角色
+
+        Args:
+            name: 角色名
+            users: 用户
+            description: 描述信息
+            user_groups: 用户组
+            permissions: 权限
+        """
+        mng = self._portal.security_management()
+        entity = RoleEntity()
+        entity.name = name
+        entity.userGroups = user_groups
+        entity.description = description
+        entity.premissions = permissions
+        entity.users = users
+        result = mng.post_roles(entity)
+        if not result.succeed:
+            raise Exception('创建角色失败')
+
+    def update_role(self, name: str, users: List[str] = None, description: str = None, user_groups: List[str] = None,
+                    permissions: RolePermissions = None):
+        """
+            更新角色
+
+        Args:
+            name: 角色名
+            users: 用户
+            description: 描述信息
+            user_groups: 用户组
+            permissions: 权限
+        """
+        mng = self._portal.security_management()
+        entity = mng.get_role(name)
+        entity.userGroups = user_groups if user_groups is not None else entity.userGroups
+        entity.description = description if description is not None else entity.description
+        entity.premissions = permissions if permissions is not None else entity.premissions
+        entity.users = users if users is not None else entity.users
+        result = mng.put_role(name, entity)
+        if not result.succeed:
+            raise Exception('更新角色失败')
+
+    def delete_role(self, name: str):
+        """
+            删除角色
+
+        Args:
+            name: 角色名
+        """
+        mng = self._portal.security_management()
+        result = mng.delete_role(name)
+        if not result.succeed:
+            raise Exception('删除角色失败')
+
+    def delete_roles(self, names: List[str]):
+        """
+            批量删除角色
+
+        Args:
+            names: 角色名列表
+        """
+        mng = self._portal.security_management()
+        result = mng.put_roles(names)
+        if not result.succeed:
+            raise Exception('删除角色失败')
 
 
 class MapShareSettingBuilder:

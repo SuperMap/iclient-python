@@ -4,7 +4,7 @@ from iclientpy.rest.api.model import GetMapsResult, PostMapsItem, MethodResult, 
 
 
 class MapsService:
-    @get('/maps',
+    @get('/web/maps',
          queryKWs=['userNames', 'tags', 'suggest', 'sourceTypes', 'keywords', 'epsgCode', 'orderBy', 'currentPage',
                    'pageSize', 'dirIds', 'isNotInDir', 'updateStart', 'updateEnd', 'visitStart', 'visitEnd',
                    'filterFields', 'checkStatus', 'createStart', 'createEnd'])
@@ -14,22 +14,22 @@ class MapsService:
                  filterFields: List[str], checkStatus: str, createStart: int, createEnd: int) -> GetMapsResult:
         pass
 
-    @post('/maps', entityKW='entity')
+    @post('/web/maps', entityKW='entity')
     def post_maps(self, entity: PostMapsItem) -> MethodResult:
         pass
 
-    @delete('/maps', queryKWs=['ids'])
+    @delete('/web/maps', queryKWs=['ids'])
     def delete_maps(self, ids: List[str]) -> MethodResult:
         pass
 
-    @get('/maps/{map_id}')
+    @get('/web/maps/{map_id}')
     def get_map(self, map_id: str) -> ViewerMap:
         pass
 
-    @get('/maps/{map_id}/sharesetting')
+    @get('/web/maps/{map_id}/sharesetting')
     def get_map_sharesetting(self, map_id: str) -> List[MapShareSetting]:
         pass
 
-    @put('/maps/{map_id}/sharesetting', entityKW='entity')
+    @put('/web/maps/{map_id}/sharesetting', entityKW='entity')
     def put_map_sharesetting(self, map_id: str, entity: List[MapShareSetting]) -> MethodResult:
         pass
