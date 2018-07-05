@@ -35,6 +35,7 @@ requirements:
         - beautifulsoup4 ==4.6.0
         - python-dateutil ==2.6.1
         - widgetsnbextension ==3.0.0
+        - pycrypto==2.6.1
 
 
 about:

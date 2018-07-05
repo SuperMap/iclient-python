@@ -39,7 +39,7 @@ class NodeServiceTestCase(AbstractRESTTestCase):
                        httpretty.Response(
                            body='{"failures":[],"isSucceed":true,"msg":"","success":[{"id":"35662","name":"test123"}]}',
                            status=201), node_ids=node_ids)
-        self.check_api(NodeService.get_servers, self.baseuri + "/web/api/service.json",
+        self.check_api(NodeService.get_services, self.baseuri + "/web/api/service.json",
                        HttpMethod.GET,
                        httpretty.Response(
                            body='{"list":[{"address":"http://192.168.22.127:8090/iserver","dbs":[],"hasAgent":false,"id":35336,"isCreate":true,"isMonitored":true,"name":"不要删用来跑VT","owner":"admin","status":[],"type":"iServer"},{"address":"http://192.168.22.127:8091/iserver","dbs":[],"hasAgent":false,"id":35558,"isCreate":false,"isMonitored":true,"name":"aaa","owner":"admin","status":["INSTALLING_AGENT"],"type":"iServer"},{"address":"http://192.168.22.133:8090/iserver","dbs":[],"hasAgent":false,"id":35616,"isCreate":true,"isMonitored":true,"name":"test","owner":"admin","status":[],"type":"iServer"},{"address":"http://192.168.22.136:8090/iserver","dbs":[],"hasAgent":false,"id":35668,"isCreate":true,"isMonitored":true,"name":"test123","owner":"admin","status":[],"type":"iServer"}],"total":4}',

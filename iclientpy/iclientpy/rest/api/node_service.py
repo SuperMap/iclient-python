@@ -1,5 +1,5 @@
 from ..decorator import get, post
-from typing import List
+from typing import List,Dict
 from iclientpy.rest.api.model import CreateNodeResult, CreateServerEntity, BatchMethodResult, NodeInfo, NodeInfoList
 
 
@@ -25,6 +25,11 @@ class NodeService:
     def restart_nodes(self, node_ids: List[str]) -> BatchMethodResult:
         pass
 
-    @get('/web/api/service', fixed_queryKWs={'type': 'iServer'})
-    def get_servers(self) -> NodeInfoList:
+    @get('/web/api/service')
+    def get_services(self) -> NodeInfoList:
         pass
+
+    @get('/web/api/service/current', fixed_queryKWs={'itemName':'M_PortTCP'},queryKWs=['appid'])
+    def get_current_M_PortTCP(self, appid: str) -> Dict[str, str]:
+        pass
+
