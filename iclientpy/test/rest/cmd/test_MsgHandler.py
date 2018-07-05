@@ -23,8 +23,7 @@ class MsgHandlerTest(TestCase):
         self._node_s.get_services = MagicMock(return_value = node_list)
         self._node_s.get_current_M_PortTCP = MagicMock(side_effect  =[{'value':'1'},{'value':'0'}])
         result = self._msg_handler('list')
-        self.assertIn('6：地图服务(iServer)-在线', result)
-        self.assertIn('10：GIS门户(iPortal)-离线', result)
+        self.assertEqual(result,'6：地图服务(iServer)-在线\n10：GIS门户(iPortal)-离线')
 
     def test_stop(self):
         result = BatchMethodResult()

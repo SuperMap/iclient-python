@@ -42,7 +42,7 @@ class MsgHandler:
             status = '在线' if is_online else '离线'
             msg = '{id}：{name}({type})-{status}'.format(id = service.id, name = service.name, type = service.type, status = status)
             msgs.append(msg)
-        return r'\n'.join(msgs)
+        return '\n'.join(msgs)
 
     def do_start(self, msg: str):
         node_s = self._get_node_service() # type:NodeService
