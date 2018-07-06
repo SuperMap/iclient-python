@@ -284,3 +284,31 @@ class Server:
         result = mng.post_authorize(entity)
         if not result.succeed:
             raise Exception('授权失败')
+
+    def create_users_from_csv(self, path: str, name_key: str = 'name', password_key: str = 'password',
+                              roles_key: List[str] = 'roles', description_key: str = 'description',
+                              user_groups_key: List[str] = 'usergroups', sep=',', encoding: str = 'utf8'):
+        """
+            从csv文件里面读取用户信息，并在iServer上创建用户
+
+        Args:
+            path: csv文件路径
+            name_key: 名称的列名
+            password_key: 密码的列名
+            roles_key: 角色的列名
+            description_key: 描述的列名
+            user_groups_key: 用户组的列名
+            sep: csv文件的分隔符
+            encoding: csv文件编码
+        """
+        with open(path, encoding=encoding) as csvfile:
+            import csv
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                name = row.get(name_key)
+                password = row.get(password_key)
+                roles = row.get(roles_key).split(sep)
+                description = row.get(description_key)
+                user_groups = row.get(user_groups_key).split(sep)
+                self.create_user(name=name, password=password, roles=roles, description=description,
+                                 user_groups=user_groups)

@@ -1,3 +1,4 @@
+import os
 from unittest import TestCase
 from unittest.mock import MagicMock
 from iclientpy.server import Server
@@ -288,3 +289,14 @@ class ServerTest(TestCase):
         with self.assertRaises(Exception):
             server.grant_privileges_instances(['test'], authorize_type=AuthorizeType.AUTHENTICATED)
         managment.post_authorize.assert_called_once()
+
+    def test_create_users_from_csv(self):
+        server = self.server
+        server._apifactory = MagicMock()
+        managment = MagicMock()
+        server._apifactory.security_management = MagicMock(return_value=managment)
+        re = MethodResult()
+        re.succeed = True
+        managment.post_users = MagicMock(return_value=re)
+        server.create_users_from_csv(os.path.join(os.path.dirname(os.path.abspath(__file__)), "serveruser.csv"))
+        self.assertEqual(managment.post_users.call_count, 9)
