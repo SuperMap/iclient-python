@@ -220,6 +220,25 @@ class WXBizMsgCrypt(object):
         self.token = sToken
         self.appid = sAppId
 
+		 #验证URL
+         #@param sMsgSignature: 签名串，对应URL参数的msg_signature
+         #@param sTimeStamp: 时间戳，对应URL参数的timestamp
+         #@param sNonce: 随机串，对应URL参数的nonce
+         #@param sEchoStr: 随机串，对应URL参数的echostr
+         #@param sReplyEchoStr: 解密之后的echostr，当return返回0时有效
+         #@return：成功0，失败返回对应的错误码
+
+    def VerifyURL(self, sMsgSignature, sTimeStamp, sNonce, sEchoStr):
+        sha1 = SHA1()
+        ret,signature = sha1.getSHA1(self.token, sTimeStamp, sNonce, sEchoStr)
+        if ret  != 0:
+            return ret, None
+        if not signature == sMsgSignature:
+            return ierror.WXBizMsgCrypt_ValidateSignature_Error, None
+        pc = Prpcrypt(self.key)
+        ret,sReplyEchoStr = pc.decrypt(sEchoStr,self.appid)
+        return ret,sReplyEchoStr
+
     def EncryptMsg(self, sReplyMsg, sNonce, timestamp = None):
         #将公众号回复用户的消息加密打包
         #@param sReplyMsg: 企业号待回复用户的消息，xml格式的字符串
