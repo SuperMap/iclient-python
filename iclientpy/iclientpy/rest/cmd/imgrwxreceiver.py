@@ -12,7 +12,7 @@ class MsgHandler:
         self._url = url
         self._user_access_imgr_url = user_access_imgr_url
         to_portal_template = user_access_imgr_url + '/staticFiles/views/apps/iPortalDetail.html?id={id}'
-        to_server_template = user_access_imgr_url + '/staticFiles/views/apps/iServerDetail.html?id={id}'
+        to_server_template = user_access_imgr_url + '/staticFiles/views/apps/iServerDetail2.html?id={id}'
         self._to_templates = {'iPortal': to_portal_template, 'iServer': to_server_template}
         self._access_href_template = user_access_imgr_url + '/security/sessionid?sessionid={sessionid}&to={to}'
         self._user = user

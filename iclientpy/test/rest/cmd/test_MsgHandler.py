@@ -27,7 +27,7 @@ class MsgHandlerTest(TestCase):
         sessionid = 'sessionidvalue'
         httpretty.register_uri(httpretty.POST,'http://imanager:9083/imanager/security/tokens.json', forcing_headers={'Set-Cookie':'JSESSIONID=' + sessionid})
         result = self._msg_handler('list')
-        self.assertEqual(result,'6：地图服务(iServer)-在线-<a href="http://imgr.supermap.io/imanager/security/sessionid?sessionid=sessionidvalue&to=http%3A%2F%2Fimgr.supermap.io%2Fimanager%2FstaticFiles%2Fviews%2Fapps%2FiServerDetail.html%3Fid%3D6">查看</a>\n10：GIS门户(iPortal)-离线-<a href="http://imgr.supermap.io/imanager/security/sessionid?sessionid=sessionidvalue&to=http%3A%2F%2Fimgr.supermap.io%2Fimanager%2FstaticFiles%2Fviews%2Fapps%2FiPortalDetail.html%3Fid%3D10">查看</a>')
+        self.assertEqual(result,'6：地图服务(iServer)-在线-<a href="http://imgr.supermap.io/imanager/security/sessionid?sessionid=sessionidvalue&to=http%3A%2F%2Fimgr.supermap.io%2Fimanager%2FstaticFiles%2Fviews%2Fapps%2FiServerDetail2.html%3Fid%3D6">查看</a>\n10：GIS门户(iPortal)-离线-<a href="http://imgr.supermap.io/imanager/security/sessionid?sessionid=sessionidvalue&to=http%3A%2F%2Fimgr.supermap.io%2Fimanager%2FstaticFiles%2Fviews%2Fapps%2FiPortalDetail.html%3Fid%3D10">查看</a>')
 
     def test_stop(self):
         result = BatchMethodResult()
