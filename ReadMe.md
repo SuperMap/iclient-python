@@ -1,9 +1,10 @@
 # SuperMap iClient Python 
 
+- 文档：http://iclientpy.supermap.io/
+
 ## 简介
 
 基于Python的地图显示和空间分析服务，可以用于JupyterHub/JupyterLab进行交互时空数据探索。
-- 官网：http://iclientpy.supermap.io/
 
 ## 组件
 
