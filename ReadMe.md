@@ -1,16 +1,23 @@
-## SuperMap iClient Python
+# SuperMap iClient Python 
 
-超图云 GIS 客户端 Python SDK。可以与Jupyter Notebook深度结合，进行数据可视化，也可以使用Python进行数据处理然后调用超图云产品进行数据分析，服务发布等。
+## 简介
 
-### 简介
+基于Python的地图显示和空间分析服务，可以用于JupyterHub/JupyterLab进行交互时空数据探索。
+- 官网：http://iclientpy.supermap.io/
 
-官网：http://iclientpy.supermap.io/
+## 本项目包含：
 
-### Samples
+- ipyleaflet 0.9，地图显示与矢量绘制软件包。
+- iclienth5，基于html5的iclient高级GIS软件包。
+- iclientpy，iServer和Online Service访问支持库。
+- examples，应用例程。
 
-![sample](./iclientpy/doc/source/_static/sample.png)
+## 在mybinder.org中可以直接使用。
 
-### 许可
+- 浏览器输入：https://mybinder.org/v2/gh/openthings/iclient-python/master
+
+
+## 许可
 
 [ Apache License 2.0 ](./LICENSE)
 
