@@ -1,6 +1,7 @@
 # SuperMap iClient Python 
 
-- 文档：http://iclientpy.supermap.io/
+[![Documentation](http://readthedocs.org/projects/ipyleaflet/badge/?version=latest)](http://iclientpy.supermap.io/)
+[![Binder](https://img.shields.io/badge/launch-binder-brightgreen.svg)](https://mybinder.org/v2/gh/openthings/iclient-python/master)
 
 ## 简介
 
