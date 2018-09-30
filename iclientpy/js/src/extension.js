@@ -9,7 +9,7 @@ if (window.require) {
             "*" : {
                 "iclientpy": "nbextensions/iclientpy/index",
                 "jupyter-leaflet": "nbextensions/iclientpy/index",
-                "lib": "nbextensions/iclientpy/lib",
+                "lib": "nbextensions/iclientpy/lib"
             }
         }
     });

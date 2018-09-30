@@ -16,7 +16,7 @@ var SuperMapCloudTileLayerView = leaflet.LeafletTileLayerView.extend({
             delete options.attribution;
         }
         this.obj = L.supermap.cloudTileLayer(url, options);
-    },
+    }
 
 })
 
@@ -24,7 +24,7 @@ var SuperMapTileMapLayerView = leaflet.LeafletTileLayerView.extend({
     create_obj: function () {
         var url = this.model.get('url')
         this.obj = L.supermap.tiledMapLayer(url)
-    },
+    }
 })
 
 var SuperMapRankSymbolThemeLayerView = leaflet.LeafletLayerView.extend({
@@ -220,7 +220,7 @@ var SuperMapMapVLayerView = leaflet.LeafletLayerView.extend({
         // this.listenTo(this.model, 'change:line_width', function () {
         //     this.refresh();
         // }, this);
-    },
+    }
 
 })
 
@@ -263,7 +263,7 @@ var SuperMapTileMapLayerModel = leaflet.LeafletTileLayerModel.extend({
         _view_name: 'SuperMapTileMapLayerView',
         _model_name: 'SuperMapTileMapLayerModel',
         _view_module: 'iclientpy',
-        _model_module: 'iclientpy',
+        _model_module: 'iclientpy'
     })
 })
 
@@ -300,7 +300,7 @@ var SuperMapMapVLayerModel = leaflet.LeafletLayerModel.extend({
         global_alpha: 0.0,
         fill_style: '',
         shadow_color: '',
-        shadow_blur: 0,
+        shadow_blur: 0
     })
 })
 
