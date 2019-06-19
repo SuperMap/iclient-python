@@ -145,6 +145,9 @@ version_ns = {}
 with open(os.path.join(here, 'iclientpy', '_version.py')) as f:
     exec(f.read(), {}, version_ns)
 
+with open('requirements.txt') as f:
+    required = f.read().splitlines()
+
 setup_args = {
     'name': 'iclientpy',
     'version': version_ns['__version__'],
@@ -161,13 +164,7 @@ setup_args = {
             'iclientpy/jupyter/chinageojson.json') + glob('iclientpy/notebook/*.ipynb') + glob(
             'iclientpy/sample/sample/*') + glob('iclientpy/sample/*.ipynb'))
     ],
-    'install_requires': [
-        'ipywidgets==7.0.0',
-        'ipyleaflet==0.5.3',
-        'pandas==0.20.3',
-        'geojson==2.3.0',
-        'progressbar2==3.34.3'
-    ],
+    'install_requires': required,
     'packages': find_packages(exclude=("*.test", "*.test.*", "test.*", "test")),
     'zip_safe': False,
     'cmdclass': {

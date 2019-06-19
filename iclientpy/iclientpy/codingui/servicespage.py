@@ -1,8 +1,9 @@
 from functools import partial
-from typing import Iterable,Dict
+from typing import Iterable,Dict,Union
 from ..rest.api.model import ServiceMetaInfo
 from ..rest.api.servicespage import ServiceComponentType
 from .comon import NamedObjects
+
 
 
 def get_services_by_component_type(services: Iterable[ServiceMetaInfo], *args):
@@ -26,12 +27,12 @@ from iclientpy.rest.api.servicespage import ServiceComponentType,ServiceInterfac
 
 from iclientpy.rest.api.restdata import DataService, GetDataSourceResult, GetDatasetResult, GetDatasetsResult
 from iclientpy.rest.api.model import DatasetType,DatasetInfo
-from geopandas import GeoDataFrame
-from iclientpy.data.featuresconverter import from_geodataframe_features
+from iclientpy.data.featuresconverter import from_geojson_features
+import geojson
 
 
-def _post_geodataframe_to_dataset(data_service: DataService, datasource: str, dataset: str, geodataframe: GeoDataFrame):
-    feature_list = from_geodataframe_features(geodataframe)
+def _post_geojson_to_dataset(data_service: DataService, datasource: str, dataset: str, geojson: Union[str, geojson.FeatureCollection]):
+    feature_list = from_geojson_features(geojson)
     data_service.post_features(datasource, dataset, feature_list)
 
 
@@ -67,7 +68,7 @@ class DataServiceUI:
 
     def _init_dataset_options(self, options, dataset_info: DatasetInfo):
         if dataset_info.type in (DatasetType.POINT, DatasetType.LINE, DatasetType.REGION):
-            options['import_features_from_geodataframe'] = partial(_post_geodataframe_to_dataset, self._data_service, dataset_info.dataSourceName, dataset_info.name)
+            options['import_features_from_geojson'] = partial(_post_geojson_to_dataset, self._data_service, dataset_info.dataSourceName, dataset_info.name)
         else:
             options['no_action_available'] = None
 

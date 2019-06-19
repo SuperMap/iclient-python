@@ -1,6 +1,5 @@
 import geojson
-from fiona import BytesCollection
-from geopandas import GeoDataFrame
+from typing import Union
 import iclientpy.rest.api.model as icp_model
 
 
@@ -114,7 +113,9 @@ def to_geojson_feature(feature: icp_model.GetFeatureResult):
     return geojson.Feature(geometry=geo, properties=attr)
 
 
-def from_geojson_features(features: geojson.FeatureCollection):
+def from_geojson_features(features: Union[geojson.FeatureCollection, str]):
+    if isinstance(features, str):
+        features = geojson.loads(features)
     return (from_geojson_feature(feature) for feature in features['features'])
 
 
@@ -123,22 +124,3 @@ def to_geojson_features(features):
     for s_feature in features:
         g_features.append(to_geojson_feature(s_feature))
     return geojson.FeatureCollection(g_features)
-
-
-def geojson_2_geodataframe_features(geo):
-    with BytesCollection(bytes(geojson.dumps(geo), encoding='utf8')) as features:
-        crs = features.crs
-        columns = list(features.meta["schema"]["properties"]) + ["geometry"]
-        gdf = GeoDataFrame.from_features(features, crs=crs)
-        gdf = gdf[columns]
-    return gdf
-
-
-def from_geodataframe_features(gdf: GeoDataFrame):
-    geojson_features = geojson.loads(gdf.to_json())
-    return from_geojson_features(geojson_features)
-
-
-def to_geodataframe_features(features):
-    g_features = to_geojson_features(features)
-    return geojson_2_geodataframe_features(g_features)
